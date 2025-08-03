@@ -1,0 +1,83 @@
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  Get,
+  NotFoundException,
+  Param,
+  Put,
+  Delete,
+  ForbiddenException,
+} from '@nestjs/common';
+import { ExperienceService } from './experience.service';
+import { CreateExperienceDto } from './dto/create-experience.dto';
+import { JwtCookieGuard } from 'src/auth/jwt-cookie.guard';
+import { UsersService } from 'src/users/users.service';
+import { Roles } from 'src/common/roles.decorator';
+import { RolesGuard } from 'src/common/roles.guard';
+import { UpdateExperienceDto } from './dto/update-experience.dto';
+import { ExperienceResponseDto } from './dto/experience-response.dto';
+import { plainToInstance } from 'class-transformer';
+
+@Controller('experiences')
+export class ExperienceController {
+  constructor(
+    private readonly experienceService: ExperienceService,
+    private readonly userService: UsersService,
+  ) {}
+
+  @UseGuards(JwtCookieGuard, RolesGuard)
+  @Roles('host')
+  @Post()
+  async create(@Body() dto: CreateExperienceDto, @Req() req: any) {
+    const user = await this.userService.findById(req.user.sub);
+    if (!user) throw new NotFoundException('User not found');
+    const experience = await this.experienceService.create(dto, user);
+    return plainToInstance(ExperienceResponseDto, experience);
+  }
+
+  @UseGuards(JwtCookieGuard, RolesGuard)
+  @Roles('host')
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateExperienceDto,
+    @Req() req: any,
+  ) {
+    const experience = await this.experienceService.findOne(id);
+    if (!experience) throw new NotFoundException('Experience not found');
+    if (experience.host.id !== req.user.sub)
+      throw new ForbiddenException('Unauthorized');
+    const updated = await this.experienceService.update(id, dto);
+    return plainToInstance(ExperienceResponseDto, updated);
+  }
+
+  @UseGuards(JwtCookieGuard, RolesGuard)
+  @Roles('host')
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Req() req: any) {
+    const experience = await this.experienceService.findOne(id);
+    if (!experience) throw new NotFoundException('Experience not found');
+    if (experience.host.id !== req.user.sub)
+      throw new ForbiddenException('Unauthorized');
+    await this.experienceService.remove(id);
+    return { message: 'Deleted successfully' };
+  }
+
+  // Public GET for listing all experiences
+  @Get()
+  async findAll() {
+    const all = await this.experienceService.findAll();
+    return all.map((exp) => plainToInstance(ExperienceResponseDto, exp));
+  }
+
+  // Public GET for single experience
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const exp = await this.experienceService.findOne(id);
+    if (!exp) throw new NotFoundException('Experience not found');
+    return plainToInstance(ExperienceResponseDto, exp);
+  }
+}
