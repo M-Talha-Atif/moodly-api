@@ -8,7 +8,6 @@ import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { User } from 'src/users/entities/user.entity';
 import { plainToInstance } from 'class-transformer';
 
-
 @Injectable()
 export class ExperienceService {
   constructor(
@@ -33,13 +32,13 @@ export class ExperienceService {
     });
   }
 
- async update(id: string, dto: UpdateExperienceDto): Promise<Experience> {
-  await this.experienceRepo.update(id, dto);
-  const updated = await this.findOne(id);
-  if (!updated) throw new NotFoundException('Experience not found after update');
-  return updated;
-}
-
+  async update(id: string, dto: UpdateExperienceDto): Promise<Experience> {
+    await this.experienceRepo.update(id, dto);
+    const updated = await this.findOne(id);
+    if (!updated)
+      throw new NotFoundException('Experience not found after update');
+    return updated;
+  }
 
   async remove(id: string): Promise<void> {
     await this.experienceRepo.delete(id);
