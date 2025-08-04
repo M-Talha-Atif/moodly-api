@@ -20,6 +20,8 @@ import { RolesGuard } from 'src/common/roles.guard';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { ExperienceResponseDto } from './dto/experience-response.dto';
 import { plainToInstance } from 'class-transformer';
+import { ExperienceListItemDto } from './dto/experience-list-item.dto';
+import { Query } from '@nestjs/common';
 
 @Controller('experiences')
 export class ExperienceController {
@@ -68,9 +70,38 @@ export class ExperienceController {
 
   // Public GET for listing all experiences
   @Get()
-  async findAll() {
-    const all = await this.experienceService.findAll();
-    return all.map((exp) => plainToInstance(ExperienceResponseDto, exp));
+  async findAll(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('cultureTags') cultureTags: string | string[],
+    @Query('time') time: string,
+    @Query('search') search: string,
+  ) {
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const tagsArray = Array.isArray(cultureTags)
+      ? cultureTags
+      : (cultureTags?.split(',') ?? []);
+
+    const [data, total] = await this.experienceService.findAll(
+      pageNum,
+      limitNum,
+      tagsArray,
+      time,
+      search,
+    );
+
+    return {
+      data: plainToInstance(ExperienceListItemDto, data, {
+        excludeExtraneousValues: true,
+      }),
+      meta: {
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum),
+      },
+    };
   }
 
   // Public GET for single experience

@@ -80,6 +80,7 @@ export class CreateExperienceDto {
 
   @IsOptional()
   @IsArray()
+  @IsString({ each: true })
   culturalTags?: string[];
 
   @IsOptional()

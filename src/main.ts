@@ -34,6 +34,15 @@ async function bootstrap() {
   }
 
   const app = await NestFactory.create(AppModule);
+
+  // Enable CORS with specific options
+  app.enableCors({
+    origin: 'http://localhost:5173', // Your frontend URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true, // If you need to allow cookies/authentication
+  });
+
   app.use(cookieParser());
   await app.listen(process.env.PORT || 3000);
 }

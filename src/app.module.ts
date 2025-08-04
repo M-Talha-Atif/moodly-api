@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { EmotionModule } from './emotion/emotion.module';
 import { ExperienceModule } from './experience/experience.module';
+import { MoodLogModule } from './mood-log/mood-log.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ExperienceModule } from './experience/experience.module';
     AuthModule,
     EmotionModule,
     ExperienceModule,
+    MoodLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

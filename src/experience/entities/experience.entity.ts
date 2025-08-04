@@ -75,7 +75,7 @@ export class Experience {
   @Column({ nullable: true })
   language: string;
 
-  @Column('simple-array', { nullable: true })
+  @Column('text', { array: true, nullable: true })
   culturalTags: string[];
 
   // 📈 Growth & Outcomes
