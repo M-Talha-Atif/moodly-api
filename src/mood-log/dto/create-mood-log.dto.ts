@@ -5,7 +5,6 @@ export class CreateMoodLogDto {
   @IsString()
   moodLabel?: string;
 
-
   @IsOptional()
   @IsString()
   note?: string;

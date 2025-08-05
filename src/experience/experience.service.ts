@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Experience } from './entities/experience.entity';
-
+import { EmbeddingService } from 'src/embedding/embedding.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { User } from 'src/users/entities/user.entity';
@@ -21,10 +21,16 @@ export class ExperienceService {
   constructor(
     @InjectRepository(Experience)
     private experienceRepo: Repository<Experience>,
-  ) {}
+    private readonly embeddingService: EmbeddingService, // <-- FIX
+  ) { }
 
   async create(dto: CreateExperienceDto, host: User): Promise<Experience> {
     const experience = this.experienceRepo.create({ ...dto, host });
+
+    // Generate combined text for embedding
+    const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')}`;
+    experience.embedding = await this.embeddingService.generateEmbedding(combinedText);
+
     return this.experienceRepo.save(experience);
   }
 
@@ -47,6 +53,7 @@ export class ExperienceService {
     // Search conditions (case-insensitive partial matches)
     if (search) {
       const lowerSearch = `%${search.toLowerCase()}%`;
+      console.log('Search term:', lowerSearch);
       where.push({
         title: ILike(lowerSearch),
       });
@@ -61,6 +68,7 @@ export class ExperienceService {
     // Time filter
     const now = new Date();
     let dateRange: [Date, Date] | null = null;
+    console.log(timeFilter, 'timeFilter');
 
     switch (timeFilter) {
       case 'today':
@@ -116,14 +124,31 @@ export class ExperienceService {
   }
 
   async update(id: string, dto: UpdateExperienceDto): Promise<Experience> {
-    await this.experienceRepo.update(id, dto);
     const updated = await this.findOne(id);
-    if (!updated)
-      throw new NotFoundException('Experience not found after update');
-    return updated;
+    if (!updated) throw new NotFoundException('Experience not found');
+
+    Object.assign(updated, dto);
+
+    const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')}`;
+    updated.embedding = await this.embeddingService.generateEmbedding(combinedText);
+
+    return this.experienceRepo.save(updated);
   }
 
   async remove(id: string): Promise<void> {
     await this.experienceRepo.delete(id);
   }
+
+  // ai based features
+  // experience.service.ts
+  async recommendForUser(userEmbedding: number[], limit = 10): Promise<Experience[]> {
+    return this.experienceRepo.query(
+      `SELECT *, embedding <=> $1 as score
+     FROM experience
+     ORDER BY embedding <=> $1
+     LIMIT $2`,
+      [userEmbedding, limit],
+    );
+  }
+
 }

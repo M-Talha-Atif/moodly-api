@@ -97,6 +97,14 @@ export class Experience {
   @ManyToOne(() => User, (user) => user.experiences, { eager: false })
   host: User;
 
+  @Column({
+    type: 'vector' as any,  // <-- 'as any' prevents TypeORM from throwing DataTypeNotSupportedError
+    length: 384,            // embedding size
+    nullable: true,
+  })
+  embedding: number[];
+
+
   @CreateDateColumn()
   createdAt: Date;
 

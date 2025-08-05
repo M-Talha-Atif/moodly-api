@@ -27,6 +27,8 @@ async function bootstrap() {
     'JWT_SECRET',
   ];
 
+  console.log('DB HOST:', process.env.POSTGRES_HOST);
+
   const missingVars = requiredVars.filter((v) => !process.env[v]);
   if (missingVars.length) {
     console.error('Missing required environment variables:', missingVars);

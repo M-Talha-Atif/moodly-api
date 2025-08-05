@@ -16,7 +16,6 @@ export class MoodLog {
   @Column({ nullable: true })
   moodLabel: string; // stores values like 'happy', 'sad', etc.
 
-
   @Column({ type: 'text', nullable: true })
   note: string;
 
@@ -34,6 +33,15 @@ export class MoodLog {
 
   @Column({ default: false })
   sameAsYesterday: boolean;
+
+  @Column({
+    type: 'vector' as any,  // <-- 'as any' prevents TypeORM from throwing DataTypeNotSupportedError
+    length: 384,            // embedding size
+    nullable: true,
+  })
+  embedding: number[];
+
+
 
   @CreateDateColumn()
   createdAt: Date;

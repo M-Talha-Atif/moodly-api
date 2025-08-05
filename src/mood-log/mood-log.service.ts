@@ -4,30 +4,27 @@ import { MoodLog } from './entities/mood-log.entity';
 import { Repository, Between } from 'typeorm';
 import { CreateMoodLogDto } from './dto/create-mood-log.dto';
 import { startOfDay, endOfDay } from 'date-fns';
+import { EmbeddingService } from 'src/embedding/embedding.service';
 
 @Injectable()
 export class MoodLogService {
   constructor(
     @InjectRepository(MoodLog)
     private moodLogRepo: Repository<MoodLog>,
+    private readonly embeddingService: EmbeddingService,
   ) { }
 
   async createForUser(userId: string, dto: CreateMoodLogDto) {
     const mood = this.moodLogRepo.create({
       userId,
-      moodLabel: dto.moodLabel,
-      note: dto.note,
-      textSentiment: dto.textSentiment,
-      photoEmotion: dto.photoEmotion,
-      voiceTranscript: dto.voiceTranscript,
-      voiceSentiment: dto.voiceSentiment,
-      sameAsYesterday: dto.sameAsYesterday,
+      ...dto,
     });
+
+    const combinedText = `${dto.moodLabel} ${dto.note} ${dto.textSentiment} ${dto.photoEmotion} ${dto.voiceSentiment}`;
+    mood.embedding = await this.embeddingService.generateEmbedding(combinedText);
 
     return this.moodLogRepo.save(mood);
   }
-
-
 
   async getTodayLogForUser(userId: string) {
     const todayStart = startOfDay(new Date());

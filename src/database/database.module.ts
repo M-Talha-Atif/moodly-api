@@ -21,7 +21,8 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         entities: [path.join(__dirname, '../**/*.entity{.ts,.js}')],
-        synchronize: configService.get('NODE_ENV') !== 'production',
+        // synchronize: configService.get('NODE_ENV') !== 'production',
+        synchronize: false, // <-- force OFF for pgvector
         logging: true,
         logger: 'advanced-console',
       }),
@@ -45,4 +46,4 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
     }),
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }

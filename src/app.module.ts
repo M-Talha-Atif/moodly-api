@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { EmotionModule } from './emotion/emotion.module';
 import { ExperienceModule } from './experience/experience.module';
 import { MoodLogModule } from './mood-log/mood-log.module';
+import { EmbeddingModule } from './embedding/embedding.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MoodLogModule } from './mood-log/mood-log.module';
     EmotionModule,
     ExperienceModule,
     MoodLogModule,
+    EmbeddingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
