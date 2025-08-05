@@ -1,46 +1,43 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In, ILike } from 'typeorm';
 import { Experience } from './entities/experience.entity';
 import { EmbeddingService } from 'src/embedding/embedding.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { User } from 'src/users/entities/user.entity';
-import { plainToInstance } from 'class-transformer';
-import { ILike, Between, In, Brackets } from 'typeorm';
-import {
-  startOfDay,
-  endOfDay,
-  addDays,
-  nextSaturday,
-  nextSunday,
-} from 'date-fns';
+import { startOfDay, endOfDay, addDays, nextSaturday, nextSunday } from 'date-fns';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.schema';
 
 @Injectable()
 export class ExperienceService {
   constructor(
     @InjectRepository(Experience)
     private experienceRepo: Repository<Experience>,
-    private readonly embeddingService: EmbeddingService, // <-- FIX
+    private readonly embeddingService: EmbeddingService,
+    @InjectModel(ExperienceEmbedding.name)
+    private experienceEmbeddingModel: Model<ExperienceEmbedding>,
   ) { }
 
+  // === Create Experience + Store Embedding in Mongo ===
   async create(dto: CreateExperienceDto, host: User): Promise<Experience> {
     const experience = this.experienceRepo.create({ ...dto, host });
+    const saved = await this.experienceRepo.save(experience);
 
-    // Generate combined text for embedding
     const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')}`;
-    experience.embedding = await this.embeddingService.generateEmbedding(combinedText);
+    const embedding = await this.embeddingService.generateEmbedding(combinedText);
 
-    return this.experienceRepo.save(experience);
+    await this.experienceEmbeddingModel.create({
+      experienceId: saved.id,
+      embedding,
+    });
+
+    return saved;
   }
 
-  // // optional: get all experiences
-  // async findAll(): Promise<Experience[]> {
-  //   return this.experienceRepo.find({ relations: ['host'] });
-  // }
-
-  // let say page is 4, then 3 * 10 is 30 so skipping 30 records from start
-
+  // === Filter + Paginate Experiences ===
   async findAll(
     page = 1,
     limit = 10,
@@ -48,27 +45,8 @@ export class ExperienceService {
     timeFilter?: string,
     search?: string,
   ): Promise<[Experience[], number]> {
-    const where: any[] = [];
-
-    // Search conditions (case-insensitive partial matches)
-    if (search) {
-      const lowerSearch = `%${search.toLowerCase()}%`;
-      console.log('Search term:', lowerSearch);
-      where.push({
-        title: ILike(lowerSearch),
-      });
-      where.push({
-        description: ILike(lowerSearch),
-      });
-      where.push({
-        location: ILike(lowerSearch),
-      });
-    }
-
-    // Time filter
     const now = new Date();
     let dateRange: [Date, Date] | null = null;
-    console.log(timeFilter, 'timeFilter');
 
     switch (timeFilter) {
       case 'today':
@@ -92,10 +70,8 @@ export class ExperienceService {
       .skip((page - 1) * limit)
       .take(limit);
 
-    if (cultureTags && cultureTags.length > 0) {
-      queryBuilder.andWhere(`"experience"."culturalTags" && :tags`, {
-        tags: cultureTags,
-      });
+    if (cultureTags?.length) {
+      queryBuilder.andWhere(`"experience"."culturalTags" && :tags`, { tags: cultureTags });
     }
 
     if (dateRange) {
@@ -116,6 +92,7 @@ export class ExperienceService {
     return [results, total];
   }
 
+  // === Get Single Experience ===
   async findOne(id: string): Promise<Experience | null> {
     return this.experienceRepo.findOne({
       where: { id },
@@ -123,6 +100,7 @@ export class ExperienceService {
     });
   }
 
+  // === Update Experience + Update Embedding in Mongo ===
   async update(id: string, dto: UpdateExperienceDto): Promise<Experience> {
     const updated = await this.findOne(id);
     if (!updated) throw new NotFoundException('Experience not found');
@@ -130,25 +108,48 @@ export class ExperienceService {
     Object.assign(updated, dto);
 
     const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')}`;
-    updated.embedding = await this.embeddingService.generateEmbedding(combinedText);
+    const embedding = await this.embeddingService.generateEmbedding(combinedText);
+
+    await this.experienceEmbeddingModel.updateOne(
+      { experienceId: updated.id },
+      { $set: { embedding } },
+      { upsert: true },
+    );
 
     return this.experienceRepo.save(updated);
   }
 
+  // === Delete Experience + Embedding ===
   async remove(id: string): Promise<void> {
     await this.experienceRepo.delete(id);
+    await this.experienceEmbeddingModel.deleteOne({ experienceId: id });
   }
 
-  // ai based features
-  // experience.service.ts
+  // === Vector Search (Recommendations) ===
   async recommendForUser(userEmbedding: number[], limit = 10): Promise<Experience[]> {
-    return this.experienceRepo.query(
-      `SELECT *, embedding <=> $1 as score
-     FROM experience
-     ORDER BY embedding <=> $1
-     LIMIT $2`,
-      [userEmbedding, limit],
-    );
+    const similarEmbeddings = await this.experienceEmbeddingModel.aggregate([
+      {
+        $vectorSearch: {
+          queryVector: userEmbedding,
+          path: 'embedding',
+          numCandidates: 100,
+          limit: limit,
+          index: 'experience_vector_index', // Make sure name matches Mongo
+          metric: 'cosine',
+        },
+      } as any,
+    ]);
+
+    const experienceIds = similarEmbeddings.map(e => e.experienceId);
+    if (experienceIds.length === 0) return [];
+
+    const experiences = await this.experienceRepo.find({
+      where: { id: In(experienceIds) },
+      relations: ['host'],
+    });
+
+    const experienceMap = new Map(experiences.map(e => [e.id, e]));
+    return experienceIds.map(id => experienceMap.get(id)).filter(Boolean) as Experience[];
   }
 
 }

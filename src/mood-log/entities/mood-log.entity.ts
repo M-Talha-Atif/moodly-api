@@ -34,13 +34,6 @@ export class MoodLog {
   @Column({ default: false })
   sameAsYesterday: boolean;
 
-  @Column({
-    type: 'vector' as any,  // <-- 'as any' prevents TypeORM from throwing DataTypeNotSupportedError
-    length: 384,            // embedding size
-    nullable: true,
-  })
-  embedding: number[];
-
 
 
   @CreateDateColumn()

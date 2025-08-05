@@ -106,7 +106,22 @@ export class ExperienceController {
     };
   }
 
-  // Public GET for single experience
+  @UseGuards(JwtCookieGuard)
+  @Get('recommendations')
+  async recommendForUser(@Req() req: any) {
+    // 1. Get the latest mood embedding for the logged-in user
+    const latestMoodEmbedding = await this.moodLogService.getLatestUserEmbedding(req.user.sub);
+    if (!latestMoodEmbedding) throw new NotFoundException('No mood embedding found for user');
+
+    // 2. Get recommended experiences
+    const recommendations = await this.experienceService.recommendForUser(latestMoodEmbedding);
+
+    return plainToInstance(ExperienceListItemDto, recommendations, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  // Public GET for single experience, should be last
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const exp = await this.experienceService.findOne(id);
@@ -114,13 +129,9 @@ export class ExperienceController {
     return plainToInstance(ExperienceResponseDto, exp);
   }
 
-  @UseGuards(JwtCookieGuard)
-  @Get('recommendations/me')
-  async getMyRecommendations(@Req() req: any) {
-    const userId = req.user.sub;
-    const moodLog = await this.moodLogService.getTodayLogForUser(userId);
-    if (!moodLog?.embedding) throw new NotFoundException('No mood log embedding found');
-    const experiences = await this.experienceService.recommendForUser(moodLog.embedding);
-    return plainToInstance(ExperienceListItemDto, experiences, { excludeExtraneousValues: true });
-  }
+
+
+
+
+
 }

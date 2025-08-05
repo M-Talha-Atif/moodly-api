@@ -8,7 +8,12 @@ import { EmbeddingModule } from 'src/embedding/embedding.module';
 import { MoodLogModule } from 'src/mood-log/mood-log.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Experience]), UsersModule, EmbeddingModule, MoodLogModule],
+  imports: [
+    TypeOrmModule.forFeature([Experience]),
+    UsersModule,
+    EmbeddingModule,
+    MoodLogModule,
+  ],
   controllers: [ExperienceController],
   providers: [ExperienceService],
 })
