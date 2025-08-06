@@ -8,6 +8,8 @@ import { EmotionModule } from './emotion/emotion.module';
 import { ExperienceModule } from './experience/experience.module';
 import { MoodLogModule } from './mood-log/mood-log.module';
 import { EmbeddingModule } from './embedding/embedding.module';
+import { BookingModule } from './booking/booking.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { EmbeddingModule } from './embedding/embedding.module';
     ExperienceModule,
     MoodLogModule,
     EmbeddingModule,
+    BookingModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

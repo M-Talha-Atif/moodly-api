@@ -3,10 +3,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { Booking } from '../../booking/entities/booking.entity';
 
 @Entity()
 export class Experience {
@@ -97,7 +99,9 @@ export class Experience {
   @ManyToOne(() => User, (user) => user.experiences, { eager: false })
   host: User;
 
- 
+  // Add to Experience entity
+  @OneToMany(() => Booking, (booking) => booking.experience)
+  bookings: Booking[];
 
   @CreateDateColumn()
   createdAt: Date;

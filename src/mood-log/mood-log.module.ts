@@ -5,7 +5,10 @@ import { MoodLog } from './entities/mood-log.entity';
 import { MoodLogService } from './mood-log.service';
 import { MoodLogController } from './mood-log.controller';
 import { EmbeddingModule } from 'src/embedding/embedding.module';
-import { MoodLogEmbedding, MoodLogEmbeddingSchema } from 'src/embedding/schemas/moodlog-embedding.schema';
+import {
+  MoodLogEmbedding,
+  MoodLogEmbeddingSchema,
+} from 'src/embedding/schemas/moodlog-embedding.schema';
 
 @Module({
   imports: [

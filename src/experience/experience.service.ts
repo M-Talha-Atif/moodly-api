@@ -6,7 +6,13 @@ import { EmbeddingService } from 'src/embedding/embedding.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { User } from 'src/users/entities/user.entity';
-import { startOfDay, endOfDay, addDays, nextSaturday, nextSunday } from 'date-fns';
+import {
+  startOfDay,
+  endOfDay,
+  addDays,
+  nextSaturday,
+  nextSunday,
+} from 'date-fns';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.schema';
@@ -19,7 +25,7 @@ export class ExperienceService {
     private readonly embeddingService: EmbeddingService,
     @InjectModel(ExperienceEmbedding.name)
     private experienceEmbeddingModel: Model<ExperienceEmbedding>,
-  ) { }
+  ) {}
 
   // === Create Experience + Store Embedding in Mongo ===
   async create(dto: CreateExperienceDto, host: User): Promise<Experience> {
@@ -27,7 +33,8 @@ export class ExperienceService {
     const saved = await this.experienceRepo.save(experience);
 
     const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')}`;
-    const embedding = await this.embeddingService.generateEmbedding(combinedText);
+    const embedding =
+      await this.embeddingService.generateEmbedding(combinedText);
 
     await this.experienceEmbeddingModel.create({
       experienceId: saved.id,
@@ -71,7 +78,9 @@ export class ExperienceService {
       .take(limit);
 
     if (cultureTags?.length) {
-      queryBuilder.andWhere(`"experience"."culturalTags" && :tags`, { tags: cultureTags });
+      queryBuilder.andWhere(`"experience"."culturalTags" && :tags`, {
+        tags: cultureTags,
+      });
     }
 
     if (dateRange) {
@@ -108,7 +117,8 @@ export class ExperienceService {
     Object.assign(updated, dto);
 
     const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')}`;
-    const embedding = await this.embeddingService.generateEmbedding(combinedText);
+    const embedding =
+      await this.embeddingService.generateEmbedding(combinedText);
 
     await this.experienceEmbeddingModel.updateOne(
       { experienceId: updated.id },
@@ -126,7 +136,10 @@ export class ExperienceService {
   }
 
   // === Vector Search (Recommendations) ===
-  async recommendForUser(userEmbedding: number[], limit = 10): Promise<Experience[]> {
+  async recommendForUser(
+    userEmbedding: number[],
+    limit = 10,
+  ): Promise<Experience[]> {
     const similarEmbeddings = await this.experienceEmbeddingModel.aggregate([
       {
         $vectorSearch: {
@@ -134,13 +147,13 @@ export class ExperienceService {
           path: 'embedding',
           numCandidates: 100,
           limit: limit,
-          index: 'experience_vector_index', // Make sure name matches Mongo
+          index: 'experience_vector_index',
           metric: 'cosine',
         },
       } as any,
     ]);
 
-    const experienceIds = similarEmbeddings.map(e => e.experienceId);
+    const experienceIds = similarEmbeddings.map((e) => e.experienceId);
     if (experienceIds.length === 0) return [];
 
     const experiences = await this.experienceRepo.find({
@@ -148,8 +161,9 @@ export class ExperienceService {
       relations: ['host'],
     });
 
-    const experienceMap = new Map(experiences.map(e => [e.id, e]));
-    return experienceIds.map(id => experienceMap.get(id)).filter(Boolean) as Experience[];
+    const experienceMap = new Map(experiences.map((e) => [e.id, e]));
+    return experienceIds
+      .map((id) => experienceMap.get(id))
+      .filter(Boolean) as Experience[];
   }
-
 }

@@ -8,7 +8,7 @@ export class MoodLogEmbedding extends Document {
   moodLogId: string;
 
   @Prop({ required: true })
-  userId: string;   // <-- Add this
+  userId: string; // <-- Add this
 
   @Prop({ type: [Number], required: true })
   embedding: number[];

@@ -34,8 +34,6 @@ export class MoodLog {
   @Column({ default: false })
   sameAsYesterday: boolean;
 
-
-
   @CreateDateColumn()
   createdAt: Date;
 }

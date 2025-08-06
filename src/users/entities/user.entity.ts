@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Booking } from '../../booking/entities/booking.entity';
 import { PrivacySettings } from './privacy.entity';
 import { Experience } from 'src/experience/entities/experience.entity'; // update path if needed
 import { OneToMany } from 'typeorm';
@@ -56,6 +57,10 @@ export class User {
 
   @OneToMany(() => Experience, (experience) => experience.host)
   experiences: Experience[];
+
+  // Add to User entity
+  @OneToMany(() => Booking, (booking) => booking.user)
+  bookings: Booking[];
 
   @Column({
     name: 'account_status',
