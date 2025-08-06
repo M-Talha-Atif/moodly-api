@@ -1,4 +1,3 @@
-// src/booking/entities/booking.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,12 +6,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  RelationId,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Experience } from '../../experience/entities/experience.entity';
 
 @Entity()
-@Index(['experience', 'user'], { unique: true }) // Prevent duplicate bookings
+@Index(['experience', 'user'], { unique: true })
 export class Booking {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -22,11 +22,20 @@ export class Booking {
   })
   experience: Experience;
 
+  @RelationId((booking: Booking) => booking.experience)
+  experienceId: string; // 👈 Add this
+
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;
 
+  @RelationId((booking: Booking) => booking.user)
+  userId: string; // 👈 And this
+
   @Column({ default: 'confirmed' })
   status: 'confirmed' | 'cancelled' | 'waitlisted';
+
+  @Column({ nullable: true })
+  cancelledAt: Date;
 
   @CreateDateColumn()
   createdAt: Date;
