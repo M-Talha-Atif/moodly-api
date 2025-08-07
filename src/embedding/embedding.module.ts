@@ -10,6 +10,7 @@ import {
   MoodLogEmbeddingSchema,
 } from './schemas/moodlog-embedding.schema';
 import { EmbeddingService } from './embedding.service';
+import { UserEmbeddingService } from './user-embedding.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { EmbeddingService } from './embedding.service';
       { name: MoodLogEmbedding.name, schema: MoodLogEmbeddingSchema },
     ]),
   ],
-  providers: [EmbeddingService],
-  exports: [EmbeddingService, MongooseModule], // <-- Export models too
+  providers: [EmbeddingService, UserEmbeddingService],
+  exports: [EmbeddingService, UserEmbeddingService, MongooseModule],
 })
 export class EmbeddingModule {}

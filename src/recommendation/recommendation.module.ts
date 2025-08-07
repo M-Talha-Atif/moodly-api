@@ -7,7 +7,7 @@ import { RedisModule } from 'src/redis/redis.module';
 import { RecommendationController } from './recommendation.controller';
 import { RecommendationProcessor } from './queues/recommendation.processor';
 import { RecommendationQueue } from './queues/recommendation.queue';
-import { MoodLogModule } from 'src/mood-log/mood-log.module';
+import { EmbeddingModule } from 'src/embedding/embedding.module';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { MoodLogModule } from 'src/mood-log/mood-log.module';
     }),
     ExperienceModule,
     RedisModule,
-    MoodLogModule,
+    EmbeddingModule,
   ],
   providers: [
     RecommendationService,

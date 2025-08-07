@@ -5,11 +5,11 @@ import { Queue } from 'bullmq';
 
 @Injectable()
 export class RecommendationQueue {
-  constructor(
-    @InjectQueue('recommendation-queue') private queue: Queue,
-  ) {}
+  constructor(@InjectQueue('recommendation-queue') private queue: Queue) {}
 
   async enqueueGenerateJob(userId: string, embedding: number[]) {
+    console.log(`📥 Enqueuing recommendation job for user ${userId}`);
+
     await this.queue.add('recommendation.generate', {
       userId,
       embedding,

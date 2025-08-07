@@ -14,6 +14,8 @@ import { BullModule } from '@nestjs/bull';
 import { MoodLogQueueModule } from './mood-log/queues/mood-log-queue.module';
 import { BullBoardModule } from './bull-board/bull-board.module';
 import { RecommendationModule } from './recommendation/recommendation.module';
+import { DiagramModule } from './diagram/diagram.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { RecommendationModule } from './recommendation/recommendation.module';
     }),
     BullBoardModule,
     RecommendationModule,
+    DiagramModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],

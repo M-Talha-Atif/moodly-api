@@ -2,16 +2,18 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { MoodLogQueueProcessor } from './mood-log-queue.processor';
-import { EmbeddingModule } from '../../embedding/embedding.module';
+import { EmbeddingModule } from 'src/embedding/embedding.module';
+import { RecommendationModule } from 'src/recommendation/recommendation.module'; // ✅ Add this
 
 @Module({
   imports: [
     BullModule.registerQueue({
-      name: 'mood-queue', // name of the queue
+      name: 'mood-queue',
     }),
-    EmbeddingModule, // Add this line
+    EmbeddingModule,
+    RecommendationModule,
   ],
   providers: [MoodLogQueueProcessor],
-  exports: [BullModule], // So other modules can use it
+  exports: [BullModule],
 })
 export class MoodLogQueueModule {}

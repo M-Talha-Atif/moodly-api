@@ -48,21 +48,13 @@ export class MoodLogService {
       const saved = await this.moodLogRepo.save(mood);
 
       const combinedText = `${dto.moodLabel} ${dto.note} ${dto.textSentiment} ${dto.photoEmotion} ${dto.voiceSentiment}`;
-      
+
       // Add job to queue instead of doing it directly
       await this.moodQueue.add('mood.logged', {
         moodLogId: saved.id,
         userId,
         combinedText,
       });
-      // const embedding =
-      //   await this.embeddingService.generateEmbedding(combinedText);
-
-      // await this.moodLogEmbeddingModel.create({
-      //   moodLogId: saved.id,
-      //   userId,
-      //   embedding,
-      // });
 
       return saved;
     } catch (error) {
@@ -92,20 +84,6 @@ export class MoodLogService {
     } catch (error) {
       console.error("Error fetching today's mood log:", error);
       throw new InternalServerErrorException('Failed to fetch mood log');
-    }
-  }
-
-  async getLatestUserEmbedding(userId: string): Promise<number[] | null> {
-    try {
-      const latestLog = await this.moodLogEmbeddingModel
-        .findOne({ userId })
-        .sort({ createdAt: -1 })
-        .lean();
-
-      return latestLog?.embedding || null;
-    } catch (error) {
-      console.error('Error fetching latest embedding:', error);
-      throw new InternalServerErrorException('Failed to fetch user embedding');
     }
   }
 }

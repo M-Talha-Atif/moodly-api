@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import { setupBullBoard } from './bull-board/bull-board';
 import { Queue } from 'bullmq';
+import { DiagramService } from './diagram/diagram.service';
 
 async function bootstrap() {
   const envPath = path.resolve(__dirname, '../.env');
@@ -38,6 +39,15 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
+  const diagramService = app.get(DiagramService);
+  diagramService.setApp(app);
+
+  const diagrams = diagramService.getModuleDiagrams();
+
+  console.log('Core Diagram:\n', diagrams.core);
+  console.log('Business Diagram:\n', diagrams.business);
+  console.log('Queues Diagram:\n', diagrams.queues);
+
   // Enable CORS
   app.enableCors({
     origin: 'http://localhost:5173',
@@ -49,15 +59,17 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // === BULLMQ QUEUE + BULL BOARD SETUP ===
+
   const moodQueue = new Queue('mood-queue', {
-    connection: {
-      host: 'localhost', // or use process.env.REDIS_HOST
-      port: 6379,
-    },
+    connection: { host: 'localhost', port: 6379 },
+  });
+
+  const recommendationQueue = new Queue('recommendation-queue', {
+    connection: { host: 'localhost', port: 6379 },
   });
 
   const expressServer = express();
-  const bullBoardAdapter = setupBullBoard([moodQueue]);
+  const bullBoardAdapter = setupBullBoard([moodQueue, recommendationQueue]);
   expressServer.use('/admin/queues', bullBoardAdapter.getRouter());
 
   // Mount Express server inside Nest app

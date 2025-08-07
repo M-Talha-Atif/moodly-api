@@ -12,6 +12,8 @@ export class RecommendationService {
 
   async generateForUser(userId: string, embedding: number[]) {
     const cacheKey = getRecommendationCacheKey(userId);
+    // console.log(`🔍 Checking cache for recommendations for user ${userId}`);
+    console.log(`Cache key: ${cacheKey}`);
 
     const cached = await this.redis.get<any[]>(cacheKey);
     if (cached) {

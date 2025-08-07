@@ -8,19 +8,19 @@ import {
 import { RecommendationService } from './recommendation.service';
 import { MoodLogService } from 'src/mood-log/mood-log.service';
 import { JwtCookieGuard } from 'src/auth/jwt-cookie.guard';
-
+import { UserEmbeddingService } from 'src/embedding/user-embedding.service';
 @Controller('recommendations')
 export class RecommendationController {
   constructor(
     private readonly recommendationService: RecommendationService,
-    private readonly moodLogService: MoodLogService,
+    private readonly userEmbeddingService: UserEmbeddingService,
   ) {}
 
   @UseGuards(JwtCookieGuard)
   @Get()
   async getRecommendations(@Req() req: any) {
     console.log('Fetching recommendations for user:', req.user.sub);
-    const embedding = await this.moodLogService.getLatestUserEmbedding(
+    const embedding = await this.userEmbeddingService.getLatestUserEmbedding(
       req.user.sub,
     );
     // console.log('User embedding:', embedding);

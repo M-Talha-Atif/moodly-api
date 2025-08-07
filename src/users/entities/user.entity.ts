@@ -11,6 +11,7 @@ import { Booking } from '../../booking/entities/booking.entity';
 import { PrivacySettings } from './privacy.entity';
 import { Experience } from 'src/experience/entities/experience.entity'; // update path if needed
 import { OneToMany } from 'typeorm';
+import { Feedback } from '../../feedback/entities/feedback.entity';
 
 export enum UserRole {
   USER = 'user',
@@ -61,6 +62,9 @@ export class User {
   // Add to User entity
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings: Booking[];
+
+  @OneToMany(() => Feedback, (feedback) => feedback.user)
+  feedbacks: Feedback[];
 
   @Column({
     name: 'account_status',

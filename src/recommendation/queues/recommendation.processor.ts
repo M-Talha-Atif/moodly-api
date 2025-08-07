@@ -10,12 +10,21 @@ export class RecommendationProcessor {
   @Process('recommendation.generate')
   async handleGenerateRecommendation(job: Job) {
     const { userId, embedding } = job.data;
-
     console.log(`🔄 Processing recommendation for user ${userId}`);
 
-    const recommendations = await this.recommendationService.generateForUser(userId, embedding);
+    try {
+      const recommendations = await this.recommendationService.generateForUser(
+        userId,
+        embedding,
+      );
 
-    // Optional: save to DB or cache is already handled inside service
-    return recommendations;
+      console.log(
+        `✅ Got ${recommendations.length} recommendations for user ${userId}`,
+      );
+      return recommendations;
+    } catch (err) {
+      console.error(`❌ Failed to process recommendation for ${userId}`, err);
+      throw err;
+    }
   }
 }
