@@ -4,6 +4,9 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
 import cookieParser from 'cookie-parser';
+import express from 'express';
+import { setupBullBoard } from './bull-board/bull-board';
+import { Queue } from 'bullmq';
 
 async function bootstrap() {
   const envPath = path.resolve(__dirname, '../.env');
@@ -27,8 +30,6 @@ async function bootstrap() {
     'JWT_SECRET',
   ];
 
-  console.log('DB HOST:', process.env.POSTGRES_HOST);
-
   const missingVars = requiredVars.filter((v) => !process.env[v]);
   if (missingVars.length) {
     console.error('Missing required environment variables:', missingVars);
@@ -37,15 +38,38 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS with specific options
+  // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:5173', // Your frontend URL
+    origin: 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept, Authorization',
-    credentials: true, // If you need to allow cookies/authentication
+    credentials: true,
   });
 
   app.use(cookieParser());
-  await app.listen(process.env.PORT || 3000);
+
+  // === BULLMQ QUEUE + BULL BOARD SETUP ===
+  const moodQueue = new Queue('mood-queue', {
+    connection: {
+      host: 'localhost', // or use process.env.REDIS_HOST
+      port: 6379,
+    },
+  });
+
+  const expressServer = express();
+  const bullBoardAdapter = setupBullBoard([moodQueue]);
+  expressServer.use('/admin/queues', bullBoardAdapter.getRouter());
+
+  // Mount Express server inside Nest app
+  app.use(expressServer);
+
+  // Start server
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+
+  console.log(`🚀 App running at http://localhost:${port}`);
+  console.log(
+    `🔧 Bull Board available at http://localhost:${port}/admin/queues`,
+  );
 }
 bootstrap();

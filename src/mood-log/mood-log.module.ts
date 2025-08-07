@@ -9,6 +9,7 @@ import {
   MoodLogEmbedding,
   MoodLogEmbeddingSchema,
 } from 'src/embedding/schemas/moodlog-embedding.schema';
+import { MoodLogQueueModule } from './queues/mood-log-queue.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import {
       { name: MoodLogEmbedding.name, schema: MoodLogEmbeddingSchema },
     ]),
     EmbeddingModule,
+    MoodLogQueueModule,
   ],
   controllers: [MoodLogController],
   providers: [MoodLogService],

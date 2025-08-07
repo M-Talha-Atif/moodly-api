@@ -53,6 +53,27 @@ export class RedisService {
     }
   }
 
+  // Sets a value in Redis with an optional TTL
+  async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
+    const data = JSON.stringify(value);
+    if (ttlSeconds) {
+      await this.redisClient.set(key, data, 'EX', ttlSeconds);
+    } else {
+      await this.redisClient.set(key, data);
+    }
+  }
+
+  // Gets a value from Redis, returning null if not found
+  async get<T>(key: string): Promise<T | null> {
+    const raw = await this.redisClient.get(key);
+    return raw ? JSON.parse(raw) : null;
+  }
+
+  // Deletes a key from Redis
+  async del(key: string): Promise<void> {
+    await this.redisClient.del(key);
+  }
+
   async acquireLock(key: string, ttl: number): Promise<string | null> {
     const lock = Math.random().toString(36).substring(2);
     const result = await this.redisClient.set(key, lock, 'PX', ttl, 'NX');

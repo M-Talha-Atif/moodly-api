@@ -18,7 +18,7 @@ export class BookingService {
     @InjectRepository(Experience)
     private readonly experienceRepository: Repository<Experience>,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async createBooking(
     userId: string,
@@ -37,7 +37,7 @@ export class BookingService {
 
       // 1. Check if experience exists (without lock first)
       const experienceExists = await this.experienceRepository.exist({
-        where: { id: createBookingDto.experienceId }
+        where: { id: createBookingDto.experienceId },
       });
 
       if (!experienceExists) {
@@ -55,13 +55,11 @@ export class BookingService {
       });
 
       if (!experience) {
-
         return {
           success: false,
           message: 'Experience not found',
           errorType: 'EXPERIENCE_NOT_FOUND',
         };
-
       }
 
       // 3. Check availability
@@ -77,8 +75,8 @@ export class BookingService {
       const existingBooking = await queryRunner.manager.findOne(Booking, {
         where: {
           user: { id: userId },
-          experience: { id: createBookingDto.experienceId }
-        }
+          experience: { id: createBookingDto.experienceId },
+        },
       });
 
       if (existingBooking) {
@@ -96,8 +94,6 @@ export class BookingService {
         status: 'confirmed',
       });
 
-
-
       // 6. Update spots
       experience.spotsFilled += 1;
 
@@ -106,7 +102,9 @@ export class BookingService {
       const savedBooking = await queryRunner.manager.save(booking);
       await queryRunner.commitTransaction();
 
-      this.logger.log(`Booking created for user ${userId} on experience ${experience.id}`);
+      this.logger.log(
+        `Booking created for user ${userId} on experience ${experience.id}`,
+      );
 
       return {
         success: true,
@@ -115,7 +113,10 @@ export class BookingService {
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      this.logger.error(`Failed to create booking: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to create booking: ${error.message}`,
+        error.stack,
+      );
       return {
         success: false,
         message: 'Failed to create booking. Please try again.',
@@ -226,7 +227,8 @@ export class BookingService {
         await queryRunner.rollbackTransaction();
         return {
           success: false,
-          message: 'Cancellations must be made at least 24 hours before the experience',
+          message:
+            'Cancellations must be made at least 24 hours before the experience',
           errorType: 'CANCELLATION_WINDOW_PASSED',
         };
       }
@@ -270,7 +272,10 @@ export class BookingService {
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      this.logger.error(`Failed to cancel booking ${bookingId}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to cancel booking ${bookingId}: ${error.message}`,
+        error.stack,
+      );
 
       return {
         success: false,
@@ -288,9 +293,6 @@ export class BookingService {
     return new Date() < refundDeadline;
   }
 
-
-
-
   private toResponseDto(booking: Booking): BookingResponseDto {
     return {
       id: booking.id,
@@ -303,6 +305,4 @@ export class BookingService {
       createdAt: booking.createdAt,
     };
   }
-
-
 }

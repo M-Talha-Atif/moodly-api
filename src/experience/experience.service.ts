@@ -135,35 +135,35 @@ export class ExperienceService {
     await this.experienceEmbeddingModel.deleteOne({ experienceId: id });
   }
 
-  // === Vector Search (Recommendations) ===
-  async recommendForUser(
-    userEmbedding: number[],
-    limit = 10,
-  ): Promise<Experience[]> {
-    const similarEmbeddings = await this.experienceEmbeddingModel.aggregate([
-      {
-        $vectorSearch: {
-          queryVector: userEmbedding,
-          path: 'embedding',
-          numCandidates: 100,
-          limit: limit,
-          index: 'experience_vector_index',
-          metric: 'cosine',
-        },
-      } as any,
-    ]);
+  // // === Vector Search (Recommendations) ===
+  // async recommendForUser(
+  //   userEmbedding: number[],
+  //   limit = 10,
+  // ): Promise<Experience[]> {
+  //   const similarEmbeddings = await this.experienceEmbeddingModel.aggregate([
+  //     {
+  //       $vectorSearch: {
+  //         queryVector: userEmbedding,
+  //         path: 'embedding',
+  //         numCandidates: 100,
+  //         limit: limit,
+  //         index: 'experience_vector_index',
+  //         metric: 'cosine',
+  //       },
+  //     } as any,
+  //   ]);
 
-    const experienceIds = similarEmbeddings.map((e) => e.experienceId);
-    if (experienceIds.length === 0) return [];
+  //   const experienceIds = similarEmbeddings.map((e) => e.experienceId);
+  //   if (experienceIds.length === 0) return [];
 
-    const experiences = await this.experienceRepo.find({
-      where: { id: In(experienceIds) },
-      relations: ['host'],
-    });
+  //   const experiences = await this.experienceRepo.find({
+  //     where: { id: In(experienceIds) },
+  //     relations: ['host'],
+  //   });
 
-    const experienceMap = new Map(experiences.map((e) => [e.id, e]));
-    return experienceIds
-      .map((id) => experienceMap.get(id))
-      .filter(Boolean) as Experience[];
-  }
+  //   const experienceMap = new Map(experiences.map((e) => [e.id, e]));
+  //   return experienceIds
+  //     .map((id) => experienceMap.get(id))
+  //     .filter(Boolean) as Experience[];
+  // }
 }

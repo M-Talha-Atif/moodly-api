@@ -13,6 +13,8 @@ import { EmbeddingService } from 'src/embedding/embedding.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MoodLogEmbedding } from 'src/embedding/schemas/moodlog-embedding.schema';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class MoodLogService {
@@ -22,6 +24,7 @@ export class MoodLogService {
     private readonly embeddingService: EmbeddingService,
     @InjectModel(MoodLogEmbedding.name)
     private moodLogEmbeddingModel: Model<MoodLogEmbedding>,
+    @InjectQueue('mood-queue') private moodQueue: Queue,
   ) {}
 
   async createForUser(userId: string, dto: CreateMoodLogDto) {
@@ -45,14 +48,21 @@ export class MoodLogService {
       const saved = await this.moodLogRepo.save(mood);
 
       const combinedText = `${dto.moodLabel} ${dto.note} ${dto.textSentiment} ${dto.photoEmotion} ${dto.voiceSentiment}`;
-      const embedding =
-        await this.embeddingService.generateEmbedding(combinedText);
-
-      await this.moodLogEmbeddingModel.create({
+      
+      // Add job to queue instead of doing it directly
+      await this.moodQueue.add('mood.logged', {
         moodLogId: saved.id,
         userId,
-        embedding,
+        combinedText,
       });
+      // const embedding =
+      //   await this.embeddingService.generateEmbedding(combinedText);
+
+      // await this.moodLogEmbeddingModel.create({
+      //   moodLogId: saved.id,
+      //   userId,
+      //   embedding,
+      // });
 
       return saved;
     } catch (error) {
