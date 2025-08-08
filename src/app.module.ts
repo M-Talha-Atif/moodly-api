@@ -16,11 +16,14 @@ import { BullBoardModule } from './bull-board/bull-board.module';
 import { RecommendationModule } from './recommendation/recommendation.module';
 import { DiagramModule } from './diagram/diagram.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
     DatabaseModule,
     UsersModule,
+    ScheduleModule.forRoot(),
     AuthModule,
     EmotionModule,
     ExperienceModule,
@@ -39,6 +42,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     RecommendationModule,
     DiagramModule,
     FeedbackModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

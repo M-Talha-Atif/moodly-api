@@ -1,11 +1,17 @@
 // src/feedback/feedback.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Feedback } from './entities/feedback.entity';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { User } from '../users/entities/user.entity';
 import { Experience } from '../experience/entities/experience.entity';
+import { Booking } from '../booking/entities/booking.entity';
+import { PendingFeedback } from './entities/pending-feedback.entity';
 
 @Injectable()
 export class FeedbackService {
@@ -20,41 +26,76 @@ export class FeedbackService {
   ) { }
 
   async create(dto: CreateFeedbackDto, userId: string, experienceId: string) {
-    // Verify existence
-    const [userExists, experienceExists] = await Promise.all([
-      this.userRepository.exist({ where: { id: userId } }),
-      this.experienceRepository.exist({ where: { id: experienceId } }),
-    ]);
+    // 1️⃣ Validate booking
+    const booking = await this.dataSource.getRepository(Booking).findOne({
+      where: {
+        user: { id: userId },
+        experience: { id: experienceId },
+        status: 'confirmed',
+      },
+      relations: ['experience'],
+    });
 
-    if (!userExists) throw new NotFoundException('User not found');
-    if (!experienceExists) throw new NotFoundException('Experience not found');
+    if (!booking) {
+      throw new NotFoundException(
+        'No confirmed booking found for this user and experience',
+      );
+    }
 
-    // METHOD 1: Using query runner for absolute control
+    // 2️⃣ Check session end time
+    const now = new Date();
+    if (booking.experience.sessionEndTime > now) {
+      throw new BadRequestException(
+        'You can only leave feedback after the experience has ended',
+      );
+    }
+
+    // 3️⃣ Prevent duplicate feedback
+    const alreadyLeftFeedback = await this.feedbackRepository.exist({
+      where: { userId, experienceId },
+    });
+    if (alreadyLeftFeedback) {
+      throw new BadRequestException(
+        'You have already left feedback for this experience',
+      );
+    }
+
+    // 4️⃣ Use a transaction for feedback + pending deletion
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      // Insert using exact column names
-      const result = await queryRunner.manager
+      // ➕ Insert feedback
+      const feedbackInsert = await queryRunner.manager
         .createQueryBuilder()
         .insert()
         .into(Feedback)
         .values({
           comment: dto.comment,
           rating: dto.rating,
-          userId: userId, // Explicit column value
-          experienceId: experienceId, // Explicit column value
+          userId,
+          experienceId,
         })
         .returning(['id'])
         .execute();
 
-      // Commit transaction
+      // ➖ Delete pending feedback entry for this user & experience
+      await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(PendingFeedback)
+        .where('userId = :userId AND experienceId = :experienceId', {
+          userId,
+          experienceId,
+        })
+        .execute();
+
       await queryRunner.commitTransaction();
 
-      // Return full feedback with relations
+      // Return the newly created feedback with relations
       return this.feedbackRepository.findOne({
-        where: { id: result.identifiers[0].id },
+        where: { id: feedbackInsert.identifiers[0].id },
         relations: ['user', 'experience'],
         select: {
           id: true,
@@ -72,6 +113,7 @@ export class FeedbackService {
       await queryRunner.release();
     }
   }
+
 
   async findAllForExperience(experienceId: string) {
     return this.feedbackRepository.find({

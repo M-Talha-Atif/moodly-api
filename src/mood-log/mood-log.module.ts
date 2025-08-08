@@ -11,7 +11,6 @@ import {
 } from 'src/embedding/schemas/moodlog-embedding.schema';
 import { MoodLogQueueModule } from './queues/mood-log-queue.module';
 import { RecommendationModule } from '../recommendation/recommendation.module';
-import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [

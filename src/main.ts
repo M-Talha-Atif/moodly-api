@@ -9,6 +9,7 @@ import { setupBullBoard } from './bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
 
+
 async function bootstrap() {
   const envPath = path.resolve(__dirname, '../.env');
   if (!fs.existsSync(envPath)) {
@@ -68,8 +69,11 @@ async function bootstrap() {
     connection: { host: 'localhost', port: 6379 },
   });
 
+ 
+
+
   const expressServer = express();
-  const bullBoardAdapter = setupBullBoard([moodQueue, recommendationQueue]);
+  const bullBoardAdapter = setupBullBoard([moodQueue, recommendationQueue ]);
   expressServer.use('/admin/queues', bullBoardAdapter.getRouter());
 
   // Mount Express server inside Nest app

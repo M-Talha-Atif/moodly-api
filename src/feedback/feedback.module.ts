@@ -1,16 +1,28 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Feedback } from './entities/feedback.entity';
-import { FeedbackService } from './feedback.service';
-import { FeedbackController } from './feedback.controller';
+import { PendingFeedback } from './entities/pending-feedback.entity';
 import { User } from '../users/entities/user.entity';
 import { Experience } from '../experience/entities/experience.entity';
+import { Booking } from '../booking/entities/booking.entity';
+import { FeedbackService } from './feedback.service';
+import { FeedbackController } from './feedback.controller';
+import { PendingFeedbackService } from './pending-feedback.service';
+import { FeedbackQueueModule } from './queues/feedback-queue.module';
+import { FeedbackCron } from './jobs/feedback.cron';
 
 @Module({
-  // Registers entities with TypeORM, making them available within this module's scope.
-  // This allows the FeedbackService to use these entities for database operations using their respective repositories like `feedbackRepo` and `experienceRepo`.
-  imports: [TypeOrmModule.forFeature([Feedback, Experience, User])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Feedback,
+      PendingFeedback,
+      Experience,
+      User,
+      Booking,
+    ]),
+    FeedbackQueueModule,
+  ],
   controllers: [FeedbackController],
-  providers: [FeedbackService],
+  providers: [FeedbackService, PendingFeedbackService, FeedbackCron],
 })
 export class FeedbackModule {}

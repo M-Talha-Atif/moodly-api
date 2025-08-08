@@ -21,7 +21,6 @@ import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { ExperienceResponseDto } from './dto/experience-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { ExperienceListItemDto } from './dto/experience-list-item.dto';
-import { MoodLogService } from 'src/mood-log/mood-log.service';
 import { Query } from '@nestjs/common';
 
 @Controller('experiences')
@@ -29,7 +28,6 @@ export class ExperienceController {
   constructor(
     private readonly experienceService: ExperienceService,
     private readonly userService: UsersService,
-    private readonly moodLogService: MoodLogService, // <-- ADD
   ) {}
 
   @UseGuards(JwtCookieGuard, RolesGuard)
@@ -113,22 +111,4 @@ export class ExperienceController {
     if (!exp) throw new NotFoundException('Experience not found');
     return plainToInstance(ExperienceResponseDto, exp);
   }
-
-  //   @UseGuards(JwtCookieGuard)
-  // @Get('recommendations')
-  // async recommendForUser(@Req() req: any) {
-  //   const latestMoodEmbedding =
-  //     await this.moodLogService.getLatestUserEmbedding(req.user.sub);
-  //   if (!latestMoodEmbedding)
-  //     throw new NotFoundException('No mood embedding found for user');
-
-  //   const recommendations = await this.recommendationsService.generateForUser(
-  //     req.user.sub,
-  //     latestMoodEmbedding,
-  //   );
-
-  //   return plainToInstance(ExperienceListItemDto, recommendations, {
-  //     excludeExtraneousValues: true,
-  //   });
-  // }
 }

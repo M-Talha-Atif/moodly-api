@@ -9,6 +9,8 @@ import {
   ExperienceEmbedding,
   ExperienceEmbeddingSchema,
 } from 'src/embedding/schemas/experience-embedding.schema';
+import { ExperienceController } from './experience.controller';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -17,31 +19,10 @@ import {
     MongooseModule.forFeature([
       { name: ExperienceEmbedding.name, schema: ExperienceEmbeddingSchema },
     ]),
+    UsersModule,
   ],
+  controllers: [ExperienceController],
   providers: [ExperienceService, ExperienceRecommendationService],
   exports: [ExperienceService, ExperienceRecommendationService],
 })
 export class ExperienceModule {}
-
-// import { Module } from '@nestjs/common';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { ExperienceController } from './experience.controller';
-// import { ExperienceService } from './experience.service';
-// import { Experience } from './entities/experience.entity';
-// import { UsersModule } from 'src/users/users.module';
-// import { EmbeddingModule } from 'src/embedding/embedding.module';
-// import { MoodLogModule } from 'src/mood-log/mood-log.module';
-// import { RecommendationModule } from 'src/recommendation/recommendation.module';
-// @Module({
-//   imports: [
-//     TypeOrmModule.forFeature([Experience]),
-//     UsersModule,
-//     EmbeddingModule,
-//     MoodLogModule,
-//     RecommendationModule, // Importing to use in the controller
-//   ],
-//   controllers: [ExperienceController],
-//   providers: [ExperienceService],
-//   exports: [ExperienceService], // Exporting so it can be used in other modules
-// })
-// export class ExperienceModule {}

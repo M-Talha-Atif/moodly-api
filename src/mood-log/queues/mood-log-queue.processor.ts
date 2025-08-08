@@ -1,6 +1,6 @@
 // src/mood-log/queues/mood-log-queue.processor.ts
 import { Processor, Process } from '@nestjs/bull';
-import { Job } from 'bullmq';
+import type { Job } from 'bull';
 import { EmbeddingService } from 'src/embedding/embedding.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
