@@ -23,7 +23,7 @@ export class FeedbackService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(dto: CreateFeedbackDto, userId: string, experienceId: string) {
     // 1️⃣ Validate booking
@@ -113,7 +113,6 @@ export class FeedbackService {
       await queryRunner.release();
     }
   }
-
 
   async findAllForExperience(experienceId: string) {
     return this.feedbackRepository.find({

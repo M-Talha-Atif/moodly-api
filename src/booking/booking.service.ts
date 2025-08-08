@@ -6,7 +6,9 @@ import { Booking } from './entities/booking.entity';
 import { Experience } from '../experience/entities/experience.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { NotificationService } from '../notification/notification.service';
 import { BookingResponseDto } from './dto/booking-response.dto';
+import type { Queue } from 'bull';
 
 @Injectable()
 export class BookingService {
@@ -15,14 +17,19 @@ export class BookingService {
   constructor(
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
+
     @InjectRepository(Experience)
     private readonly experienceRepository: Repository<Experience>,
+
     private readonly dataSource: DataSource,
-  ) {}
+
+    private readonly notificationService: NotificationService,
+
+  ) { }
 
   async createBooking(
     userId: string,
-    createBookingDto: CreateBookingDto,
+    dto: CreateBookingDto,
   ): Promise<{
     success: boolean;
     data?: BookingResponseDto;
@@ -35,76 +42,87 @@ export class BookingService {
     try {
       await queryRunner.startTransaction('SERIALIZABLE');
 
-      // 1. Check if experience exists (without lock first)
-      const experienceExists = await this.experienceRepository.exist({
-        where: { id: createBookingDto.experienceId },
+      // fast existence check
+      const exists = await this.experienceRepository.exist({
+        where: { id: dto.experienceId },
       });
-
-      if (!experienceExists) {
-        return {
-          success: false,
-          message: 'Experience not found',
-          errorType: 'NOT_FOUND',
-        };
+      if (!exists) {
+        return { success: false, message: 'Experience not found', errorType: 'NOT_FOUND' };
       }
 
-      // 2. Get experience with lock
+      // lock experience row
       const experience = await queryRunner.manager.findOne(Experience, {
-        where: { id: createBookingDto.experienceId },
+        where: { id: dto.experienceId },
         lock: { mode: 'pessimistic_write' },
       });
-
       if (!experience) {
-        return {
-          success: false,
-          message: 'Experience not found',
-          errorType: 'EXPERIENCE_NOT_FOUND',
-        };
+        return { success: false, message: 'Experience not found', errorType: 'EXPERIENCE_NOT_FOUND' };
       }
 
-      // 3. Check availability
-      if (experience.spotsFilled >= experience.totalSpots) {
-        return {
-          success: false,
-          message: 'No available spots for this experience',
-          errorType: 'NO_AVAILABILITY',
-        };
-      }
-
-      // 4. Check if user already booked this experience
+      // find any existing booking for this user+experience (latest)
       const existingBooking = await queryRunner.manager.findOne(Booking, {
-        where: {
-          user: { id: userId },
-          experience: { id: createBookingDto.experienceId },
-        },
+        where: { user: { id: userId }, experience: { id: dto.experienceId } },
+        order: { createdAt: 'DESC' },
       });
 
-      if (existingBooking) {
-        return {
-          success: false,
-          message: 'You already booked this experience',
-          errorType: 'ALREADY_BOOKED',
-        };
+      if (existingBooking?.status === 'confirmed') {
+        return { success: false, message: 'You already booked this experience', errorType: 'ALREADY_BOOKED' };
       }
 
-      // 5. Create booking
-      const booking = queryRunner.manager.create(Booking, {
-        experience,
-        user: { id: userId },
-        status: 'confirmed',
-      });
+      if (experience.spotsFilled >= experience.totalSpots) {
+        return { success: false, message: 'No available spots', errorType: 'NO_AVAILABILITY' };
+      }
 
-      // 6. Update spots
-      experience.spotsFilled += 1;
+      let savedBooking: Booking;
 
-      // 7. Save changes
-      await queryRunner.manager.save(experience);
-      const savedBooking = await queryRunner.manager.save(booking);
+      if (existingBooking?.status === 'cancelled') {
+        existingBooking.status = 'confirmed';
+        existingBooking.cancelledAt = null;
+        experience.spotsFilled += 1;
+        await queryRunner.manager.save([experience, existingBooking]);
+
+        const bookingFound = await queryRunner.manager.findOne(Booking, {
+          where: { id: existingBooking.id },
+          relations: ['experience', 'user'],
+        });
+        if (!bookingFound) throw new Error('Booking not found after save');
+        savedBooking = bookingFound;
+      } else {
+        const booking = queryRunner.manager.create(Booking, {
+          experience,
+          user: { id: userId },
+          status: 'confirmed',
+        });
+        experience.spotsFilled += 1;
+        await queryRunner.manager.save(experience);
+        const bookingSaved = await queryRunner.manager.save(booking);
+
+        const bookingFound = await queryRunner.manager.findOne(Booking, {
+          where: { id: bookingSaved.id },
+          relations: ['experience', 'user'],
+        });
+        if (!bookingFound) throw new Error('Booking not found after save');
+        savedBooking = bookingFound;
+      }
+
+
+
       await queryRunner.commitTransaction();
 
-      this.logger.log(
-        `Booking created for user ${userId} on experience ${experience.id}`,
-      );
+      this.logger.log(`Booking confirmed for user ${userId} on experience ${experience.id}`);
+
+      // --- POST-COMMIT: enqueue notification job (non-blocking for DB)
+      try {
+        await this.notificationService.createAndSend({
+          userId,
+          email: savedBooking.user?.email ?? null,
+          title: 'Booking Confirmed',
+          message: `Your booking for ${experience.title} is confirmed.`,
+        });
+      } catch (notifyErr) {
+        this.logger.error(`Failed to trigger booking notification: ${notifyErr?.message ?? notifyErr}`);
+      }
+
 
       return {
         success: true,
@@ -112,16 +130,12 @@ export class BookingService {
         message: 'Booking created successfully',
       };
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      this.logger.error(
-        `Failed to create booking: ${error.message}`,
-        error.stack,
-      );
-      return {
-        success: false,
-        message: 'Failed to create booking. Please try again.',
-        errorType: 'SERVER_ERROR',
-      };
+      // only rollback if a transaction is active
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+      this.logger.error(`Failed to create booking: ${error?.message ?? error}`, error?.stack);
+      return { success: false, message: 'Failed to create booking. Please try again.', errorType: 'SERVER_ERROR' };
     } finally {
       await queryRunner.release();
     }

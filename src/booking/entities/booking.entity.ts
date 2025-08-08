@@ -34,8 +34,8 @@ export class Booking {
   @Column({ default: 'confirmed' })
   status: 'confirmed' | 'cancelled' | 'waitlisted';
 
-  @Column({ nullable: true })
-  cancelledAt: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  cancelledAt?: Date | null;
 
   @CreateDateColumn()
   createdAt: Date;

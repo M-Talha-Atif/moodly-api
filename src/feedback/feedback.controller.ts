@@ -17,11 +17,10 @@ import { PendingFeedbackService } from './pending-feedback.service';
 
 @Controller('feedback')
 export class FeedbackController {
- constructor(
-  private readonly feedbackService: FeedbackService,
-  private readonly pendingFeedbackService: PendingFeedbackService,
-) {}
-
+  constructor(
+    private readonly feedbackService: FeedbackService,
+    private readonly pendingFeedbackService: PendingFeedbackService,
+  ) {}
 
   @UseGuards(JwtCookieGuard)
   @Post(':experienceId')
