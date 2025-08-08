@@ -17,12 +17,12 @@ export class FeedbackService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
-  ) {}
+  ) { }
 
-  async create(dto: CreateFeedbackDto, user: User, experienceId: string) {
+  async create(dto: CreateFeedbackDto, userId: string, experienceId: string) {
     // Verify existence
     const [userExists, experienceExists] = await Promise.all([
-      this.userRepository.exist({ where: { id: user.id } }),
+      this.userRepository.exist({ where: { id: userId } }),
       this.experienceRepository.exist({ where: { id: experienceId } }),
     ]);
 
@@ -43,7 +43,7 @@ export class FeedbackService {
         .values({
           comment: dto.comment,
           rating: dto.rating,
-          userId: user.id, // Explicit column value
+          userId: userId, // Explicit column value
           experienceId: experienceId, // Explicit column value
         })
         .returning(['id'])

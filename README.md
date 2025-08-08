@@ -105,3 +105,8 @@ run below command to fix the pretty
 npx prettier --write .
 
 # AI-Moodler-Backend
+
+Running steps
+first run embedding service of python
+run wsl for redis
+then run the project
