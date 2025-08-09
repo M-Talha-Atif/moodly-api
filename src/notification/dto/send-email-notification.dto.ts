@@ -5,4 +5,5 @@ export class SendEmailNotificationDto {
   subject: string;
   text?: string;
   html?: string;
+  qrCodeData?: string;
 }

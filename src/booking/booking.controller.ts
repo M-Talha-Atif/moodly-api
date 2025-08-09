@@ -13,6 +13,7 @@ import {
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { JwtCookieGuard } from '../auth/jwt-cookie.guard';
+import { ERROR_CODE_MAP } from '../common/constants/error-code-map';
 
 @Controller('booking')
 export class BookingController {
@@ -33,24 +34,17 @@ export class BookingController {
         data: result.data,
       };
     }
-    console.error('Booking creation failed:', result.message);
 
-    // Define the status code mapping with proper types
-    const statusCodeMap: Record<string, number> = {
-      NOT_FOUND: HttpStatus.NOT_FOUND,
-      NO_AVAILABILITY: HttpStatus.CONFLICT,
-      SERVER_ERROR: HttpStatus.INTERNAL_SERVER_ERROR,
-    };
+    console.error('Booking creation failed:', result.reason);
 
-    // Get the status code with fallback to BAD_REQUEST
     const statusCode = result.errorType
-      ? (statusCodeMap[result.errorType] ?? HttpStatus.BAD_REQUEST)
+      ? (ERROR_CODE_MAP[result.errorType] ?? HttpStatus.BAD_REQUEST)
       : HttpStatus.BAD_REQUEST;
 
     throw new HttpException(
       {
         statusCode,
-        message: result.message,
+        message: result.reason,
       },
       statusCode,
     );
@@ -65,21 +59,8 @@ export class BookingController {
     );
 
     if (!result.success) {
-      // Define the status code mapping with type safety
-      const statusCodeMap: Record<string, number> = {
-        NOT_FOUND: HttpStatus.NOT_FOUND,
-        NOT_OWNER: HttpStatus.FORBIDDEN,
-        ALREADY_CANCELLED: HttpStatus.CONFLICT,
-        CANCELLATION_WINDOW_PASSED: HttpStatus.BAD_REQUEST,
-        EXPERIENCE_NOT_FOUND: HttpStatus.INTERNAL_SERVER_ERROR,
-        EXPERIENCE_PAST: HttpStatus.BAD_REQUEST,
-        NO_SPOTS_TO_RELEASE: HttpStatus.CONFLICT,
-        SERVER_ERROR: HttpStatus.INTERNAL_SERVER_ERROR,
-      };
-
-      // Safely get the status code with fallback
       const statusCode = result.errorType
-        ? (statusCodeMap[result.errorType] ?? HttpStatus.BAD_REQUEST)
+        ? (ERROR_CODE_MAP[result.errorType] ?? HttpStatus.BAD_REQUEST)
         : HttpStatus.BAD_REQUEST;
 
       throw new HttpException(

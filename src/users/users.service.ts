@@ -64,10 +64,28 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(
+    email: string,
+    includePassword = false,
+  ): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { email },
       relations: ['privacySettings'],
+      select: includePassword
+        ? undefined // Select all, including passwordHash
+        : [
+            'id',
+            'email',
+            'name',
+            'avatarUrl',
+            'culturalBackground',
+            'languagePreferences',
+            'communicationStyle',
+            'role',
+            'accountStatus',
+            'createdAt',
+            'updatedAt',
+          ],
     });
   }
 

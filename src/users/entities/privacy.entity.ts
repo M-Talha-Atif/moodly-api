@@ -1,5 +1,6 @@
 // src/users/entities/privacy.entity.ts
 import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { User } from './user.entity';
 
 @Entity('privacy_settings')
@@ -9,6 +10,7 @@ export class PrivacySettings {
 
   @OneToOne(() => User, (user) => user.privacySettings)
   @JoinColumn({ name: 'user_id' })
+  @Exclude() // ⛔ Prevent circular JSON serialization
   user: User;
 
   @Column({

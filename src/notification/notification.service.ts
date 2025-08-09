@@ -47,4 +47,12 @@ export class NotificationService {
 
     return notification;
   }
+
+  // Inside NotificationService
+  async sendEmail(emailDto: SendEmailNotificationDto) {
+    await this.notificationQueue.add('send', {
+      type: 'email',
+      data: emailDto,
+    });
+  }
 }

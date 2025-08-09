@@ -16,32 +16,35 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
+  async signUp(@Body() signUpDto: SignUpDto, @Res() res: Response) {
+    const result = await this.authService.signUp(signUpDto);
+    return res.status(result.statusCode).json(result);
   }
 
   @Post('login')
-  @HttpCode(HttpStatus.OK)
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { access_token } = await this.authService.login(loginDto);
+    const result = await this.authService.login(loginDto);
 
-    response.cookie('jwt', access_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    if (result.success && result.data?.access_token) {
+      response.cookie('jwt', result.data.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+    }
 
-    return { message: 'Login successful' };
+    response.status(result.statusCode);
+    return result;
   }
 
   @Post('logout')
-  @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) response: Response) {
+    const result = await this.authService.logout();
     response.clearCookie('jwt');
-    return { message: 'Logout successful' };
+    return response.status(result.statusCode).json(result);
   }
 }

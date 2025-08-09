@@ -16,40 +16,19 @@ export class NotificationProcessor {
     const { type, data } = job.data;
 
     if (type === 'email') {
-      const { email, subject, text, html } = data;
+      const { email, subject, text, html, qrCodeData } = data;
       if (!email) {
         console.warn('No recipient email, skipping email send.');
         return;
       }
 
       console.log(`Sending email to ${email}...`);
-      await this.emailService.sendMail(email, subject, text, html);
+      await this.emailService.sendMail(email, subject, text, html, qrCodeData);
     }
 
     if (type === 'push') {
       console.log(`Sending push notification to user ${data.userId}...`);
       // Push sending logic here
-    }
-  }
-
-  // new booking_confirmed handler
-  @Process('booking_confirmed')
-  async handleBookingConfirmed(job: Job) {
-    const { bookingId, userId, experienceTitle, email, title, message } =
-      job.data;
-
-    try {
-      // let the notification service persist + queue email/send push
-      await this.notificationService.createAndSend({
-        userId,
-        email, // may be null, createAndSend should gracefully handle absence
-        title,
-        message,
-      });
-    } catch (err) {
-      console.error('Failed processing booking_confirmed job', err);
-      // the job will retry according to Bull options set by enqueue (attempts/backoff)
-      throw err;
     }
   }
 }
