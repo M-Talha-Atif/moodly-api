@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EmotionalProfile } from './schemas/emotional-profile.schema';
@@ -10,6 +10,10 @@ export class EmotionService {
   ) {}
 
   async create(userId: string, data: any): Promise<EmotionalProfile> {
+    const existing = await this.findByUserId(userId);
+    if (existing) {
+      throw new BadRequestException('Emotional profile already exists');
+    }
     return this.model.create({ userId, ...data });
   }
 

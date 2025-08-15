@@ -27,18 +27,30 @@ export class ResultDto<T> {
     if (!data) return data;
 
     const removeKeys = ['passwordHash', 'password', 'secretKey'];
-    const stripFields = (obj: any) => {
+    const visited = new WeakSet();
+
+    const stripFields = (obj: any): any => {
+      if (!obj || typeof obj !== 'object') return obj;
+
+      if (visited.has(obj)) {
+        return obj; // prevent infinite recursion
+      }
+      visited.add(obj);
+
       if (Array.isArray(obj)) {
         return obj.map(stripFields);
       }
-      if (obj && typeof obj === 'object') {
-        for (const key of removeKeys) {
-          if (key in obj) delete obj[key];
-        }
-        for (const key in obj) {
+
+      for (const key of removeKeys) {
+        if (key in obj) delete obj[key];
+      }
+
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
           obj[key] = stripFields(obj[key]);
         }
       }
+
       return obj;
     };
 

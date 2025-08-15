@@ -99,6 +99,8 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 <!--  -->
 
+nest generate resource rs_name
+
 npm run start:dev for starting server
 
 run below command to fix the pretty
