@@ -3,7 +3,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EmotionService } from './emotion.service';
 import { EmotionController } from './emotion.controller';
 import { MulterModule } from '@nestjs/platform-express';
-import { EmotionDetectionService } from './emotion-detection.service';
 import { ConfigModule } from '@nestjs/config';
 
 import {
@@ -23,6 +22,6 @@ import {
     }),
   ],
   controllers: [EmotionController],
-  providers: [EmotionService, EmotionDetectionService],
+  providers: [EmotionService],
 })
 export class EmotionModule {}

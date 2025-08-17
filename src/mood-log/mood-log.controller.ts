@@ -8,8 +8,10 @@ import {
   HttpException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtCookieGuard } from 'src/auth/jwt-cookie.guard';
-import { MoodLogService } from './mood-log.service';
+import { MoodLogService } from './services/mood-log.service';
 import { CreateMoodLogDto } from './dto/create-mood-log.dto';
 
 @Controller('mood-log')
@@ -18,14 +20,25 @@ export class MoodLogController {
 
   @UseGuards(JwtCookieGuard)
   @Post()
-  async create(@Body() dto: CreateMoodLogDto, @Req() req: any) {
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'photo', maxCount: 1 },
+      { name: 'voice', maxCount: 1 },
+    ]),
+  )
+  async create(
+    @UploadedFiles()
+    files: { photo?: Express.Multer.File[]; voice?: Express.Multer.File[] },
+    @Body() body: CreateMoodLogDto,
+    @Req() req: any,
+  ) {
     try {
-      return await this.moodLogService.createForUser(req.user.sub, dto);
+      return await this.moodLogService.createForUser(req.user.sub, body, {
+        photo: files?.photo?.[0],
+        voice: files?.voice?.[0],
+      });
     } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
+      if (error instanceof HttpException) throw error;
       console.error('Unexpected error in controller:', error);
       throw new InternalServerErrorException('Failed to create mood log');
     }

@@ -1,8 +1,11 @@
+// mood-log.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MoodLog } from './entities/mood-log.entity';
-import { MoodLogService } from './mood-log.service';
+import { MoodLogService } from './services/mood-log.service';
+import { EmotionAnalysisService } from './services/emotion-analysis.service';
+import { StorageService } from './services/storage.service';
 import { MoodLogController } from './mood-log.controller';
 import { EmbeddingModule } from 'src/embedding/embedding.module';
 import {
@@ -11,6 +14,8 @@ import {
 } from 'src/embedding/schemas/moodlog-embedding.schema';
 import { MoodLogQueueModule } from './queues/mood-log-queue.module';
 import { RecommendationModule } from '../recommendation/recommendation.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { ValidationService } from './services/validation.service';
 
 @Module({
   imports: [
@@ -21,9 +26,20 @@ import { RecommendationModule } from '../recommendation/recommendation.module';
     EmbeddingModule,
     MoodLogQueueModule,
     RecommendationModule,
+    MulterModule.register({
+      dest: './uploads',
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5 MB
+      },
+    }),
   ],
   controllers: [MoodLogController],
-  providers: [MoodLogService],
+  providers: [
+    MoodLogService,
+    EmotionAnalysisService,
+    StorageService,
+    ValidationService,
+  ],
   exports: [MoodLogService],
 })
 export class MoodLogModule {}

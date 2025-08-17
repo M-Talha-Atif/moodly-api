@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { MoodLogQueueProcessor } from './mood-log-queue.processor';
 import { EmbeddingModule } from 'src/embedding/embedding.module';
-import { RecommendationModule } from 'src/recommendation/recommendation.module'; // ✅ Add this
+import { RecommendationModule } from 'src/recommendation/recommendation.module';
 
 @Module({
   imports: [

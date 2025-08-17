@@ -19,10 +19,19 @@ export class ResultDto<T> {
   @ApiProperty({ example: 'NOT_FOUND', required: false })
   errorType?: string;
 
+  /**
+   * Constructor to initialize ResultDto, partial is used to allow flexible initialization
+   * @param partial Partial object to initialize properties
+   */
+
   constructor(partial: Partial<ResultDto<T>>) {
     Object.assign(this, partial);
   }
-
+  /**
+   * Sanitizes data by removing sensitive fields
+   * @param data Data to sanitize
+   * @returns Sanitized data
+   */
   private static sanitizeData(data: any): any {
     if (!data) return data;
 
@@ -76,6 +85,13 @@ export class ResultDto<T> {
       reason,
       statusCode,
       errorType,
+    });
+  }
+
+  static okEmpty(): ResultDto<void> {
+    return new ResultDto<void>({
+      success: true,
+      statusCode: 200,
     });
   }
 }

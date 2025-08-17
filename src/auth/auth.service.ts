@@ -20,6 +20,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  /**
+   * Signs up a new user.
+   * @param signUpDto - The data transfer object containing user details for sign-up.
+   * @returns A promise that resolves to a SignUpResponseDto indicating success or failure.
+   */
   async signUp(signUpDto: SignUpDto): Promise<SignUpResponseDto> {
     const exists = await this.usersService.findByEmail(signUpDto.email);
     if (exists) {
@@ -36,6 +41,11 @@ export class AuthService {
     return SignUpResponseDto.ok(user, 'User registered successfully', 201);
   }
 
+  /**
+   * Logs in a user.
+   * @param loginDto - The data transfer object containing user credentials for login.
+   * @returns A promise that resolves to a LoginResponseDto with the access token or an error message.
+   */
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findByEmail(loginDto.email, true);
     console.log('User found:', user);
@@ -61,6 +71,10 @@ export class AuthService {
     );
   }
 
+  /**
+   * Logs out the user by clearing the authentication cookie.
+   * @returns A promise that resolves to a ResultDto indicating success.
+   */
   async logout(): Promise<ResultDto<null>> {
     return ResultDto.ok(null, 'Logout successful', 200);
   }

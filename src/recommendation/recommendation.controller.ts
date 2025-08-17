@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { RecommendationService } from './recommendation.service';
-import { MoodLogService } from 'src/mood-log/mood-log.service';
+import { MoodLogService } from 'src/mood-log/services/mood-log.service';
 import { JwtCookieGuard } from 'src/auth/jwt-cookie.guard';
 import { UserEmbeddingService } from 'src/embedding/user-embedding.service';
 @Controller('recommendations')

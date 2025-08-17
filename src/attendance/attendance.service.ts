@@ -25,7 +25,7 @@ Token verified → attendance marked as present.
 @Injectable()
 export class AttendanceService {
   private readonly jwtSecret: string;
-
+  // jwtSecret is injected from ConfigService to allow for dynamic configuration
   constructor(
     @InjectRepository(Attendance)
     private attendanceRepo: Repository<Attendance>,
@@ -41,6 +41,14 @@ export class AttendanceService {
     this.jwtSecret = secret;
   }
 
+  /**
+   * Creates an attendance record for a user booking an experience.
+   * Generates a join code and JWT token, creates a QR code, and sends it via email.
+   * @param user - The user who booked the experience
+   * @param bookingId - The ID of the booking
+   * @param experience - The experience details
+   * @returns CreateAttendanceResponseDto with success status and attendance details
+   */
   async createAttendance(
     user: any,
     bookingId: string,
@@ -88,6 +96,12 @@ export class AttendanceService {
     });
   }
 
+  /**
+   * Checks in a user based on the provided JWT token.
+   * Validates the token, checks the attendance status, and updates it to 'present'.
+   * @param token - The JWT token containing the join code
+   * @returns CheckInResponseDto with success status and attendance details or error message
+   */
   async checkIn(token: string): Promise<CheckInResponseDto> {
     let payload: any;
     try {
@@ -121,6 +135,10 @@ export class AttendanceService {
     return CheckInResponseDto.success(attendance);
   }
 
+  /**
+   * Deletes attendance records by booking ID.
+   * @param bookingId - The ID of the booking to delete attendance records for
+   */
   async deleteByBookingId(bookingId: string) {
     await this.attendanceRepo.delete({ bookingId });
   }
