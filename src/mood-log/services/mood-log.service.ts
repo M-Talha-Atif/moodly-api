@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoodLog } from '../entities/mood-log.entity';
-import { Repository, Between } from 'typeorm';
+import { Repository, Between, DeepPartial } from 'typeorm';
 import { CreateMoodLogDto } from '../dto/create-mood-log.dto';
 import { startOfDay, endOfDay } from 'date-fns';
 import { EmbeddingService } from 'src/embedding/embedding.service';
@@ -61,7 +61,8 @@ export class MoodLogService {
       if (!inputValidation.success) return inputValidation;
 
       // validate & save files
-      if (files?.photo) dto.photoPath = await this.storageService.save(files.photo, 'photo');
+      if (files?.photo)
+        dto.photoPath = await this.storageService.save(files.photo, 'photo');
       if (files?.voice) {
         dto.voicePath = await this.storageService.save(files.voice, 'voice');
         const val = this.validationService.validateVoiceFile(dto.voicePath);
@@ -72,10 +73,11 @@ export class MoodLogService {
       const mood = this.moodLogRepo.create({
         userId,
         ...dto,
-        photoEmotion: null,
-        voiceSentiment: null,
-      });
-      const saved = await this.moodLogRepo.save(mood);
+        photoEmotion: undefined,
+        voiceSentiment: undefined,
+      } as DeepPartial<MoodLog>); // 👈 cast here
+
+      const saved = await this.moodLogRepo.save(mood); // ✅ single entity
 
       // 🔥 Offload analysis to RabbitMQ (fire-and-forget)
       this.rmqClient.emit('mood.detect', {
@@ -87,25 +89,7 @@ export class MoodLogService {
         note: dto.note,
       });
 
-      // Optionally also enqueue embedding/reco; or let worker do it after analysis
       return ResultDto.ok(saved, 'Mood log created; analysis queued');
-
-      // // Save mood log
-      // const mood = this.moodLogRepo.create({ userId, ...dto });
-      // const saved = await this.moodLogRepo.save(mood);
-
-      // // Push embedding task
-      // const combinedText = `${dto.moodLabel ?? ''} ${dto.note ?? ''} ${
-      //   dto.textSentiment ?? ''
-      // } ${dto.photoEmotion ?? ''} ${dto.voiceSentiment ?? ''}`;
-
-      // await this.moodQueue.add('mood.logged', {
-      //   moodLogId: saved.id,
-      //   userId,
-      //   combinedText,
-      // });
-
-      // return ResultDto.ok(saved, 'Mood log created successfully');
     } catch (error) {
       this.logger.error('Error creating mood log:', error);
       throw new InternalServerErrorException('Failed to create mood log');

@@ -16,6 +16,7 @@ import { MoodLogQueueModule } from './queues/mood-log-queue.module';
 import { RecommendationModule } from '../recommendation/recommendation.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ValidationService } from './services/validation.service';
+import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ValidationService } from './services/validation.service';
     EmbeddingModule,
     MoodLogQueueModule,
     RecommendationModule,
+    RmqModule, // Add RMQ module here
     MulterModule.register({
       dest: './uploads',
       limits: {

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import axios, { AxiosError } from 'axios';
 import FormData from 'form-data';
 import * as fs from 'fs';
-import { ResultDto } from 'src/common/dto/result.dto';
+import { ResultDto } from '../../common/dto/result.dto';
 import { ValidationService } from './validation.service';
 import { EmotionApiResponse } from '../interfaces/emotion-api-response-interface';
 

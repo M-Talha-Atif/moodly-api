@@ -19,7 +19,7 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationModule } from './notification/notification.module';
 import { AttendanceModule } from './attendance/attendance.module';
-import { RmqModule } from '../rmq/rmq.module';
+import { RmqModule } from 'src/rmq/rmq.module';
 
 @Module({
   imports: [
