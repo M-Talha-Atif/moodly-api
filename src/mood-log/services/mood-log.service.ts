@@ -48,7 +48,7 @@ export class MoodLogService {
     const todayEnd = endOfDay(new Date());
 
     try {
-      // Prevent multiple logs in same day
+      // Check existing log
       const existingLog = await this.moodLogRepo.findOne({
         where: { userId, createdAt: Between(todayStart, todayEnd) },
       });
@@ -57,29 +57,35 @@ export class MoodLogService {
       }
 
       // Validate inputs
-      const inputValidation = this.validationService.validateInputs(dto);
+      const inputValidation = this.validationService.validateInputs(dto, files);
       if (!inputValidation.success) return inputValidation;
 
-      // validate & save files
-      if (files?.photo)
+      // Validate and save files
+      if (files?.photo) {
         dto.photoPath = await this.storageService.save(files.photo, 'photo');
-      if (files?.voice) {
-        dto.voicePath = await this.storageService.save(files.voice, 'voice');
-        const val = this.validationService.validateVoiceFile(dto.voicePath);
-        if (!val.success) return val;
       }
 
-      // Save mood log immediately (mark analysis pending)
+      if (files?.voice) {
+        // Validate BEFORE saving
+        const voiceValidation = this.validationService.validateVoiceFile(
+          files.voice,
+        );
+        if (!voiceValidation.success) return voiceValidation;
+
+        dto.voicePath = await this.storageService.save(files.voice, 'voice');
+      }
+
+      // Create and save mood log
       const mood = this.moodLogRepo.create({
         userId,
         ...dto,
         photoEmotion: undefined,
         voiceSentiment: undefined,
-      } as DeepPartial<MoodLog>); // 👈 cast here
+      });
 
-      const saved = await this.moodLogRepo.save(mood); // ✅ single entity
+      const saved = await this.moodLogRepo.save(mood);
 
-      // 🔥 Offload analysis to RabbitMQ (fire-and-forget)
+      // Queue analysis
       this.rmqClient.emit('mood.detect', {
         moodLogId: saved.id,
         userId,

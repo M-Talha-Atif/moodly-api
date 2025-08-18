@@ -34,10 +34,6 @@ export class EmotionAnalysisService {
   async analyzeVoiceEmotion(
     filePath: string,
   ): Promise<ResultDto<EmotionApiResponse>> {
-    const validation = this.validationService.validateVoiceFile(filePath);
-    if (!validation.success) {
-      return validation as ResultDto<EmotionApiResponse>;
-    }
     return this.sendForAnalysis(filePath, 'voice');
   }
 

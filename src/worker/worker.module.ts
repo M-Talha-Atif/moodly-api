@@ -10,7 +10,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { EmbeddingService } from '../embedding/embedding.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MoodLogEmbedding, MoodLogEmbeddingSchema } from '../embedding/schemas/moodlog-embedding.schema';
+import {
+  MoodLogEmbedding,
+  MoodLogEmbeddingSchema,
+} from '../embedding/schemas/moodlog-embedding.schema';
 import { BullModule } from '@nestjs/bull';
 
 @Module({
@@ -66,10 +69,6 @@ import { BullModule } from '@nestjs/bull';
   ],
 
   controllers: [WorkerConsumer, EmbeddingConsumer],
-  providers: [
-    EmotionAnalysisService,
-    ValidationService,
-    EmbeddingService,
-  ],
+  providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
 })
 export class WorkerModule {}

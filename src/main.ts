@@ -44,9 +44,9 @@ async function bootstrap() {
 
   const diagrams = diagramService.getModuleDiagrams();
 
-  console.log('Core Diagram:\n', diagrams.core);
-  console.log('Business Diagram:\n', diagrams.business);
-  console.log('Queues Diagram:\n', diagrams.queues);
+  // console.log('Core Diagram:\n', diagrams.core);
+  // console.log('Business Diagram:\n', diagrams.business);
+  // console.log('Queues Diagram:\n', diagrams.queues);
 
   // Enable CORS
   app.enableCors({
