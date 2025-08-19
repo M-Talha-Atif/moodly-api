@@ -14,8 +14,13 @@ export class ValidationService {
     dto: CreateMoodLogDto,
     files?: { photo?: Express.Multer.File; voice?: Express.Multer.File },
   ): ResultDto<void> {
+    console.log(files?.photo);
+    console.log(dto.photoPath);
+    console.log(dto.voicePath);
     const hasPhoto = !!files?.photo || !!dto.photoPath;
     const hasVoice = !!files?.voice || !!dto.voicePath;
+    console.log(hasPhoto);
+    console.log(hasVoice);
 
     if (!hasPhoto && !hasVoice) {
       return ResultDto.fail(

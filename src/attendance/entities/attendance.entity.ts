@@ -1,32 +1,31 @@
-// src/attendance/entities/attendance.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToOne,
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
-  Index,
-  RelationId,
 } from 'typeorm';
 import { Booking } from '../../booking/entities/booking.entity';
 import { User } from '../../users/entities/user.entity';
 import { Experience } from '../../experience/entities/experience.entity';
 
 @Entity()
-@Index(['bookingId', 'userId', 'experienceId'], { unique: true })
 export class Attendance {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Booking, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'bookingId' }) // optional but explicit
+  // 🔑 One-to-one back-reference
+  @OneToOne(() => Booking, (booking) => booking.attendance, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'bookingId' }) // holds FK
   booking: Booking;
 
   @Column()
   bookingId: string;
 
+  // you can keep these for query convenience
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
@@ -55,6 +54,9 @@ export class Attendance {
 
   @Column()
   joinCode: string;
+
+  @Column({ nullable: true })
+  qrCodeUrl?: string;
 
   @CreateDateColumn()
   createdAt: Date;

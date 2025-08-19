@@ -24,7 +24,7 @@ export class EmbeddingConsumer {
     private moodLogEmbeddingModel: Model<MoodLogEmbedding>,
     @InjectQueue('recommendation-queue')
     private readonly recQueue: Queue,
-  ) {}
+  ) { }
 
   @EventPattern('mood.analyzed')
   async handleMoodAnalyzed(@Payload() payload: MoodAnalyzedPayload) {
@@ -33,13 +33,15 @@ export class EmbeddingConsumer {
     const embedding = await this.embeddingService.generateEmbedding(
       payload.combinedText,
     );
+    this.logger.debug(`Input to embedding: "${payload.combinedText}"`);
+    this.logger.debug(`Output length: ${embedding?.length}`);
 
-    await this.moodLogEmbeddingModel.create({
+    const result = await this.moodLogEmbeddingModel.create({
       moodLogId: payload.moodLogId,
       userId: payload.userId,
       embedding,
     });
-
+    this.logger.log(`${result}`);
     this.logger.log(`✅ Processed embedding for moodLog ${payload.moodLogId}`);
 
     // Enqueue recommendation job

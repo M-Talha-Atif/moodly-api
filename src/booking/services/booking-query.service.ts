@@ -13,7 +13,7 @@ export class BookingQueryService {
     private readonly bookingRepository: Repository<Booking>,
     private readonly mapperService: BookingMapperService,
     private readonly filterService: BookingFilterService,
-  ) {}
+  ) { }
 
   async findAllBookings(
     page = 1,
@@ -67,5 +67,26 @@ export class BookingQueryService {
     this.filterService.applyFilters(countQuery, { userId, status, timeFilter });
 
     return countQuery.getCount();
+  }
+
+  async findBookingById(userId: string, bookingId: string) {
+    // Fetches booking detail, host details
+    const booking = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .leftJoinAndSelect('booking.experience', 'experience')
+      .leftJoinAndSelect('experience.host', 'host')
+      .leftJoinAndSelect('experience.bookings', 'otherBookings') // 👈 all bookings for same experience
+      .leftJoinAndSelect('otherBookings.user', 'user') // 👈 users of those bookings
+      .leftJoinAndSelect('otherBookings.attendance', 'attendance') // 👈 their attendance
+      .where('booking.id = :bookingId', { bookingId })
+      .andWhere('booking.userId = :userId', { userId }) // ensure only owner can fetch
+      .getOne();
+
+
+    if (!booking) {
+      return null;
+    }
+
+    return this.mapperService.toDetailDto(booking);
   }
 }

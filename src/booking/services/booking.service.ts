@@ -6,6 +6,7 @@ import { ERROR_CODE_MAP } from '../../common/constants/error-code-map';
 import { BookingCreationService } from './booking-creation.service';
 import { BookingCancellationService } from './booking-cancellation.service';
 import { BookingQueryService } from './booking-query.service';
+import { BookingDetailDto } from '../dto/booking-detail.dto';
 
 @Injectable()
 export class BookingService {
@@ -95,5 +96,38 @@ export class BookingService {
       status,
       timeFilter,
     );
+  }
+
+  async findBookingById(
+    userId: string,
+    bookingId: string,
+  ): Promise<ResultDto<BookingDetailDto>> {
+    try {
+      const detail = await this.bookingQueryService.findBookingById(
+        userId,
+        bookingId,
+      );
+
+      if (!detail) {
+        return ResultDto.fail(
+          'Booking not found',
+          ERROR_CODE_MAP.NOT_FOUND,
+          'NOT_FOUND',
+        );
+      }
+
+      return ResultDto.ok(detail, 'Booking fetched successfully');
+    } catch (error) {
+      this.logger.error(
+        `Booking detail fetch failed: ${error?.message}`,
+        error?.stack,
+      );
+
+      return ResultDto.fail(
+        'Failed to fetch booking',
+        ERROR_CODE_MAP.SERVER_ERROR,
+        'SERVER_ERROR',
+      );
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Booking } from '../entities/booking.entity';
 import { BookingResponseDto } from '../dto/booking-response.dto';
+import { BookingDetailDto } from '../dto/booking-detail.dto';
 
 @Injectable()
 export class BookingMapperService {
@@ -14,6 +15,33 @@ export class BookingMapperService {
         date: booking.experience.date,
       },
       createdAt: booking.createdAt,
+    };
+  }
+
+  toDetailDto(booking: Booking): BookingDetailDto {
+    return {
+      bookingId: booking.id,
+      experienceId: booking.experience.id,
+      title: booking.experience.title,
+      date: booking.experience.date.toISOString(),
+      time: booking.experience.date.toISOString(),
+      hostName: booking.experience.host?.name ?? 'Unknown Host',
+      location: booking.experience.location,
+      isVirtual: booking.experience.isVirtual,
+      meetingLink: booking.experience.isVirtual
+        ? booking.experience.meetingLink
+        : undefined,
+      qrCodeUrl: !booking.experience.isVirtual
+        ? booking.attendance?.qrCodeUrl
+        : undefined,
+
+      // attendees should come from experience.bookings, not booking
+      attendees: booking.experience.bookings?.map((b) => ({
+        userId: b.user?.id,
+        name: b.user?.name,
+        avatarUrl: b.user?.avatarUrl,
+        status: b.attendance?.status,
+      })) ?? [],
     };
   }
 }

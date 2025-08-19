@@ -1,7 +1,5 @@
-// src/worker/worker.module.ts
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { MoodLog } from '../mood-log/entities/mood-log.entity';
+import { DatabaseModule } from '../database/database.module'; // <-- import your shared DB module
 import { WorkerConsumer } from './worker.consumer';
 import { EmbeddingConsumer } from './embedding.consumer';
 import { EmotionAnalysisService } from '../mood-log/services/emotion-analysis.service';
@@ -15,44 +13,37 @@ import {
   MoodLogEmbeddingSchema,
 } from '../embedding/schemas/moodlog-embedding.schema';
 import { BullModule } from '@nestjs/bull';
+import { MoodLog } from '../mood-log/entities/mood-log.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
 
-    // Postgres (worker)
-    TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: 'postgres',
-        host: process.env.POSTGRES_HOST,
-        port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
-        username: process.env.POSTGRES_USER,
-        password: process.env.POSTGRES_PASSWORD,
-        database: process.env.POSTGRES_DB,
-        entities: [MoodLog],
-        synchronize: true, // turn off in prod
-      }),
-    }),
+    // Reuse central DB module
+    DatabaseModule,
+
+    // If worker needs access to certain entities
     TypeOrmModule.forFeature([MoodLog]),
 
-    // Mongo (worker)
-    MongooseModule.forRoot(process.env.MONGO_URI!),
+    // Mongo feature models
     MongooseModule.forFeature([
       { name: MoodLogEmbedding.name, schema: MoodLogEmbeddingSchema },
     ]),
 
-    // Bull (worker) — REQUIRED so @InjectQueue works here
+    // Bull queues
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379', 10),
       },
     }),
-    BullModule.registerQueue({
-      name: 'recommendation-queue',
-    }),
+    BullModule.registerQueue(
+      { name: 'mood-queue' },
+      { name: 'recommendation-queue' },
+    ),
 
-    // RMQ client (optional; used to emit follow-up events)
+    // RabbitMQ client
     ClientsModule.registerAsync([
       {
         name: 'RMQ_CLIENT',

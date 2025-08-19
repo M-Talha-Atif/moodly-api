@@ -3,12 +3,15 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
   Index,
   RelationId,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Attendance } from '../../attendance/entities/attendance.entity';
 import { Experience } from '../../experience/entities/experience.entity';
 
 @Entity()
@@ -23,13 +26,20 @@ export class Booking {
   experience: Experience;
 
   @RelationId((booking: Booking) => booking.experience)
-  experienceId: string; // 👈 Add this
+  experienceId: string;
 
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;
 
   @RelationId((booking: Booking) => booking.user)
-  userId: string; // 👈 And this
+  userId: string;
+
+  // 🔑 One-to-one relation with Attendance
+  @OneToOne(() => Attendance, (attendance) => attendance.booking, {
+    cascade: true,
+  })
+  @JoinColumn() // 👈 required on one side of 1:1 to store FK
+  attendance: Attendance;
 
   @Column({ default: 'confirmed' })
   status: 'confirmed' | 'cancelled' | 'waitlisted';

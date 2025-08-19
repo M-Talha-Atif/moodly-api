@@ -160,4 +160,27 @@ export class BookingController {
       );
     }
   }
+
+  @UseGuards(JwtCookieGuard)
+  @Get(':id')
+  async getBookingDetail(@Param('id') bookingId: string, @Req() req: any) {
+    const result = await this.bookingService.findBookingById(
+      req.user.sub,
+      bookingId,
+    );
+
+    if (!result.success) {
+      throw new HttpException(
+        {
+          success: false,
+          statusCode: result.statusCode,
+          reason: result.reason,
+          errorType: result.errorType,
+        },
+        result.statusCode,
+      );
+    }
+
+    return ResultDto.ok(result.data, 'Booking detail fetched successfully');
+  }
 }

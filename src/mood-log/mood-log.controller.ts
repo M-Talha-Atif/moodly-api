@@ -33,6 +33,8 @@ export class MoodLogController {
     @Req() req: any,
   ) {
     try {
+      console.log(files);
+      console.log(body);
       return await this.moodLogService.createForUser(req.user.sub, body, {
         photo: files?.photo?.[0],
         voice: files?.voice?.[0],

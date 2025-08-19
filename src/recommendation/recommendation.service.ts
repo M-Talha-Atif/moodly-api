@@ -21,6 +21,8 @@ export class RecommendationService {
       return cached;
     }
 
+    console.log(`Embeddings: ${embedding.toLocaleString()}`);
+
     const recommendations =
       await this.experienceRecommendationService.recommend(embedding, 10);
 
