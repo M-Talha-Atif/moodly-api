@@ -40,6 +40,15 @@ export class ExperienceResponseDto {
   sessionEndTime: Date;
 
   @Expose()
+  isBooked: boolean;
+
+  @Expose()
+  bookingId?: string;
+
+  @Expose()
+  bookingStatus?: string;
+
+  @Expose()
   price: number;
 
   @Expose()

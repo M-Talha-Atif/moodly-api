@@ -14,7 +14,7 @@ export class FeedbackCron {
     @InjectQueue('feedback-request') private readonly queue: Queue,
   ) {}
 
-  @Cron('0 */10 * * * *') // every 5 min
+  @Cron('0 */1 * * * *') // every 5 min
   async enqueueEndedExperiences() {
     const now = new Date(); // fetch current time
 

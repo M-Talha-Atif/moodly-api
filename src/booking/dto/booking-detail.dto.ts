@@ -15,7 +15,6 @@ export class AttendeeDto {
   status?: 'pending' | 'present' | 'absent';
 }
 
-
 export class BookingDetailDto {
   @ApiProperty()
   bookingId: string;

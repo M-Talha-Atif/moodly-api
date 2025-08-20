@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { HttpException } from '@nestjs/common';
 
 export class ResultDto<T> {
   @ApiProperty({ example: true })
@@ -80,12 +81,22 @@ export class ResultDto<T> {
     statusCode = 400,
     errorType?: string,
   ): ResultDto<T> {
-    return new ResultDto<T>({
+    const result = new ResultDto<T>({
       success: false,
       reason,
       statusCode,
       errorType,
     });
+
+    // If this bubbles up to a NestJS controller,
+    // throw HttpException so HTTP status aligns.
+    // Elsewhere (e.g., services), you can still use the object.
+    if (process.env.NODE_ENV !== 'test') {
+      // Important: don't break unit tests or background jobs
+      throw new HttpException(result, statusCode);
+    }
+
+    return result;
   }
 
   static okEmpty(): ResultDto<void> {

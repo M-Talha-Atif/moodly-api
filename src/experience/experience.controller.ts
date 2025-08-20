@@ -5,11 +5,9 @@ import {
   UseGuards,
   Req,
   Get,
-  NotFoundException,
   Param,
   Put,
   Delete,
-  ForbiddenException,
 } from '@nestjs/common';
 import { ExperienceService } from './experience.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
@@ -21,8 +19,10 @@ import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { ExperienceResponseDto } from './dto/experience-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { ExperienceListItemDto } from './dto/experience-list-item.dto';
+import { ResultDto } from 'src/common/dto/result.dto';
 import { Query } from '@nestjs/common';
 
+// experiences.controller.ts
 @Controller('experiences')
 export class ExperienceController {
   constructor(
@@ -30,14 +30,21 @@ export class ExperienceController {
     private readonly userService: UsersService,
   ) {}
 
+  // =============== Host CRUD =================
+
   @UseGuards(JwtCookieGuard, RolesGuard)
   @Roles('host')
   @Post()
   async create(@Body() dto: CreateExperienceDto, @Req() req: any) {
     const user = await this.userService.findById(req.user.sub);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) return ResultDto.fail('User not found', 404);
+
     const experience = await this.experienceService.create(dto, user);
-    return plainToInstance(ExperienceResponseDto, experience);
+    return ResultDto.ok(
+      plainToInstance(ExperienceResponseDto, experience),
+      'Experience created successfully',
+      201,
+    );
   }
 
   @UseGuards(JwtCookieGuard, RolesGuard)
@@ -48,29 +55,35 @@ export class ExperienceController {
     @Body() dto: UpdateExperienceDto,
     @Req() req: any,
   ) {
-    const experience = await this.experienceService.findOne(id);
-    if (!experience) throw new NotFoundException('Experience not found');
-    if (experience.host.id !== req.user.sub)
-      throw new ForbiddenException('Unauthorized');
+    const exp = await this.experienceService.findOne(id);
+    if (!exp) return ResultDto.fail('Experience not found', 404);
+    if (exp.host.id !== req.user.sub)
+      return ResultDto.fail('Unauthorized', 403);
+
     const updated = await this.experienceService.update(id, dto);
-    return plainToInstance(ExperienceResponseDto, updated);
+    return ResultDto.ok(
+      plainToInstance(ExperienceResponseDto, updated),
+      'Experience updated successfully',
+    );
   }
 
   @UseGuards(JwtCookieGuard, RolesGuard)
   @Roles('host')
   @Delete(':id')
   async delete(@Param('id') id: string, @Req() req: any) {
-    const experience = await this.experienceService.findOne(id);
-    if (!experience) throw new NotFoundException('Experience not found');
-    if (experience.host.id !== req.user.sub)
-      throw new ForbiddenException('Unauthorized');
+    const exp = await this.experienceService.findOne(id);
+    if (!exp) return ResultDto.fail('Experience not found', 404);
+    if (exp.host.id !== req.user.sub)
+      return ResultDto.fail('Unauthorized', 403);
+
     await this.experienceService.remove(id);
-    return { message: 'Deleted successfully' };
+    return ResultDto.okEmpty();
   }
 
-  // Public GET for listing all experiences
-  @Get()
-  async findAll(
+  // =============== Public Fetch =================
+
+  @Get('public')
+  async findAllPublic(
     @Query('page') page = '1',
     @Query('limit') limit = '10',
     @Query('cultureTags') cultureTags: string | string[],
@@ -83,7 +96,7 @@ export class ExperienceController {
       ? cultureTags
       : (cultureTags?.split(',') ?? []);
 
-    const [data, total] = await this.experienceService.findAll(
+    const [data, total] = await this.experienceService.findAllPublic(
       pageNum,
       limitNum,
       tagsArray,
@@ -91,24 +104,78 @@ export class ExperienceController {
       search,
     );
 
-    return {
-      data: plainToInstance(ExperienceListItemDto, data, {
-        excludeExtraneousValues: true,
-      }),
-      meta: {
-        total,
-        page: pageNum,
-        limit: limitNum,
-        totalPages: Math.ceil(total / limitNum),
+    return ResultDto.ok(
+      {
+        data: plainToInstance(ExperienceListItemDto, data, {
+          excludeExtraneousValues: true,
+        }),
+        meta: {
+          total,
+          page: pageNum,
+          limit: limitNum,
+          totalPages: Math.ceil(total / limitNum),
+        },
       },
-    };
+      'Public experiences fetched successfully',
+    );
   }
 
-  // Public GET for single experience, should be last
+  // =============== User Fetch (Personalized) =================
+
+  @UseGuards(JwtCookieGuard, RolesGuard)
+  @Roles('user')
+  @Get('user')
+  async findAllForUser(
+    @Req() req,
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('cultureTags') cultureTags: string | string[],
+    @Query('time') time: string,
+    @Query('search') search: string,
+  ) {
+    const userId = req.user.sub;
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const tagsArray = Array.isArray(cultureTags)
+      ? cultureTags
+      : (cultureTags?.split(',') ?? []);
+
+    const result = await this.experienceService.findAllForUser(
+      userId,
+      pageNum,
+      limitNum,
+      tagsArray,
+      time,
+      search,
+    );
+
+    return ResultDto.ok(
+      {
+        data: plainToInstance(ExperienceListItemDto, result.data, {
+          excludeExtraneousValues: true,
+        }),
+        meta: result.meta,
+      },
+      'User experiences fetched successfully',
+    );
+  }
+
+  // =============== Single Fetch =================
+
+  @UseGuards(JwtCookieGuard, RolesGuard)
+  @Roles('user')
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const exp = await this.experienceService.findOne(id);
-    if (!exp) throw new NotFoundException('Experience not found');
-    return plainToInstance(ExperienceResponseDto, exp);
+  async findOne(@Req() req, @Param('id') experienceId: string) {
+    const userId = req.user.sub;
+    const experience = await this.experienceService.findOneWithBooking(
+      experienceId,
+      userId,
+    );
+    if (!experience) return ResultDto.fail('Experience not found', 404);
+
+    return ResultDto.ok(
+      plainToInstance(ExperienceResponseDto, experience),
+      'Experience fetched successfully',
+    );
   }
 }

@@ -36,12 +36,13 @@ export class BookingMapperService {
         : undefined,
 
       // attendees should come from experience.bookings, not booking
-      attendees: booking.experience.bookings?.map((b) => ({
-        userId: b.user?.id,
-        name: b.user?.name,
-        avatarUrl: b.user?.avatarUrl,
-        status: b.attendance?.status,
-      })) ?? [],
+      attendees:
+        booking.experience.bookings?.map((b) => ({
+          userId: b.user?.id,
+          name: b.user?.name,
+          avatarUrl: b.user?.avatarUrl,
+          status: b.attendance?.status,
+        })) ?? [],
     };
   }
 }

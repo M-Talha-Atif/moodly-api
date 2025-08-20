@@ -1,6 +1,7 @@
 // src/feedback/feedback.service.ts
 import {
   Injectable,
+  Inject,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
@@ -8,25 +9,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Feedback } from './entities/feedback.entity';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
-import { User } from '../users/entities/user.entity';
-import { Experience } from '../experience/entities/experience.entity';
 import { Booking } from '../booking/entities/booking.entity';
 import { PendingFeedback } from './entities/pending-feedback.entity';
+import { ExperienceService } from '../experience/experience.service';
 
 @Injectable()
 export class FeedbackService {
   constructor(
     @InjectRepository(Feedback)
     private readonly feedbackRepository: Repository<Feedback>,
-    @InjectRepository(Experience)
-    private readonly experienceRepository: Repository<Experience>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(ExperienceService)
+    private readonly experienceService: ExperienceService,
     private dataSource: DataSource,
   ) {}
 
   async create(dto: CreateFeedbackDto, userId: string, experienceId: string) {
-    // 1️⃣ Validate booking
+    // Validate booking
     const booking = await this.dataSource.getRepository(Booking).findOne({
       where: {
         user: { id: userId },
@@ -42,7 +40,7 @@ export class FeedbackService {
       );
     }
 
-    // 2️⃣ Check session end time
+    // Check session end time
     const now = new Date();
     if (booking.experience.sessionEndTime > now) {
       throw new BadRequestException(
@@ -50,7 +48,7 @@ export class FeedbackService {
       );
     }
 
-    // 3️⃣ Prevent duplicate feedback
+    // Prevent duplicate feedback
     const alreadyLeftFeedback = await this.feedbackRepository.exist({
       where: { userId, experienceId },
     });
@@ -58,6 +56,12 @@ export class FeedbackService {
       throw new BadRequestException(
         'You have already left feedback for this experience',
       );
+    }
+
+    // FIX: properly await experience
+    const experience = await this.experienceService.findOne(experienceId);
+    if (!experience) {
+      throw new NotFoundException('Experience not found');
     }
 
     // 4️⃣ Use a transaction for feedback + pending deletion
@@ -76,6 +80,7 @@ export class FeedbackService {
           rating: dto.rating,
           userId,
           experienceId,
+          experienceTitle: experience.title,
         })
         .returning(['id'])
         .execute();

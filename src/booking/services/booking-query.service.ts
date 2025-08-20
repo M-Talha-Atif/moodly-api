@@ -13,7 +13,7 @@ export class BookingQueryService {
     private readonly bookingRepository: Repository<Booking>,
     private readonly mapperService: BookingMapperService,
     private readonly filterService: BookingFilterService,
-  ) { }
+  ) {}
 
   async findAllBookings(
     page = 1,
@@ -22,7 +22,7 @@ export class BookingQueryService {
     status?: 'confirmed' | 'cancelled' | 'waitlisted',
     timeFilter?: 'today' | 'tomorrow' | 'weekend' | 'next-week',
   ): Promise<{ data: BookingResponseDto[]; total: number }> {
-    // OPTIMIZATION: Use indexes and select only needed fields
+    // Use indexes and select only needed fields
     const query = this.bookingRepository
       .createQueryBuilder('booking')
       .select([
@@ -75,13 +75,12 @@ export class BookingQueryService {
       .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.experience', 'experience')
       .leftJoinAndSelect('experience.host', 'host')
-      .leftJoinAndSelect('experience.bookings', 'otherBookings') // 👈 all bookings for same experience
-      .leftJoinAndSelect('otherBookings.user', 'user') // 👈 users of those bookings
-      .leftJoinAndSelect('otherBookings.attendance', 'attendance') // 👈 their attendance
+      .leftJoinAndSelect('experience.bookings', 'otherBookings') // all bookings for same experience
+      .leftJoinAndSelect('otherBookings.user', 'user') // users of those bookings
+      .leftJoinAndSelect('otherBookings.attendance', 'attendance') // their attendance
       .where('booking.id = :bookingId', { bookingId })
       .andWhere('booking.userId = :userId', { userId }) // ensure only owner can fetch
       .getOne();
-
 
     if (!booking) {
       return null;

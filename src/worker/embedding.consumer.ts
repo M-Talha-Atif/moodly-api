@@ -24,7 +24,7 @@ export class EmbeddingConsumer {
     private moodLogEmbeddingModel: Model<MoodLogEmbedding>,
     @InjectQueue('recommendation-queue')
     private readonly recQueue: Queue,
-  ) { }
+  ) {}
 
   @EventPattern('mood.analyzed')
   async handleMoodAnalyzed(@Payload() payload: MoodAnalyzedPayload) {

@@ -10,6 +10,7 @@ import { FeedbackController } from './feedback.controller';
 import { PendingFeedbackService } from './pending-feedback.service';
 import { FeedbackQueueModule } from './queues/feedback-queue.module';
 import { FeedbackCron } from './jobs/feedback.cron';
+import { ExperienceModule } from '../experience/experience.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FeedbackCron } from './jobs/feedback.cron';
       Booking,
     ]),
     FeedbackQueueModule,
+    ExperienceModule,
   ],
   controllers: [FeedbackController],
   providers: [FeedbackService, PendingFeedbackService, FeedbackCron],

@@ -38,6 +38,15 @@ export class ExperienceListItemDto {
   desiredOutcomes: string[];
 
   @Expose()
+  isBooked: boolean;
+
+  @Expose()
+  bookingId?: string;
+
+  @Expose()
+  bookingStatus?: string;
+
+  @Expose()
   @Transform(({ obj }) => ({
     id: obj.host?.id,
     name: obj.host?.name,

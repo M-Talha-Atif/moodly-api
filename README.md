@@ -112,3 +112,5 @@ Running steps
 first run embedding service of python
 run wsl for redis
 then run the project
+
+npx typeorm migration:generate -n AddExperienceTitleToFeedback

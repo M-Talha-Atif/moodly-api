@@ -18,7 +18,9 @@ export class Attendance {
   id: string;
 
   // 🔑 One-to-one back-reference
-  @OneToOne(() => Booking, (booking) => booking.attendance, { onDelete: 'CASCADE' })
+  @OneToOne(() => Booking, (booking) => booking.attendance, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'bookingId' }) // holds FK
   booking: Booking;
 

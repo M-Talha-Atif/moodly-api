@@ -43,4 +43,7 @@ export class Feedback {
   })
   @JoinColumn({ name: 'experienceId' }) // This links the relation to the column
   experience: Experience;
+
+  @Column({ type: 'varchar', length: 255 })
+  experienceTitle: string;
 }
