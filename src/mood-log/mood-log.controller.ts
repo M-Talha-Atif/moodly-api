@@ -5,6 +5,7 @@ import {
   UseGuards,
   Req,
   Get,
+  Query,
   HttpException,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -55,6 +56,26 @@ export class MoodLogController {
       console.error("Error fetching today's mood log:", error);
       throw new InternalServerErrorException(
         "Failed to fetch today's mood log",
+      );
+    }
+  }
+  @UseGuards(JwtCookieGuard)
+  @Get('history')
+  async getHistory(
+    @Req() req: any,
+    @Query('limit') limit = 30,
+    @Query('page') page = 1,
+  ) {
+    try {
+      return await this.moodLogService.getHistoryForUser(
+        req.user.sub,
+        Number(limit),
+        Number(page),
+      );
+    } catch (error) {
+      console.error('Error fetching mood log history:', error);
+      throw new InternalServerErrorException(
+        'Failed to fetch mood log history',
       );
     }
   }

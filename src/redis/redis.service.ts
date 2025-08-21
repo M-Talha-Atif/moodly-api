@@ -1,4 +1,3 @@
-// src/redis/redis.service.ts
 import { Injectable } from '@nestjs/common';
 import Redis, { RedisOptions } from 'ioredis';
 

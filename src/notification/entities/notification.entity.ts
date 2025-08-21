@@ -1,4 +1,3 @@
-// src/notification/entities/notification.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -22,6 +21,9 @@ export class Notification {
 
   @Column({ default: false })
   read: boolean;
+
+  @Column({ default: 'general' }) // daily check in
+  type: string;
 
   @CreateDateColumn()
   createdAt: Date;

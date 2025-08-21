@@ -11,6 +11,7 @@ import {
 } from 'src/embedding/schemas/experience-embedding.schema';
 import { ExperienceController } from './experience.controller';
 import { UsersModule } from 'src/users/users.module';
+import { ExperienceGateway } from './experience.gateway';
 
 @Module({
   imports: [
@@ -22,7 +23,15 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule,
   ],
   controllers: [ExperienceController],
-  providers: [ExperienceService, ExperienceRecommendationService],
-  exports: [ExperienceService, ExperienceRecommendationService],
+  providers: [
+    ExperienceService,
+    ExperienceRecommendationService,
+    ExperienceGateway,
+  ],
+  exports: [
+    ExperienceService,
+    ExperienceRecommendationService,
+    ExperienceGateway,
+  ],
 })
 export class ExperienceModule {}

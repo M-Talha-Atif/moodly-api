@@ -5,9 +5,10 @@ import { BookingService } from './services/booking.service';
 import { BookingController } from './booking.controller';
 import { Booking } from './entities/booking.entity';
 import { Experience } from '../experience/entities/experience.entity';
-import { DataSource } from 'typeorm';
 import { NotificationModule } from '../notification/notification.module';
 import { AttendanceModule } from '../attendance/attendance.module';
+import { ExperienceModule } from '../experience/experience.module'; // 👈 import
+
 // Domain services
 import { BookingCreationService } from './services/booking-creation.service';
 import { BookingCancellationService } from './services/booking-cancellation.service';
@@ -23,9 +24,10 @@ import { TransactionService } from 'src/common/services/transaction.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Booking, Experience]), // Register both entities
+    TypeOrmModule.forFeature([Booking, Experience]),
     NotificationModule,
-    AttendanceModule, // Import AttendanceModule to use its services
+    AttendanceModule,
+    ExperienceModule, // 👈 import so ExperienceGateway is available
   ],
   controllers: [BookingController],
   providers: [
@@ -34,17 +36,15 @@ import { TransactionService } from 'src/common/services/transaction.service';
     BookingCreationService,
     BookingCancellationService,
     BookingQueryService,
-
     // Support services
     BookingValidationService,
     BookingSideEffectsService,
     BookingMapperService,
     BookingFilterService,
     BookingErrorHandler,
-
     // Common services
     TransactionService,
   ],
-  exports: [BookingService], // If you need to use it in other modules
+  exports: [BookingService],
 })
 export class BookingModule {}

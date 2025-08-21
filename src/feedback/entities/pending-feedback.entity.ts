@@ -1,12 +1,17 @@
-import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn} from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Experience } from '../../experience/entities/experience.entity';
 
 @Entity('pending_feedback')
 export class PendingFeedback {
-
   @PrimaryGeneratedColumn('uuid')
-  id: string; 
+  id: string;
 
   @Column('uuid', { primary: true })
   userId: string;

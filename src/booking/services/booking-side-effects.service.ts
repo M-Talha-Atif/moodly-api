@@ -28,6 +28,7 @@ export class BookingSideEffectsService {
       userId,
       email: user?.email ?? null,
       title: 'Booking Cancelled',
+      type: 'booking_cancel',
       message: `Your booking for ${experience.title} has been cancelled.`,
     });
   }
@@ -48,6 +49,7 @@ export class BookingSideEffectsService {
       userId,
       email: booking.user?.email ?? null,
       title: 'Booking Confirmed',
+      type: 'booking_confirm',
       message: `Your booking for ${booking.experience.title} is confirmed.`,
     });
   }
@@ -56,6 +58,7 @@ export class BookingSideEffectsService {
     userId: string;
     email: string;
     title: string;
+    type: string;
     message: string;
   }): void {
     this.notificationService

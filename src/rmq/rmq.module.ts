@@ -11,6 +11,13 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           transport: Transport.RMQ,
           options: {
             urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+
+            // Exchange config
+            exchange: process.env.RABBITMQ_EXCHANGE || 'mood-exchange',
+            exchangeType: 'direct', // direct | topic | fanout | headers
+            routingKey: process.env.RABBITMQ_ROUTING_KEY || 'mood.detect',
+
+            // Queue config
             queue: process.env.RABBITMQ_QUEUE || 'mood-tasks',
             queueOptions: { durable: true },
           },
@@ -18,6 +25,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
   ],
-  exports: [ClientsModule], // 👈 make RMQ_CLIENT available to other modules
+  exports: [ClientsModule],
 })
 export class RmqModule {}

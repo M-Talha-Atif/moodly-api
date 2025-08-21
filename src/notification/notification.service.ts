@@ -1,5 +1,5 @@
 // src/notification/notification.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
@@ -54,5 +54,53 @@ export class NotificationService {
       type: 'email',
       data: emailDto,
     });
+  }
+
+  async getUserNotifications(
+    userId: string,
+    filters: { type?: string; read?: boolean },
+  ) {
+    const qb = this.notificationRepo
+      .createQueryBuilder('notification')
+      .where('notification.userId = :userId', { userId });
+
+    if (filters.type) {
+      qb.andWhere('notification.type = :type', { type: filters.type });
+    }
+
+    if (typeof filters.read === 'boolean') {
+      qb.andWhere('notification.read = :read', { read: filters.read });
+    }
+
+    qb.orderBy('notification.createdAt', 'DESC');
+
+    const notifications = await qb.getMany();
+
+    // Format for UI (group by date, map to consistent structure)
+    return notifications.map((n) => ({
+      id: n.id,
+      title: n.title,
+      message: n.message,
+      read: n.read,
+      type: (n as any).type ?? 'general',
+      timestamp: n.createdAt, // frontend can pretty-format "2d ago"
+    }));
+  }
+
+  async markAsRead(id: string, userId: string) {
+    const notification = await this.notificationRepo.findOne({
+      where: { id, userId },
+    });
+    if (!notification) {
+      throw new HttpException('Notification not found', 404);
+    }
+    notification.read = true;
+    await this.notificationRepo.save(notification);
+    return { id: notification.id, read: true };
+  }
+
+  async markAllAsRead(userId: string) {
+    await this.notificationRepo.update({ userId }, { read: true });
+    return { userId, read: true };
   }
 }

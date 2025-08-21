@@ -17,7 +17,7 @@ export class PendingFeedbackService {
 
     @Inject(ExperienceService)
     private readonly experienceService: ExperienceService,
-  ) { }
+  ) {}
 
   private readonly logger = new Logger(PendingFeedbackService.name);
 
@@ -67,7 +67,6 @@ export class PendingFeedbackService {
   async deleteById(userId: string, pendingId: string) {
     return this.pendingRepo.delete({ id: pendingId, userId });
   }
-
 
   // 🧹 Clean up stale pending feedbacks (cron-safe)
   async cleanupStaleForUser(userId: string) {

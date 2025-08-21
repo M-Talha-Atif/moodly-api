@@ -22,6 +22,7 @@ export class BookingQueryService {
     status?: 'confirmed' | 'cancelled' | 'waitlisted',
     timeFilter?: 'today' | 'tomorrow' | 'weekend' | 'next-week',
   ): Promise<{ data: BookingResponseDto[]; total: number }> {
+    console.log(status);
     // Use indexes and select only needed fields
     const query = this.bookingRepository
       .createQueryBuilder('booking')

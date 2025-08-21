@@ -5,7 +5,6 @@ import { EmbeddingConsumer } from './embedding.consumer';
 import { EmotionAnalysisService } from '../mood-log/services/emotion-analysis.service';
 import { ValidationService } from '../mood-log/services/validation.service';
 import { ConfigModule } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { EmbeddingService } from '../embedding/embedding.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
@@ -15,6 +14,7 @@ import {
 import { BullModule } from '@nestjs/bull';
 import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RmqModule } from 'src/rmq/rmq.module';
 
 @Module({
   imports: [
@@ -43,20 +43,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       { name: 'recommendation-queue' },
     ),
 
-    // RabbitMQ client
-    ClientsModule.registerAsync([
-      {
-        name: 'RMQ_CLIENT',
-        useFactory: () => ({
-          transport: Transport.RMQ,
-          options: {
-            urls: [process.env.RABBITMQ_URL!],
-            queue: process.env.RABBITMQ_QUEUE || 'mood-tasks',
-            queueOptions: { durable: true },
-          },
-        }),
-      },
-    ]),
+    // RabbitMQ client, works for consumer
+    RmqModule,
   ],
 
   controllers: [WorkerConsumer, EmbeddingConsumer],

@@ -16,6 +16,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
+import { ExperienceGateway } from 'src/experience/experience.gateway';
 
 @Injectable()
 export class BookingCreationService {
@@ -24,6 +25,7 @@ export class BookingCreationService {
   constructor(
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
+    private readonly gateway: ExperienceGateway,
     @InjectRepository(Experience)
     private readonly experienceRepository: Repository<Experience>,
     private readonly transactionService: TransactionService,
@@ -61,6 +63,10 @@ export class BookingCreationService {
       savedBooking,
       userId,
     );
+
+    const spotsLeft =
+      savedBooking.experience.totalSpots - savedBooking.experience.spotsFilled;
+    this.gateway.emitSpotsUpdate(savedBooking.experience.id, spotsLeft);
 
     return ResultDto.ok(
       this.mapperService.toResponseDto(savedBooking),

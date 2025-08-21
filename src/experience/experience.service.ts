@@ -92,9 +92,12 @@ export class ExperienceService {
     let qb = this.experienceRepo
       .createQueryBuilder('experience')
       .leftJoinAndSelect('experience.host', 'host')
-      .leftJoin('experience.bookings', 'booking', 'booking.userId = :userId', {
-        userId,
-      })
+      .leftJoin(
+        'experience.bookings',
+        'booking',
+        `booking.userId = :userId AND booking.status != 'cancelled'`, // 👈 ignore cancelled
+        { userId },
+      )
       .orderBy('experience.createdAt', 'DESC');
 
     // Apply filters

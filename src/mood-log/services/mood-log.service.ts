@@ -122,4 +122,31 @@ export class MoodLogService {
       throw new InternalServerErrorException('Failed to fetch mood log');
     }
   }
+
+  async getHistoryForUser(userId: string, limit = 30, page = 1) {
+    try {
+      const [logs, total] = await this.moodLogRepo.findAndCount({
+        where: { userId },
+        order: { createdAt: 'DESC' },
+        take: limit,
+        skip: (page - 1) * limit,
+      });
+
+      return ResultDto.ok(
+        {
+          data: logs,
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+        'Fetched mood log history',
+      );
+    } catch (error) {
+      this.logger.error('Error fetching mood log history:', error);
+      throw new InternalServerErrorException(
+        'Failed to fetch mood log history',
+      );
+    }
+  }
 }

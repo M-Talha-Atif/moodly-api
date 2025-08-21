@@ -11,6 +11,7 @@ import { TransactionService } from 'src/common/services/transaction.service';
 import { BookingValidationService } from 'src/booking/services/booking-validation.service';
 import { BookingSideEffectsService } from 'src/booking/services/booking-side-effects.service';
 import { AttendanceService } from '../../attendance/attendance.service';
+import { ExperienceGateway } from 'src/experience/experience.gateway';
 
 @Injectable()
 export class BookingCancellationService {
@@ -22,6 +23,7 @@ export class BookingCancellationService {
     private readonly sideEffectsService: BookingSideEffectsService,
     private readonly errorHandler: BookingErrorHandler,
     private readonly attendanceService: AttendanceService,
+    private readonly gateway: ExperienceGateway,
   ) {}
 
   async cancelBooking(
@@ -82,6 +84,8 @@ export class BookingCancellationService {
         user,
         experience,
       );
+      const spotsLeft = experience.totalSpots - experience.spotsFilled;
+      this.gateway.emitSpotsUpdate(experience.id, spotsLeft);
 
       return ResultDto.ok(
         {
