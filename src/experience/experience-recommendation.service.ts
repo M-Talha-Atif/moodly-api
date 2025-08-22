@@ -19,7 +19,8 @@ export class ExperienceRecommendationService {
   async recommend(userEmbedding: number[], limit = 10): Promise<Experience[]> {
     // Use MongoDB's vector search to find similar experiences
     if (!userEmbedding || userEmbedding.length === 0) return [];
-    // Ensure the embedding is a valid vector
+    
+    // fetching similar embeddings
     const similarEmbeddings = await this.experienceEmbeddingModel.aggregate([
       {
         $vectorSearch: {

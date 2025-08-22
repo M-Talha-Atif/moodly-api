@@ -53,7 +53,7 @@ export class WorkerConsumer {
       { photoEmotion, voiceSentiment },
     );
 
-    // 🚀 Emit follow-up event for embedding generation
+    // Emit follow-up event for embedding generation
     this.rmqClient.emit('mood.analyzed', {
       moodLogId: payload.moodLogId,
       userId: payload.userId,

@@ -35,7 +35,7 @@ export class ExperienceService {
     const saved = await this.experienceRepo.save(experience);
 
     // Generate embedding based on title + description + desired outcomes
-    const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')}`;
+    const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
     const embedding =
       await this.embeddingService.generateEmbedding(combinedText);
 
@@ -195,7 +195,7 @@ export class ExperienceService {
     Object.assign(updated, dto);
 
     // Re-generate embedding
-    const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')}`;
+    const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
     const embedding =
       await this.embeddingService.generateEmbedding(combinedText);
 
