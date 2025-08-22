@@ -64,7 +64,7 @@ export class EmotionAnalysisService {
 
       const response = await axios.post(apiUrl, formData, {
         headers: formData.getHeaders(),
-        timeout: 15000,
+        timeout: 35000,
       });
 
       return ResultDto.ok<EmotionApiResponse>(
