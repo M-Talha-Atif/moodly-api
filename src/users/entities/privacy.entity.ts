@@ -10,7 +10,7 @@ export class PrivacySettings {
 
   @OneToOne(() => User, (user) => user.privacySettings)
   @JoinColumn({ name: 'user_id' })
-  @Exclude() // ⛔ Prevent circular JSON serialization
+  @Exclude() // Prevent circular JSON serialization
   user: User;
 
   @Column({

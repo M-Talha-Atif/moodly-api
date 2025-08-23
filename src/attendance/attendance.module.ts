@@ -6,15 +6,26 @@ import { AttendanceService } from './attendance.service';
 import { AttendanceController } from './attendance.controller';
 import { NotificationModule } from '../notification/notification.module';
 
-// The AttendanceModule is responsible for managing attendance-related functionality.
-// It imports the TypeOrmModule to work with the Attendance entity and the NotificationModule
-// to handle notifications related to attendance events.
-// The AttendanceController provides endpoints for checking in users, while the AttendanceService
-// contains the business logic for processing attendance check-ins.
+/**
+ * AttendanceModule
+ *
+ * This module encapsulates all attendance-related functionality,
+ * including entity persistence, business logic, and API endpoints.
+ *
+ * Responsibilities:
+ * - Registers the Attendance entity with TypeORM.
+ * - Provides AttendanceService for handling business logic (check-ins, status updates, etc.).
+ * - Exposes AttendanceController for REST API endpoints.
+ * - Integrates with NotificationModule to send notifications
+ *   on key attendance-related events (e.g., successful check-in).
+ */
 @Module({
-  imports: [TypeOrmModule.forFeature([Attendance]), NotificationModule],
+  imports: [
+    TypeOrmModule.forFeature([Attendance]), // Registers Attendance entity repository
+    NotificationModule, // Enables attendance-related notifications
+  ],
   controllers: [AttendanceController],
   providers: [AttendanceService],
-  exports: [AttendanceService],
+  exports: [AttendanceService], // Makes AttendanceService reusable across other modules
 })
 export class AttendanceModule {}

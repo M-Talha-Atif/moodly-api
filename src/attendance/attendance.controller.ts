@@ -1,21 +1,30 @@
 // src/attendance/attendance.controller.ts
 import { AttendanceService } from './attendance.service';
-import { Controller, Post, Param, Body, Get, Query, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res } from '@nestjs/common';
 import type { Response } from 'express';
 
-// AttendanceController handles attendance-related operations
-// such as checking in users based on a token.
-// It uses the AttendanceService to perform the actual logic.
-// The checkIn method expects a token in the request body and returns a response
-// with the result of the check-in operation.
+/**
+ * Controller responsible for handling attendance-related operations.
+ * Provides endpoints for check-in actions and delegates business logic
+ * to the AttendanceService.
+ */
 @Controller('attendance')
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
-  // Endpoint to check in a user using a token
-  // Expects a POST request with a JSON body containing the token
-  // Returns a JSON response with the result of the check-in operation
-  // The response status code is set based on the result of the operation
+  /**
+   * POST /attendance/check-in
+   *
+   * Allows a user to check in using a token (e.g., QR or JWT).
+   * The token is validated by the service layer, and the attendance
+   * record is updated accordingly.
+   *
+   * @param token - Token provided in the request body for authentication/validation.
+   * @param res - Express Response object for returning structured JSON responses.
+   *
+   * @returns JSON response containing the result of the check-in operation,
+   *          with HTTP status code set based on success or failure.
+   */
   @Post('check-in')
   async checkIn(@Body('token') token: string, @Res() res: Response) {
     const result = await this.attendanceService.checkIn(token);
