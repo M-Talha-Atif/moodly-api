@@ -17,7 +17,7 @@ export class CheckInResponseDto extends ResultDto<Attendance> {
   /**
    * Initializes the DTO using partial data.
    * Useful for constructing flexible response objects.
-   * 
+   *
    * @param partial - Partial properties to assign to the DTO.
    */
   constructor(partial: Partial<CheckInResponseDto>) {
@@ -27,7 +27,7 @@ export class CheckInResponseDto extends ResultDto<Attendance> {
 
   /**
    * Factory method to create a successful check-in response.
-   * 
+   *
    * @param attendance - The attendance record created during check-in.
    * @returns {CheckInResponseDto} A response DTO with success state and attendance data.
    */
@@ -40,7 +40,7 @@ export class CheckInResponseDto extends ResultDto<Attendance> {
 
   /**
    * Factory method to create an error response for failed check-in attempts.
-   * 
+   *
    * @param reason - Description of the failure reason.
    * @param statusCode - Optional HTTP status code (default: 400).
    * @returns {CheckInResponseDto} A response DTO with error details.

@@ -14,6 +14,18 @@ import { SignUpResponseDto } from './dto/signup-response.dto';
 import { ResultDto } from '../common/dto/result.dto';
 
 @Injectable()
+/**
+ * AuthService
+ *
+ * Handles authentication-related operations such as:
+ * - User registration (sign-up)
+ * - User login (validates credentials and issues JWT)
+ * - User logout (clears client cookie via controller)
+ *
+ * Depends on:
+ * - UsersService: for user persistence & lookup
+ * - JwtService: for JWT token generation
+ */
 export class AuthService {
   constructor(
     private usersService: UsersService,
@@ -21,9 +33,15 @@ export class AuthService {
   ) {}
 
   /**
-   * Signs up a new user.
-   * @param signUpDto - The data transfer object containing user details for sign-up.
-   * @returns A promise that resolves to a SignUpResponseDto indicating success or failure.
+   * Registers a new user.
+   *
+   * Steps:
+   * 1. Checks if a user with the given email already exists.
+   * 2. Hashes the provided password with bcrypt.
+   * 3. Creates the user in the database with a default or provided role.
+   *
+   * @param signUpDto - DTO containing user registration details.
+   * @returns SignUpResponseDto with created user data or an error response.
    */
   async signUp(signUpDto: SignUpDto): Promise<SignUpResponseDto> {
     const exists = await this.usersService.findByEmail(signUpDto.email);
@@ -42,9 +60,16 @@ export class AuthService {
   }
 
   /**
-   * Logs in a user.
-   * @param loginDto - The data transfer object containing user credentials for login.
-   * @returns A promise that resolves to a LoginResponseDto with the access token or an error message.
+   * Authenticates a user and returns a signed JWT.
+   *
+   * Steps:
+   * 1. Fetches user by email (with password hash).
+   * 2. Verifies the provided password using bcrypt.
+   * 3. Generates a JWT payload with user id, email, and role.
+   * 4. Signs and returns the token.
+   *
+   * @param loginDto - DTO containing user login credentials.
+   * @returns LoginResponseDto with JWT access token or an error response.
    */
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findByEmail(loginDto.email, true);
@@ -72,8 +97,13 @@ export class AuthService {
   }
 
   /**
-   * Logs out the user by clearing the authentication cookie.
-   * @returns A promise that resolves to a ResultDto indicating success.
+   * Logs out the current user.
+   *
+   * Note:
+   * - Actual cookie clearing happens in the AuthController.
+   * - This method just returns a success response object.
+   *
+   * @returns ResultDto with success message and 200 status.
    */
   async logout(): Promise<ResultDto<null>> {
     return ResultDto.ok(null, 'Logout successful', 200);

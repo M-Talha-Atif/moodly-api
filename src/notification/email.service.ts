@@ -38,7 +38,7 @@ export class EmailService {
     try {
       const fromAddress = process.env.SMTP_FROM ?? 'no-reply@example.com';
 
-      let attachments: Attachment[] = []; // explicitly typed
+      const attachments: Attachment[] = []; // explicitly typed
 
       let updatedHtml = html;
       if (qrCodeData) {

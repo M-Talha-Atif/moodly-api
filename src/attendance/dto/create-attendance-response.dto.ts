@@ -25,7 +25,7 @@ export class CreateAttendanceResponseDto extends ResultDto<{
 
   /**
    * Initializes the DTO using partial data.
-   * 
+   *
    * @param partial - Partial properties to assign to the DTO.
    */
   constructor(partial: Partial<CreateAttendanceResponseDto>) {
