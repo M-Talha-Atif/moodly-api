@@ -1,46 +1,49 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { HttpException } from '@nestjs/common';
 
+/**
+ * Generic Result Data Transfer Object (DTO)
+ * Used to standardize API responses across the application.
+ * Supports both success and failure responses.
+ */
 export class ResultDto<T> {
   @ApiProperty({ example: true })
-  success: boolean;
+  success: boolean; // Indicates if the operation was successful or not
 
   @ApiProperty({ example: 200 })
-  statusCode: number;
+  statusCode: number; // HTTP status code (e.g., 200, 400, 404, etc.)
 
   @ApiProperty({ example: 'Operation completed successfully', required: false })
-  message?: string;
+  message?: string; // Optional success message
 
   @ApiProperty({ example: 'Some error occurred', required: false })
-  reason?: string;
+  reason?: string; // Optional error message explaining the failure
 
   @ApiProperty({ required: false })
-  data?: T;
+  data?: T; // Generic response data (could be entity, array, etc.)
 
   @ApiProperty({ example: 'NOT_FOUND', required: false })
-  errorType?: string;
-
-  /**
-   * Constructor to initialize ResultDto, partial is used to allow flexible initialization
-   * @param partial Partial object to initialize properties
-   */
+  errorType?: string; // Optional machine-readable error type identifier
 
   constructor(partial: Partial<ResultDto<T>>) {
     Object.assign(this, partial);
   }
+
   /**
-   * Sanitizes data by removing sensitive fields
-   * @param data Data to sanitize
-   * @returns Sanitized data
+   * Removes sensitive fields from the response object.
+   * Prevents leaking credentials or secrets in API responses.
+   *
+   * @param data - Data object to sanitize
+   * @returns Sanitized data object
    */
-  private static sanitizeData(data: any): any {
-    if (!data) return data;
+  private static sanitizeData<TData>(data: TData): TData {
+    if (!data || typeof data !== 'object') return data;
 
     const removeKeys = ['passwordHash', 'password', 'secretKey'];
     const visited = new WeakSet();
 
-    const stripFields = (obj: any): any => {
-      if (!obj || typeof obj !== 'object') return obj;
+    const stripFields = (obj: unknown): unknown => {
+      if (obj === null || typeof obj !== 'object') return obj;
 
       if (visited.has(obj)) {
         return obj; // prevent infinite recursion
@@ -51,20 +54,19 @@ export class ResultDto<T> {
         return obj.map(stripFields);
       }
 
-      for (const key of removeKeys) {
-        if (key in obj) delete obj[key];
-      }
-
-      for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          obj[key] = stripFields(obj[key]);
+      const result: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(
+        obj as Record<string, unknown>,
+      )) {
+        if (!removeKeys.includes(key)) {
+          result[key] = stripFields(value);
         }
       }
 
-      return obj;
+      return result;
     };
 
-    return stripFields(data);
+    return stripFields(data) as TData;
   }
 
   static ok<T>(data?: T, message?: string, statusCode = 200): ResultDto<T> {
@@ -88,11 +90,7 @@ export class ResultDto<T> {
       errorType,
     });
 
-    // If this bubbles up to a NestJS controller,
-    // throw HttpException so HTTP status aligns.
-    // Elsewhere (e.g., services), you can still use the object.
     if (process.env.NODE_ENV !== 'test') {
-      // Important: don't break unit tests or background jobs
       throw new HttpException(result, statusCode);
     }
 

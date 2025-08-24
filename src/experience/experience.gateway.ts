@@ -11,6 +11,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
+// Server --> Connection establish / disconnect
+// Subscribe to messages on a channel
 // 👇 Decorator tells NestJS to create a WebSocket server
 @WebSocketGateway({
   cors: {
