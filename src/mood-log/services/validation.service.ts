@@ -83,6 +83,7 @@ export class ValidationService {
 
       return ResultDto.okEmpty();
     } catch (error) {
+      console.log(error);
       return ResultDto.fail(
         'Error validating voice file',
         500,

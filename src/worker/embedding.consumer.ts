@@ -36,12 +36,12 @@ export class EmbeddingConsumer {
     this.logger.debug(`Input to embedding: "${payload.combinedText}"`);
     this.logger.debug(`Output length: ${embedding?.length}`);
 
-    const result = await this.moodLogEmbeddingModel.create({
+    await this.moodLogEmbeddingModel.create({
       moodLogId: payload.moodLogId,
       userId: payload.userId,
       embedding,
     });
-    this.logger.log(`${result}`);
+    // this.logger.log(`${result}`);
     this.logger.log(`✅ Processed embedding for moodLog ${payload.moodLogId}`);
 
     // Enqueue recommendation job

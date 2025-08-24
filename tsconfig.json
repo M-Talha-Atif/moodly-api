@@ -24,5 +24,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "exclude": ["dist", "eslint.config.dev.js", "eslint.config.prod.js"]
 }
