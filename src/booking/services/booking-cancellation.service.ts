@@ -1,6 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Booking } from '../entities/booking.entity';
 import { Experience } from '../../experience/entities/experience.entity';
 import { User } from '../../users/entities/user.entity';

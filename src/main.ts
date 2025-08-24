@@ -42,7 +42,7 @@ async function bootstrap() {
   const diagramService = app.get(DiagramService);
   diagramService.setApp(app);
 
-  const diagrams = diagramService.getModuleDiagrams();
+  // const diagrams = diagramService.getModuleDiagrams();
 
   // console.log('Core Diagram:\n', diagrams.core);
   // console.log('Business Diagram:\n', diagrams.business);

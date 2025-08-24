@@ -14,6 +14,6 @@ export function generateJoinToken(
   });
 }
 
-export async function generateQRCode(data: string) {
-  return await QRCode.toDataURL(data);
+export async function generateQRCode(data: string): Promise<string> {
+  return (await QRCode.toDataURL(data)) as string;
 }

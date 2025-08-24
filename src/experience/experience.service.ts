@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder, ILike } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Experience } from './entities/experience.entity';
 import { EmbeddingService } from 'src/embedding/embedding.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';

@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { ResultDto } from '../../common/dto/result.dto';
 import { User } from '../../users/entities/user.entity';
 

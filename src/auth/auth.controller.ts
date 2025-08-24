@@ -76,6 +76,7 @@ export class AuthController {
    * - Clears the JWT cookie from the client.
    * - Returns a standardized JSON response confirming logout.
    * - Always responds with HTTP 200 on success.
+   * - Kept it for future use cases
    */
   @HttpCode(HttpStatus.OK)
   @Post('logout')

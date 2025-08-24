@@ -48,7 +48,7 @@ export class RedisService {
           : undefined,
       };
     } catch (e) {
-      throw new Error(`Invalid REDIS_URL: ${url}`);
+      throw new Error(`Invalid REDIS_URL: ${url} ${e}`);
     }
   }
 

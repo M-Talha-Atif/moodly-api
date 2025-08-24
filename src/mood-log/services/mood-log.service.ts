@@ -2,12 +2,11 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoodLog } from '../entities/mood-log.entity';
-import { Repository, Between, DeepPartial } from 'typeorm';
+import { Repository, Between } from 'typeorm';
 import { CreateMoodLogDto } from '../dto/create-mood-log.dto';
 import { startOfDay, endOfDay } from 'date-fns';
 import { EmbeddingService } from 'src/embedding/embedding.service';

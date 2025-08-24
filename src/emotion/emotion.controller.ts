@@ -6,19 +6,12 @@ import {
   UseGuards,
   Put,
   Get,
-  UploadedFile,
-  UseInterceptors,
-  NotFoundException,
-  BadRequestException,
 } from '@nestjs/common';
 import { EmotionService } from './emotion.service';
 import { JwtCookieGuard } from '../auth/jwt-cookie.guard';
 import { CreateEmotionDto } from './dto/create-emotion.dto';
 import { UpdateEmotionDto } from './dto/update-emotion.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultDto } from '../common/dto/result.dto';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 
 @Controller('emotion')
 export class EmotionController {

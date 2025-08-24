@@ -3,7 +3,6 @@ import { ResultDto } from 'src/common/dto/result.dto';
 import { CreateMoodLogDto } from '../dto/create-mood-log.dto';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Express } from 'express';
 
 @Injectable()
 export class ValidationService {
