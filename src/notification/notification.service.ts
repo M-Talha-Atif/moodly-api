@@ -17,7 +17,7 @@ export class NotificationService {
     private readonly gateway: NotificationGateway,
     @InjectQueue('notification-queue')
     private readonly notificationQueue: Queue,
-  ) {}
+  ) { }
 
   async createAndSend(dto: CreateNotificationDto) {
     // 1. Save notification in DB
@@ -76,16 +76,10 @@ export class NotificationService {
 
     const notifications = await qb.getMany();
 
-    // Format for UI (group by date, map to consistent structure)
-    return notifications.map((n) => ({
-      id: n.id,
-      title: n.title,
-      message: n.message,
-      read: n.read,
-      type: (n as any).type ?? 'general',
-      timestamp: n.createdAt, // frontend can pretty-format "2d ago"
-    }));
+    // Map entities to frontend-friendly objects
+    return notifications.map(this.mapNotification);
   }
+
 
   async markAsRead(id: string, userId: string) {
     const notification = await this.notificationRepo.findOne({
@@ -103,4 +97,16 @@ export class NotificationService {
     await this.notificationRepo.update({ userId }, { read: true });
     return { userId, read: true };
   }
+
+  private mapNotification(n: Notification) {
+    return {
+      id: n.id,
+      title: n.title,
+      message: n.message,
+      read: n.read,
+      type: n.type ?? 'general',
+      createdAt: n.createdAt.toISOString(), // serialize Date to ISO string
+    };
+  }
+
 }

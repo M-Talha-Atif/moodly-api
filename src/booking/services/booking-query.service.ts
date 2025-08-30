@@ -13,7 +13,7 @@ export class BookingQueryService {
     private readonly bookingRepository: Repository<Booking>,
     private readonly mapperService: BookingMapperService,
     private readonly filterService: BookingFilterService,
-  ) {}
+  ) { }
 
   async findAllBookings(
     page = 1,
@@ -26,18 +26,13 @@ export class BookingQueryService {
     // Use indexes and select only needed fields
     const query = this.bookingRepository
       .createQueryBuilder('booking')
-      .select([
-        'booking.id',
-        'booking.status',
-        'booking.createdAt',
-        'experience.id',
-        'experience.title',
-        'experience.date',
-      ])
-      .leftJoin('booking.experience', 'experience')
+      .leftJoinAndSelect('booking.experience', 'experience')
+      .leftJoinAndSelect('experience.host', 'host') // <-- add host
+      .leftJoinAndSelect('experience.bookings', 'otherBookings') // optional for attendees
       .orderBy('booking.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
+
 
     this.filterService.applyFilters(query, { userId, status, timeFilter });
 

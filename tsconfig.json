@@ -3,7 +3,6 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
-    "esModuleInterop": true,
     "isolatedModules": true,
     "declaration": true,
     "removeComments": true,
@@ -13,9 +12,9 @@
     "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./", // root of project
+    "baseUrl": "./",
     "paths": {
-      "src/*": ["src/*"] // alias setup
+      "src/*": ["src/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -23,7 +22,9 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "exclude": ["dist", "eslint.config.dev.js", "eslint.config.prod.js"]
 }

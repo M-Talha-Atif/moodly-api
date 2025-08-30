@@ -4,7 +4,7 @@ export class BookingResponseDto {
   experience: {
     id: string;
     title: string;
-    date: Date;
+    date: string; // change from Date to string
   };
-  createdAt: Date;
+  createdAt: string; // change from Date to string
 }

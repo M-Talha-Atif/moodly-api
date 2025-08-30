@@ -1,0 +1,2 @@
+ab -n 50 -c 20 -p payload.json -T "application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMTMxNDRkZC05YTMwLTRiMjMtOGY3NC0yZmQ1ZGMxNGI5NDkiLCJlbWFpbCI6InRhbGhhYXRpZjU3M0BnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NjM4NzU2MCwiZXhwIjoxNzU2NDczOTYwfQ.mfDTTfFz6hwFWVwHIrLfFpp4UKwCklOPbQ3DEc55fJY" http://localhost:3000/bookings
+976f487a-f7de-4be4-a47a-f68881034f5d

@@ -27,6 +27,8 @@ import { MoodLogQueueModule } from './mood-log/queues/mood-log-queue.module'; //
 import { BullBoardModule } from './bull-board/bull-board.module'; // Bull Board UI for job monitoring
 import { ScheduleModule } from '@nestjs/schedule'; // Cron jobs & scheduled tasks
 
+import { ConfigModule } from '@nestjs/config';
+
 @Module({
   imports: [
     // Database and user management
@@ -35,6 +37,8 @@ import { ScheduleModule } from '@nestjs/schedule'; // Cron jobs & scheduled task
 
     // Scheduler for cron jobs & periodic tasks
     ScheduleModule.forRoot(),
+
+    ConfigModule.forRoot({ isGlobal: true }), // loads .env at app startup
 
     // Authentication & authorization
     AuthModule,

@@ -114,3 +114,7 @@ run wsl for redis
 then run the project
 
 npx typeorm migration:generate -n AddExperienceTitleToFeedback
+
+<!-- flush redis db -->
+go to wsl , type redis-cli then
+flushdb
