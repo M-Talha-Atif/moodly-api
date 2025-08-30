@@ -85,4 +85,9 @@ export class ExperienceGateway
       `📢 Broadcasted spots update for ${experienceId}: ${spotsLeft} left`,
     );
   }
+
+  // // Add this method for booking updates
+  // emitBookingUpdate(userId: string, update: any) {
+  //   this.server.to(`user_${userId}`).emit('bookingUpdate', update);
+  // }
 }

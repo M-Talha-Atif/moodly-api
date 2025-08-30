@@ -7,7 +7,7 @@ import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserRole } from '../users/entities/user.entity';
 
-// Mock bcrypt at the module level
+// Mock bcrypt
 jest.mock('bcrypt', () => ({
   hash: jest.fn(),
   compare: jest.fn(),
@@ -25,8 +25,8 @@ const mockJwtService = () => ({
 
 describe('AuthService', () => {
   let service: AuthService;
-  let usersService: jest.Mocked<UsersService>;
-  let jwtService: jest.Mocked<JwtService>;
+  let usersService: ReturnType<typeof mockUsersService>;
+  let jwtService: ReturnType<typeof mockJwtService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -46,12 +46,11 @@ describe('AuthService', () => {
 
   // ---- SIGNUP TESTS ----
   describe('signUp', () => {
-    it('should return fail response if email already exists', async () => {
+    it('should fail if email already exists', async () => {
       const dto: SignUpDto = {
         email: 'test@talha.com',
         password: 'password123',
       };
-
       usersService.findByEmail.mockResolvedValue({
         id: '1',
         email: dto.email,
@@ -60,7 +59,7 @@ describe('AuthService', () => {
       const result = await service.signUp(dto);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Email already exists'); // use reason, not message
+      expect(result.reason).toBe('Email already exists');
       expect(result.statusCode).toBe(409);
     });
 
@@ -94,22 +93,21 @@ describe('AuthService', () => {
 
   // ---- LOGIN TESTS ----
   describe('login', () => {
-    it('should return fail response if user is not found', async () => {
+    it('should fail if user not found', async () => {
       const dto: LoginDto = {
         email: 'notfound@talha.com',
         password: 'wrongpass',
       };
-
       usersService.findByEmail.mockResolvedValue(null);
 
       const result = await service.login(dto);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Invalid credentials'); // use reason
+      expect(result.reason).toBe('Invalid credentials');
       expect(result.statusCode).toBe(401);
     });
 
-    it('should return fail response if password does not match', async () => {
+    it('should fail if password does not match', async () => {
       const dto: LoginDto = { email: 'test@talha.com', password: 'wrongpass' };
       const user = { id: '1', email: dto.email, passwordHash: 'hashed' };
 
@@ -119,7 +117,7 @@ describe('AuthService', () => {
       const result = await service.login(dto);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Invalid credentials'); // use reason
+      expect(result.reason).toBe('Invalid credentials');
       expect(result.statusCode).toBe(401);
     });
 
@@ -153,11 +151,10 @@ describe('AuthService', () => {
 
   // ---- LOGOUT TESTS ----
   describe('logout', () => {
-    it('should return success response', async () => {
+    it('should return success', async () => {
       const result = await service.logout();
-
       expect(result.success).toBe(true);
-      expect(result.message).toBe('Logout successful'); // logout uses message
+      expect(result.message).toBe('Logout successful');
       expect(result.statusCode).toBe(200);
     });
   });

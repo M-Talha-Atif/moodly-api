@@ -8,9 +8,10 @@ import express from 'express';
 import { setupBullBoard } from './bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  // Load .env from project root (works in dev, prod, and tests)
+  // Load .env
   const envPath = path.resolve(process.cwd(), '.env');
   if (!fs.existsSync(envPath)) {
     console.error(`.env file not found at: ${envPath}`);
@@ -43,12 +44,6 @@ async function bootstrap() {
   const diagramService = app.get(DiagramService);
   diagramService.setApp(app);
 
-  // const diagrams = diagramService.getModuleDiagrams();
-
-  // console.log('Core Diagram:\n', diagrams.core);
-  // console.log('Business Diagram:\n', diagrams.business);
-  // console.log('Queues Diagram:\n', diagrams.queues);
-
   // Enable CORS
   app.enableCors({
     origin: 'http://localhost:5173',
@@ -59,8 +54,18 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  // === BULLMQ QUEUE + BULL BOARD SETUP ===
+  // === SWAGGER SETUP ===
+  const config = new DocumentBuilder()
+    .setTitle('My API Docs')
+    .setDescription('NestJS REST API documentation')
+    .setVersion('1.0')
+    .addBearerAuth() // if using JWT
+    .build();
 
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document);
+
+  // === BULLMQ QUEUE + BULL BOARD SETUP ===
   const moodQueue = new Queue('mood-queue', {
     connection: { host: 'localhost', port: 6379 },
   });
@@ -81,7 +86,6 @@ async function bootstrap() {
   ]);
   expressServer.use('/admin/queues', bullBoardAdapter.getRouter());
 
-  // Mount Express server inside Nest app
   app.use(expressServer);
 
   // Start server
@@ -89,6 +93,7 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`🚀 App running at http://localhost:${port}`);
+  console.log(`📖 Swagger docs available at http://localhost:${port}/api-docs`);
   console.log(
     `🔧 Bull Board available at http://localhost:${port}/admin/queues`,
   );
