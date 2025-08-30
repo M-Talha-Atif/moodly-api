@@ -4,10 +4,11 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { UserRole } from '../users/entities/user.entity';
+import { UserRole } from 'src/common/enums/user.enums';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { SignUpResponseDto } from './dto/signup-response.dto';
 import { ResultDto } from '../common/dto/result.dto';
+import { AuthProvider } from 'src/common/enums/user.enums';
 
 @Injectable()
 /**
@@ -73,6 +74,9 @@ export class AuthService {
     if (!user) {
       return LoginResponseDto.fail('Invalid credentials', 401);
     }
+    if (!user.passwordHash) {
+      return LoginResponseDto.fail('Invalid credentials', 401);
+    }
 
     const isPasswordValid = await bcrypt.compare(
       loginDto.password,
@@ -90,6 +94,35 @@ export class AuthService {
       'Login successful',
       200,
     );
+  }
+
+  // src/auth/auth.service.ts
+  /**
+   * Validate or create a Google OAuth user, then return JWT
+   */
+  async validateGoogleLogin(userInfo: {
+    email: string;
+    name?: string;
+    avatarUrl?: string;
+  }): Promise<{ access_token: string; user: any }> {
+    // Check if user already exists
+    let user = await this.usersService.findByEmail(userInfo.email);
+
+    if (!user) {
+      user = await this.usersService.create({
+        email: userInfo.email,
+        name: userInfo.name,
+        avatarUrl: userInfo.avatarUrl,
+        role: UserRole.USER,
+        provider: AuthProvider.GOOGLE, // mark OAuth provider
+      });
+    }
+
+    // JWT payload
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    const token = this.jwtService.sign(payload);
+
+    return { access_token: token, user };
   }
 
   /**

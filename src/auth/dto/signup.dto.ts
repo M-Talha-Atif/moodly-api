@@ -9,7 +9,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UserRole } from 'src/users/entities/user.entity';
+import { UserRole } from 'src/common/enums/user.enums';
 
 /**
  * DTO for user privacy settings at sign-up.

@@ -5,6 +5,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ConfigService } from '@nestjs/config';
+import { GoogleStrategy } from './strategies/google.strategy';
 /**
  * AuthModule
  *
@@ -33,7 +34,7 @@ import { ConfigService } from '@nestjs/config';
       }),
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, GoogleStrategy],
   controllers: [AuthController],
   exports: [JwtModule],
 })
