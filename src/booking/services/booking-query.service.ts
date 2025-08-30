@@ -13,7 +13,7 @@ export class BookingQueryService {
     private readonly bookingRepository: Repository<Booking>,
     private readonly mapperService: BookingMapperService,
     private readonly filterService: BookingFilterService,
-  ) { }
+  ) {}
 
   async findAllBookings(
     page = 1,
@@ -32,7 +32,6 @@ export class BookingQueryService {
       .orderBy('booking.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
-
 
     this.filterService.applyFilters(query, { userId, status, timeFilter });
 

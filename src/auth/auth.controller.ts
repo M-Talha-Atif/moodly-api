@@ -6,50 +6,30 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import type { Response } from 'express';
 
-/**
- * Controller responsible for handling user authentication.
- *
- * Exposes endpoints for:
- * - Signing up new users
- * - Logging in existing users (with JWT cookie)
- * - Logging out users (clearing cookies)
- *
- * Business logic is delegated to the AuthService.
- */
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  /**
-   * POST /auth/signup
-   *
-   * Creates a new user account.
-   * - Expects a SignUpDto payload in the request body.
-   * - Returns a standardized JSON response with success/failure.
-   * - Response status code reflects the outcome (201 on success).
-   */
   @Post('signup')
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid signup request' })
   async signUp(@Body() signUpDto: SignUpDto, @Res() res: Response) {
     const result = await this.authService.signUp(signUpDto);
     return res.status(result.statusCode).json(result);
   }
 
-  /**
-   * POST /auth/login
-   *
-   * Authenticates a user with email + password.
-   * - Expects a LoginDto payload in the request body.
-   * - On success, issues a JWT as a secure, httpOnly cookie.
-   * - Returns a standardized JSON response with login result.
-   * - Cookie is configured for 24h expiry, strict same-site,
-   *   and secure flag in production.
-   */
   @Post('login')
+  @ApiOperation({ summary: 'Login user and issue JWT cookie' })
+  @ApiResponse({ status: 200, description: 'User logged in successfully' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -69,17 +49,10 @@ export class AuthController {
     return result;
   }
 
-  /**
-   * POST /auth/logout
-   *
-   * Logs out the current user.
-   * - Clears the JWT cookie from the client.
-   * - Returns a standardized JSON response confirming logout.
-   * - Always responds with HTTP 200 on success.
-   * - Kept it for future use cases
-   */
   @HttpCode(HttpStatus.OK)
   @Post('logout')
+  @ApiOperation({ summary: 'Logout user and clear JWT cookie' })
+  @ApiResponse({ status: 200, description: 'User logged out successfully' })
   async logout(@Res({ passthrough: true }) response: Response) {
     const result = await this.authService.logout();
     response.clearCookie('jwt');

@@ -8,6 +8,7 @@ import { RecommendationController } from './recommendation.controller';
 import { RecommendationProcessor } from './queues/recommendation.processor';
 import { RecommendationQueue } from './queues/recommendation.queue';
 import { EmbeddingModule } from 'src/embedding/embedding.module';
+import { RecommendationGateway } from './recommendation.gateway';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { EmbeddingModule } from 'src/embedding/embedding.module';
     RecommendationService,
     RecommendationProcessor,
     RecommendationQueue,
+    RecommendationGateway,
   ],
   controllers: [RecommendationController],
-  exports: [RecommendationService, RecommendationQueue],
+  exports: [RecommendationService, RecommendationQueue, RecommendationGateway],
 })
 export class RecommendationModule {}

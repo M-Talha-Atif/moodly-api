@@ -21,13 +21,16 @@ import { BookingFilterService } from './services/booking-filter.service';
 import { BookingErrorHandler } from './services/booking-error-handler.service';
 // Common services
 import { TransactionService } from 'src/common/services/transaction.service';
+// infra
+import { RmqModule } from 'src/rmq/rmq.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Booking, Experience]),
     NotificationModule,
     AttendanceModule,
-    ExperienceModule, // 👈 import so ExperienceGateway is available
+    ExperienceModule,
+    RmqModule,
   ],
   controllers: [BookingController],
   providers: [

@@ -9,7 +9,7 @@ import { AuthModule } from './auth/auth.module'; // authentication & authorizati
 import { RmqModule } from 'src/rmq/rmq.module'; // RabbitMQ integration for microservices messaging
 
 // Feature-specific modules
-import { EmotionModule } from './emotion/emotion.module'; // Emotion recognition/processing logic
+import { OnboardingModule } from './onboarding/onboarding.module'; // Emotion recognition/processing logic
 import { ExperienceModule } from './experience/experience.module'; // User experiences tracking
 import { MoodLogModule } from './mood-log/mood-log.module'; // Mood logging and history
 import { EmbeddingModule } from './embedding/embedding.module'; // Vector embeddings (AI/ML features)
@@ -44,7 +44,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
 
     // Core domain-specific modules
-    EmotionModule,
+    OnboardingModule,
     ExperienceModule,
     MoodLogModule,
     EmbeddingModule,

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 export class CreateMoodLogDto {
-  @ApiProperty({ example: 'happy' })
+  @ApiProperty({ example: 'happy', description: 'Label of the detected mood' })
   @IsString()
   moodLabel: string;
 
@@ -34,10 +34,21 @@ export class CreateMoodLogDto {
   @IsString()
   voicePath?: string;
 
-  // These will be filled by EmotionDetectionService automatically
+  @ApiProperty({
+    example: 'joy',
+    required: false,
+    description: 'Emotion detected from the photo',
+  })
   @IsOptional()
+  @IsString()
   photoEmotion?: string;
 
+  @ApiProperty({
+    example: 'calm',
+    required: false,
+    description: 'Sentiment detected from the voice',
+  })
   @IsOptional()
+  @IsString()
   voiceSentiment?: string;
 }

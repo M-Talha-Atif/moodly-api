@@ -2,10 +2,14 @@
 import { Process, Processor } from '@nestjs/bull';
 import type { Job } from 'bull';
 import { RecommendationService } from '../recommendation.service';
+import { RecommendationGateway } from '../recommendation.gateway';
 
 @Processor('recommendation-queue')
 export class RecommendationProcessor {
-  constructor(private readonly recommendationService: RecommendationService) {}
+  constructor(
+    private readonly recommendationService: RecommendationService,
+    private readonly recommendationGateway: RecommendationGateway, // 👈 inject gateway
+  ) {}
 
   @Process('recommendation.generate')
   async handleGenerateRecommendation(job: Job) {
@@ -21,7 +25,11 @@ export class RecommendationProcessor {
       console.log(
         `✅ Got ${recommendations.length} recommendations for user ${userId}`,
       );
-      return recommendations;
+
+      // 🔥 Emit via socket
+      this.recommendationGateway.sendRecommendations(userId, recommendations);
+
+      return true;
     } catch (err) {
       console.error(`❌ Failed to process recommendation for ${userId}`, err);
       throw err;

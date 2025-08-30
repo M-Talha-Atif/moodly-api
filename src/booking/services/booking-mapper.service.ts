@@ -5,7 +5,6 @@ import { BookingDetailDto } from '../dto/booking-detail.dto';
 
 @Injectable()
 export class BookingMapperService {
-
   toResponseDto(booking: Booking): BookingResponseDto {
     return {
       id: booking.id,
@@ -24,8 +23,8 @@ export class BookingMapperService {
       bookingId: booking.id,
       experienceId: booking.experience.id,
       title: booking.experience.title,
-      date: booking.experience.date!.toISOString(),
-      time: booking.experience.date!.toISOString(),
+      date: booking.experience.date?.toISOString() ?? '',
+      time: booking.experience.date?.toISOString() ?? '',
       hostName: booking.experience.host?.name ?? 'Unknown Host',
       location: booking.experience.location,
       isVirtual: booking.experience.isVirtual,
@@ -37,8 +36,8 @@ export class BookingMapperService {
         : undefined,
       attendees:
         booking.experience.bookings?.map((b) => ({
-          userId: b.user?.id!,
-          name: b.user?.name!,
+          userId: b.user?.id ?? 'unknown',
+          name: b.user?.name ?? 'Unknown User',
           avatarUrl: b.user?.avatarUrl,
           status: b.attendance?.status,
         })) ?? [],

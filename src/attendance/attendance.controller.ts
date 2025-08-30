@@ -4,26 +4,25 @@ import { Controller, Post, Body, Res } from '@nestjs/common';
 import type { Response } from 'express';
 
 /**
- * Controller responsible for handling attendance-related operations.
- * Provides endpoints for check-in actions and delegates business logic
- * to the AttendanceService.
+ * Controller responsible for managing attendance-related operations.
+ * Handles incoming requests and delegates business logic to the
+ * AttendanceService.
  */
 @Controller('attendance')
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
   /**
-   * POST /attendance/check-in
+   * Handles user check-in requests.
    *
-   * Allows a user to check in using a token (e.g., QR or JWT).
-   * The token is validated by the service layer, and the attendance
-   * record is updated accordingly.
+   * Endpoint: POST /attendance/check-in
    *
-   * @param token - Token provided in the request body for authentication/validation.
-   * @param res - Express Response object for returning structured JSON responses.
+   * Validates the provided token (e.g., QR code, JWT) and updates
+   * the attendance record accordingly.
    *
-   * @returns JSON response containing the result of the check-in operation,
-   *          with HTTP status code set based on success or failure.
+   * @param token - Authentication/validation token provided in the request body.
+   * @param res - Express Response object used to return structured JSON responses.
+   * @returns JSON object with the check-in result and corresponding HTTP status code.
    */
   @Post('check-in')
   async checkIn(@Body('token') token: string, @Res() res: Response) {

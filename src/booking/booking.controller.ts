@@ -1,4 +1,3 @@
-// src/booking/booking.controller.ts
 import {
   Controller,
   Post,
@@ -10,20 +9,26 @@ import {
   Req,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { BookingService } from './services/booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { JwtCookieGuard } from '../auth/jwt-cookie.guard';
+import { JwtCookieGuard } from '../auth/guards/jwt-cookie.guard';
 import { ERROR_CODE_MAP } from '../common/constants/error-code-map';
-import { Query } from '@nestjs/common';
 import { ResultDto } from '../common/dto/result.dto';
 
+@ApiTags('Booking')
 @Controller('booking')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @UseGuards(JwtCookieGuard)
   @Post()
+  @ApiOperation({ summary: 'Create a booking for the authenticated user' })
+  @ApiResponse({ status: 201, description: 'Booking created successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid booking request' })
+  @ApiResponse({ status: 500, description: 'Unexpected server error' })
   async create(@Body() createBookingDto: CreateBookingDto, @Req() req: any) {
     try {
       const result = await this.bookingService.createBooking(
@@ -39,13 +44,10 @@ export class BookingController {
         );
       }
 
-      console.error('Booking creation failed:', result.reason);
-
       const statusCode = result.errorType
         ? (ERROR_CODE_MAP[result.errorType] ?? HttpStatus.BAD_REQUEST)
         : HttpStatus.BAD_REQUEST;
 
-      // ❌ Instead of returning a fail object → ❗ throw an HttpException
       throw new HttpException(
         {
           success: false,
@@ -56,13 +58,7 @@ export class BookingController {
         statusCode,
       );
     } catch (error) {
-      console.error('Unexpected error creating booking:', error);
-
-      // If it's already an HttpException, just rethrow so Nest handles it
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         {
           success: false,
@@ -77,6 +73,9 @@ export class BookingController {
 
   @UseGuards(JwtCookieGuard)
   @Delete(':id')
+  @ApiOperation({ summary: 'Cancel a booking by ID' })
+  @ApiResponse({ status: 200, description: 'Booking cancelled successfully' })
+  @ApiResponse({ status: 404, description: 'Booking not found' })
   async cancelBooking(@Param('id') bookingId: string, @Req() req: any) {
     try {
       const result = await this.bookingService.cancelBooking(
@@ -106,12 +105,7 @@ export class BookingController {
         HttpStatus.OK,
       );
     } catch (error) {
-      console.error('Error cancelling booking:', error);
-
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         {
           success: false,
@@ -126,6 +120,21 @@ export class BookingController {
 
   @UseGuards(JwtCookieGuard)
   @Get()
+  @ApiOperation({ summary: 'Get all bookings for the current user' })
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['confirmed', 'cancelled', 'waitlisted'],
+  })
+  @ApiQuery({
+    name: 'timeFilter',
+    required: false,
+    enum: ['today', 'tomorrow', 'weekend', 'next-week'],
+  })
+  @ApiResponse({ status: 200, description: 'Bookings fetched successfully' })
+  @ApiResponse({ status: 500, description: 'Failed to fetch bookings' })
   async findAllBookings(
     @Req() req: any,
     @Query('page') page = 1,
@@ -153,7 +162,7 @@ export class BookingController {
         'Bookings fetched successfully',
       );
     } catch (error) {
-      console.error('Failed to fetch bookings:', error);
+      console.log(error);
       return ResultDto.fail(
         'Failed to fetch bookings',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -163,6 +172,12 @@ export class BookingController {
 
   @UseGuards(JwtCookieGuard)
   @Get(':id')
+  @ApiOperation({ summary: 'Get booking detail by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Booking detail fetched successfully',
+  })
+  @ApiResponse({ status: 404, description: 'Booking not found' })
   async getBookingDetail(@Param('id') bookingId: string, @Req() req: any) {
     const result = await this.bookingService.findBookingById(
       req.user.sub,
