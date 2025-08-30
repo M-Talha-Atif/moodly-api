@@ -6,6 +6,10 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrivacySettings } from './entities/privacy.entity';
+import { AuthProvider } from 'src/common/enums/user.enums';
+import { UserRole } from 'src/common/enums/user.enums';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -20,13 +24,16 @@ export class UsersService {
     // 1. Create and save user first, without privacy settings
     const user = this.usersRepository.create({
       email: createUserDto.email,
-      passwordHash: createUserDto.passwordHash,
+      passwordHash:
+        createUserDto.passwordHash ??
+        (await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 12)),
       name: createUserDto.name,
       avatarUrl: createUserDto.avatarUrl,
       culturalBackground: createUserDto.culturalBackground,
       languagePreferences: createUserDto.languagePreferences,
       communicationStyle: createUserDto.communicationStyle,
-      role: createUserDto.role,
+      provider: createUserDto.provider ?? AuthProvider.LOCAL,
+      role: createUserDto.role ?? UserRole.USER,
     });
 
     const savedUser = await this.usersRepository.save(user);
