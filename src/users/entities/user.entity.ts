@@ -15,8 +15,8 @@ import { Feedback } from '../../feedback/entities/feedback.entity';
 
 // Enum for user roles within the system
 export enum UserRole {
-  USER = 'user',   // Standard user (default role)
-  HOST = 'host',   // Host/creator of experiences or events
+  USER = 'user', // Standard user (default role)
+  HOST = 'host', // Host/creator of experiences or events
   ADMIN = 'admin', // Platform administrator
 }
 

@@ -10,7 +10,8 @@ import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
 
 async function bootstrap() {
-  const envPath = path.resolve(__dirname, '../.env');
+  // Load .env from project root (works in dev, prod, and tests)
+  const envPath = path.resolve(process.cwd(), '.env');
   if (!fs.existsSync(envPath)) {
     console.error(`.env file not found at: ${envPath}`);
     process.exit(1);
