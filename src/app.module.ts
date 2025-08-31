@@ -1,70 +1,72 @@
+// app.module.ts
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 // Core application modules
-import { DatabaseModule } from './database/database.module'; // Database connection & ORM configuration
-import { UsersModule } from './users/users.module'; // User management (CRUD, profiles, etc.)
-import { AuthModule } from './auth/auth.module'; // authentication & authorization logic
-import { RmqModule } from 'src/rmq/rmq.module'; // RabbitMQ integration for microservices messaging
-
-// Feature-specific modules
-import { OnboardingModule } from './onboarding/onboarding.module'; // Emotion recognition/processing logic
-import { ExperienceModule } from './experience/experience.module'; // User experiences tracking
-import { MoodLogModule } from './mood-log/mood-log.module'; // Mood logging and history
-import { EmbeddingModule } from './embedding/embedding.module'; // Vector embeddings (AI/ML features)
-import { BookingModule } from './booking/booking.module'; // Booking system (sessions, appointments)
-import { RecommendationModule } from './recommendation/recommendation.module'; // AI-driven recommendations
-import { DiagramModule } from './diagram/diagram.module'; // Visual diagrams/charts for insights
-import { FeedbackModule } from './feedback/feedback.module'; // User feedback collection & processing
-import { NotificationModule } from './notification/notification.module'; // Push/email/in-app notifications
-import { AttendanceModule } from './attendance/attendance.module'; // Attendance tracking & management
-
-// Infrastructure & background job handling
-import { RedisModule } from './redis/redis.module'; // Redis cache & session storage
-import { BullModule } from '@nestjs/bull'; // Queue system (using Redis + Bull)
-import { MoodLogQueueModule } from './mood-log/queues/mood-log-queue.module'; // Queues for mood log tasks
-import { BullBoardModule } from './bull-board/bull-board.module'; // Bull Board UI for job monitoring
-import { ScheduleModule } from '@nestjs/schedule'; // Cron jobs & scheduled tasks
-
+import { DatabaseModule } from './database/database.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { RmqModule } from 'src/rmq/rmq.module';
+import { OnboardingModule } from './onboarding/onboarding.module';
+import { ExperienceModule } from './experience/experience.module';
+import { MoodLogModule } from './mood-log/mood-log.module';
+import { EmbeddingModule } from './embedding/embedding.module';
+import { BookingModule } from './booking/booking.module';
+import { RecommendationModule } from './recommendation/recommendation.module';
+import { DiagramModule } from './diagram/diagram.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { NotificationModule } from './notification/notification.module';
+import { AttendanceModule } from './attendance/attendance.module';
+import { RedisModule } from './redis/redis.module';
+import { BullModule } from '@nestjs/bull';
+import { MoodLogQueueModule } from './mood-log/queues/mood-log-queue.module';
+import { BullBoardModule } from './bull-board/bull-board.module';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
+import { CommunityModule } from './community/community.module';
+
+// ✅ Winston logger
+import { WinstonModule } from 'nest-winston';
+import { buildWinstonOptions } from './logger/winston.config';
 
 @Module({
   imports: [
+    // Winston logger (register provider globally)
+    WinstonModule.forRoot(buildWinstonOptions('api')),
+
     // Database and user management
     DatabaseModule,
     UsersModule,
 
-    // Scheduler for cron jobs & periodic tasks
+    // Scheduler for cron jobs
     ScheduleModule.forRoot(),
 
-    ConfigModule.forRoot({ isGlobal: true }), // loads .env at app startup
+    ConfigModule.forRoot({ isGlobal: true }),
 
-    // Authentication & authorization
+    // Authentication & domain-specific modules
     AuthModule,
-
-    // Core domain-specific modules
     OnboardingModule,
     ExperienceModule,
     MoodLogModule,
     EmbeddingModule,
     BookingModule,
 
-    // Infrastructure modules
+    // Infrastructure
     RedisModule,
     RmqModule,
 
-    // Background job processing with Redis & Bull
+    // Background job processing
     MoodLogQueueModule,
     BullModule.forRoot({
       redis: {
-        host: 'localhost', // Redis host (consider moving to ENV vars for production)
-        port: 6379, // Redis port
+        host: 'localhost',
+        port: 6379,
       },
     }),
     BullBoardModule,
 
-    // AI/Insights/Recommendations
+    // AI/Insights
     RecommendationModule,
     DiagramModule,
     FeedbackModule,
@@ -72,8 +74,9 @@ import { ConfigModule } from '@nestjs/config';
     // Notifications & Attendance
     NotificationModule,
     AttendanceModule,
+    CommunityModule,
   ],
-  controllers: [AppController], // Root controller (handles incoming requests)
-  providers: [AppService], // Root service (shared app-level logic)
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
