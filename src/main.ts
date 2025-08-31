@@ -3,17 +3,20 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-import 'winston-daily-rotate-file'; // for daily log rotation
+import 'winston-daily-rotate-file';
 import morgan from 'morgan';
 import * as fs from 'fs';
 import * as path from 'path';
+import cookieParser from 'cookie-parser';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { setupBullBoard } from './bull-board/bull-board';
+import { Queue } from 'bullmq';
+import { DiagramService } from './diagram/diagram.service';
 
 /**
  * --------------------------------
  * Safe stringify helper
  * --------------------------------
- * Ensures that values are logged as strings without
- * triggering ESLint `no-base-to-string` violations.
  */
 function safeToString(value: unknown, fallback = ''): string {
   if (typeof value === 'string') return value;
@@ -26,18 +29,13 @@ function safeToString(value: unknown, fallback = ''): string {
 }
 
 async function bootstrap() {
-  /**
-   * -----------------------------
-   * Setup Winston Transports
-   * -----------------------------
-   */
+  // -----------------------------
+  // Setup Winston Transports
+  // -----------------------------
   const logDir = path.join(__dirname, '..', 'logs');
-  if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir);
-  }
+  if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
 
   const transports: winston.transport[] = [
-    // Console logs (colorized + timestamp)
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
@@ -49,13 +47,10 @@ async function bootstrap() {
             ? safeToString(info.context, 'App')
             : 'App';
           const message = safeToString(info.message, '');
-
           return `${timestamp} [${context}] ${level}: ${message}`;
         }),
       ),
     }),
-
-    // Daily rotated file logs
     new winston.transports.DailyRotateFile({
       dirname: logDir,
       filename: 'app-%DATE%.log',
@@ -70,38 +65,84 @@ async function bootstrap() {
     }),
   ];
 
-  /**
-   * -----------------------------
-   * Create NestJS app with Winston logger
-   * -----------------------------
-   */
+  // -----------------------------
+  // Create Nest app with Winston logger
+  // -----------------------------
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({ transports }),
   });
 
-  /**
-   * -----------------------------
-   * Setup Morgan (HTTP request logs)
-   * -----------------------------
-   */
+  // -----------------------------
+  // CORS + Cookie parser
+  // -----------------------------
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true,
+  });
+  app.use(cookieParser());
+
+  // -----------------------------
+  // Morgan HTTP logging
+  // -----------------------------
   const accessLogStream = fs.createWriteStream(
     path.join(logDir, 'access.log'),
     { flags: 'a' },
   );
-
   app.use(morgan('combined', { stream: accessLogStream }));
   app.use(morgan('dev'));
 
-  /**
-   * -----------------------------
-   * Start Application
-   * -----------------------------
-   */
+  // -----------------------------
+  // Swagger setup
+  // -----------------------------
+  const config = new DocumentBuilder()
+    .setTitle('My API Docs')
+    .setDescription('NestJS REST API documentation')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document);
+
+  // -----------------------------
+  // Bull queues + Bull Board
+  // -----------------------------
+  const moodQueue = new Queue('mood-queue', {
+    connection: { host: 'localhost', port: 6379 },
+  });
+  const recommendationQueue = new Queue('recommendation-queue', {
+    connection: { host: 'localhost', port: 6379 },
+  });
+  const notificationQueue = new Queue('notification-queue', {
+    connection: { host: 'localhost', port: 6379 },
+  });
+  const bullBoardAdapter = setupBullBoard([
+    moodQueue,
+    recommendationQueue,
+    notificationQueue,
+  ]);
+  const expressInstance = app.getHttpAdapter().getInstance();
+  expressInstance.use('/admin/queues', bullBoardAdapter.getRouter());
+
+  // -----------------------------
+  // Diagram service setup
+  // -----------------------------
+  const diagramService = app.get(DiagramService);
+  diagramService.setApp(app);
+
+  // -----------------------------
+  // Start server
+  // -----------------------------
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
   const logger = new Logger('Bootstrap');
   logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  logger.log(`📖 Swagger docs available at: http://localhost:${port}/api-docs`);
+  logger.log(
+    `🔧 Bull Board available at: http://localhost:${port}/admin/queues`,
+  );
 }
 
 bootstrap();
