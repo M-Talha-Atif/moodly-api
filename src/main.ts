@@ -4,18 +4,32 @@ import { Logger } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file'; // for daily log rotation
-import morgan from 'morgan'; 
+import morgan from 'morgan';
 import * as fs from 'fs';
 import * as path from 'path';
+
+/**
+ * --------------------------------
+ * Safe stringify helper
+ * --------------------------------
+ * Ensures that values are logged as strings without
+ * triggering ESLint `no-base-to-string` violations.
+ */
+function safeToString(value: unknown, fallback = ''): string {
+  if (typeof value === 'string') return value;
+  if (value === null || value === undefined) return fallback;
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return fallback;
+  }
+}
 
 async function bootstrap() {
   /**
    * -----------------------------
    * Setup Winston Transports
    * -----------------------------
-   * - Console: Shows logs in terminal (colorized).
-   * - Daily Rotate File: Saves logs in /logs/app-%DATE%.log.
-   *   Keeps logs rotated daily.
    */
   const logDir = path.join(__dirname, '..', 'logs');
   if (!fs.existsSync(logDir)) {
@@ -23,23 +37,32 @@ async function bootstrap() {
   }
 
   const transports: winston.transport[] = [
+    // Console logs (colorized + timestamp)
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.timestamp(),
-        winston.format.printf(
-          ({ timestamp, level, message, context }) =>
-            `${timestamp} [${context || 'App'}] ${level}: ${message}`,
-        ),
+        winston.format.printf((info) => {
+          const timestamp = safeToString(info.timestamp, '');
+          const level = safeToString(info.level, 'info');
+          const context = info.context
+            ? safeToString(info.context, 'App')
+            : 'App';
+          const message = safeToString(info.message, '');
+
+          return `${timestamp} [${context}] ${level}: ${message}`;
+        }),
       ),
     }),
+
+    // Daily rotated file logs
     new winston.transports.DailyRotateFile({
       dirname: logDir,
       filename: 'app-%DATE%.log',
       datePattern: 'YYYY-MM-DD',
       zippedArchive: true,
       maxSize: '20m',
-      maxFiles: '14d', // keep logs for 14 days
+      maxFiles: '14d',
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.json(),
@@ -49,7 +72,7 @@ async function bootstrap() {
 
   /**
    * -----------------------------
-   * Create NestJS app with Winston Logger
+   * Create NestJS app with Winston logger
    * -----------------------------
    */
   const app = await NestFactory.create(AppModule, {
@@ -58,17 +81,16 @@ async function bootstrap() {
 
   /**
    * -----------------------------
-   * Setup Morgan (HTTP Request Logger)
+   * Setup Morgan (HTTP request logs)
    * -----------------------------
-   * - Logs all HTTP requests in "combined" format.
-   * - Writes logs into /logs/access.log file.
    */
   const accessLogStream = fs.createWriteStream(
     path.join(logDir, 'access.log'),
-    { flags: 'a' }, // append mode
+    { flags: 'a' },
   );
+
   app.use(morgan('combined', { stream: accessLogStream }));
-  app.use(morgan('dev')); // pretty logs in console
+  app.use(morgan('dev'));
 
   /**
    * -----------------------------

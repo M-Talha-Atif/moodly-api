@@ -33,7 +33,9 @@ export class CommunityQueryService {
     });
 
     return {
-      data: communities.map(CommunityMapper.toListItemDto),
+      data: communities.map((community) =>
+        CommunityMapper.toListItemDto(community),
+      ),
       total,
       page,
       limit,
