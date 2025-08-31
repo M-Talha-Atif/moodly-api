@@ -102,8 +102,6 @@ export class CommunityController {
 
   // =============== Membership Endpoints =================
 
-  // =============== Membership Endpoints =================
-
   @UseGuards(JwtCookieGuard)
   @Post(':id/join')
   async join(@Param('id') communityId: string, @Req() req: any) {
@@ -134,7 +132,7 @@ export class CommunityController {
 
     if (!success) return ResultDto.fail('Not a member of this community', 404);
 
-    return ResultDto.okEmpty(); // uses your ResultDto.okEmpty signature
+    return ResultDto.okEmpty();
   }
 
   @Get(':id/members')
