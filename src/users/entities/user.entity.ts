@@ -17,6 +17,11 @@ import {
   AuthProvider,
   AccountStatus,
 } from 'src/common/enums/user.enums';
+import { Community } from 'src/community/entities/community.entity';
+import { CommunityPost } from 'src/community/entities/community-post.entity';
+import { CommunityComment } from 'src/community/entities/community-comment.entity';
+import { CommunityReaction } from 'src/community/entities/community-reaction.entity';
+import { CommunityMember } from 'src/community/entities/community-member.entity';
 
 @Entity('users')
 export class User {
@@ -62,6 +67,22 @@ export class User {
 
   @OneToMany(() => Feedback, (feedback) => feedback.user)
   feedbacks: Feedback[];
+
+  // Reverse relations with community
+  @OneToMany(() => Community, (community) => community.owner)
+  ownedCommunities: Community[];
+
+  @OneToMany(() => CommunityPost, (post) => post.author)
+  posts: CommunityPost[];
+
+  @OneToMany(() => CommunityComment, (comment) => comment.author)
+  comments: CommunityComment[];
+
+  @OneToMany(() => CommunityReaction, (reaction) => reaction.user)
+  reactions: CommunityReaction[];
+
+  @OneToMany(() => CommunityMember, (member) => member.user)
+  communityMemberships: CommunityMember[];
 
   @Column({ type: 'enum', enum: AccountStatus, default: AccountStatus.ACTIVE })
   accountStatus: AccountStatus;

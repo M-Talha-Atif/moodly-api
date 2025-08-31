@@ -1,101 +1,85 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
+import { Logger } from '@nestjs/common';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import 'winston-daily-rotate-file'; // for daily log rotation
+import morgan from 'morgan'; 
 import * as fs from 'fs';
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import { setupBullBoard } from './bull-board/bull-board';
-import { Queue } from 'bullmq';
-import { DiagramService } from './diagram/diagram.service';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as path from 'path';
 
 async function bootstrap() {
-  // Load .env
-  const envPath = path.resolve(process.cwd(), '.env');
-  if (!fs.existsSync(envPath)) {
-    console.error(`.env file not found at: ${envPath}`);
-    process.exit(1);
+  /**
+   * -----------------------------
+   * Setup Winston Transports
+   * -----------------------------
+   * - Console: Shows logs in terminal (colorized).
+   * - Daily Rotate File: Saves logs in /logs/app-%DATE%.log.
+   *   Keeps logs rotated daily.
+   */
+  const logDir = path.join(__dirname, '..', 'logs');
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir);
   }
 
-  const envConfig = dotenv.config({ path: envPath });
-  if (envConfig.error) {
-    console.error('Failed to load .env:', envConfig.error);
-    process.exit(1);
-  }
-
-  const requiredVars = [
-    'POSTGRES_HOST',
-    'POSTGRES_PORT',
-    'POSTGRES_USER',
-    'POSTGRES_PASSWORD',
-    'POSTGRES_DB',
-    'JWT_SECRET',
+  const transports: winston.transport[] = [
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.timestamp(),
+        winston.format.printf(
+          ({ timestamp, level, message, context }) =>
+            `${timestamp} [${context || 'App'}] ${level}: ${message}`,
+        ),
+      ),
+    }),
+    new winston.transports.DailyRotateFile({
+      dirname: logDir,
+      filename: 'app-%DATE%.log',
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d', // keep logs for 14 days
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json(),
+      ),
+    }),
   ];
 
-  const missingVars = requiredVars.filter((v) => !process.env[v]);
-  if (missingVars.length) {
-    console.error('Missing required environment variables:', missingVars);
-    process.exit(1);
-  }
-
-  const app = await NestFactory.create(AppModule);
-
-  const diagramService = app.get(DiagramService);
-  diagramService.setApp(app);
-
-  // Enable CORS
-  app.enableCors({
-    origin: 'http://localhost:5173',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-    credentials: true,
+  /**
+   * -----------------------------
+   * Create NestJS app with Winston Logger
+   * -----------------------------
+   */
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({ transports }),
   });
 
-  app.use(cookieParser());
+  /**
+   * -----------------------------
+   * Setup Morgan (HTTP Request Logger)
+   * -----------------------------
+   * - Logs all HTTP requests in "combined" format.
+   * - Writes logs into /logs/access.log file.
+   */
+  const accessLogStream = fs.createWriteStream(
+    path.join(logDir, 'access.log'),
+    { flags: 'a' }, // append mode
+  );
+  app.use(morgan('combined', { stream: accessLogStream }));
+  app.use(morgan('dev')); // pretty logs in console
 
-  // === SWAGGER SETUP ===
-  const config = new DocumentBuilder()
-    .setTitle('My API Docs')
-    .setDescription('NestJS REST API documentation')
-    .setVersion('1.0')
-    .addBearerAuth() // if using JWT
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
-
-  // === BULLMQ QUEUE + BULL BOARD SETUP ===
-  const moodQueue = new Queue('mood-queue', {
-    connection: { host: 'localhost', port: 6379 },
-  });
-
-  const recommendationQueue = new Queue('recommendation-queue', {
-    connection: { host: 'localhost', port: 6379 },
-  });
-
-  const notificationQueue = new Queue('notification-queue', {
-    connection: { host: 'localhost', port: 6379 },
-  });
-
-  const expressServer = express();
-  const bullBoardAdapter = setupBullBoard([
-    moodQueue,
-    recommendationQueue,
-    notificationQueue,
-  ]);
-  expressServer.use('/admin/queues', bullBoardAdapter.getRouter());
-
-  app.use(expressServer);
-
-  // Start server
+  /**
+   * -----------------------------
+   * Start Application
+   * -----------------------------
+   */
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
-  console.log(`🚀 App running at http://localhost:${port}`);
-  console.log(`📖 Swagger docs available at http://localhost:${port}/api-docs`);
-  console.log(
-    `🔧 Bull Board available at http://localhost:${port}/admin/queues`,
-  );
+  const logger = new Logger('Bootstrap');
+  logger.log(`🚀 Application is running on: http://localhost:${port}`);
 }
+
 bootstrap();
