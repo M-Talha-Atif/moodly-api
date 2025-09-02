@@ -10,6 +10,12 @@ export class CommunityListItemDto {
   @ApiProperty({ example: 'https://example.com/cover.jpg', required: false })
   coverImageUrl?: string;
 
+  @ApiProperty({ example: 'Technology' })
+  category: string;
+
+  @ApiProperty({ example: false })
+  isPrivate: boolean;
+
   @ApiProperty({ example: 152 })
   membersCount: number;
 }

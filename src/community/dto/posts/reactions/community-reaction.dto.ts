@@ -1,9 +1,9 @@
 // src/community/dto/community-reaction.dto.ts
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
 
-export interface CommunityReactionDto {
+export class CommunityReactionDto {
   id: string;
-  type: string; // or enum if you have one
+  type: string;
   user: UserResponseDto;
-  createdAt: Date;
+  createdAt: string;
 }

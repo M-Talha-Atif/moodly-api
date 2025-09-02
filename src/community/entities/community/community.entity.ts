@@ -10,16 +10,16 @@ import {
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CommunityMember } from './community-member.entity';
-import { CommunityPost } from './community-post.entity';
+import { CommunityPost } from '../posts/community-post.entity';
 
 @Entity('communities')
-@Index(['createdAt']) // allow fast pagination/sorting by creation date
+@Index(['createdAt'])
 export class Community {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  @Index({ unique: true }) // enforce unique community names (optional)
+  @Index({ unique: true })
   name: string;
 
   @Column({ type: 'text', nullable: true })
@@ -28,8 +28,26 @@ export class Community {
   @Column({ type: 'varchar', length: 500, nullable: true })
   coverImageUrl: string | null;
 
+  @Column({ type: 'varchar', length: 100 })
+  category: string; // community category
+
+  @Column({ default: false })
+  isPrivate: boolean; //  private vs public
+
+  @Column({ type: 'text', nullable: true })
+  rules: string | null; // community rules/guidelines
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  location: string | null; // optional location
+
+  @Column('simple-array', { nullable: true })
+  tags: string[] | null; // searchable tags
+
+  @Column({ default: 0 })
+  memberCount: number; // denormalized for quick queries
+
   @ManyToOne(() => User, (user) => user.ownedCommunities, { eager: true })
-  @Index() // fast filtering by owner
+  @Index()
   owner: User;
 
   @OneToMany(() => CommunityMember, (member) => member.community)

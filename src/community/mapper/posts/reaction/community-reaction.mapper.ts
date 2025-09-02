@@ -1,6 +1,6 @@
 // src/community/mapper/community-reaction.mapper.ts
-import { CommunityReaction } from '../entities/community-reaction.entity';
-import { CommunityReactionDto } from '../dto/community-reaction.dto';
+import { CommunityReaction } from '../../../entities/posts/reactions/community-reaction.entity';
+import { CommunityReactionDto } from '../../../dto/posts/reactions/community-reaction.dto';
 import { UserMapper } from 'src/users/mapper/user.mapper';
 
 export class CommunityReactionMapper {
@@ -10,7 +10,7 @@ export class CommunityReactionMapper {
       id: entity.id,
       type: entity.type,
       user: UserMapper.toResponseDto(entity.user),
-      createdAt: entity.createdAt,
+      createdAt: entity.createdAt.toISOString(),
     };
   };
 

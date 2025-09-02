@@ -1,6 +1,6 @@
 // src/community/mapper/community-member.mapper.ts
-import { CommunityMember } from '../entities/community-member.entity';
-import { CommunityMemberDto } from '../dto/community-member.dto';
+import { CommunityMember } from '../../entities/community/community-member.entity';
+import { CommunityMemberDto } from '../../dto/community-member.dto';
 import { UserMapper } from 'src/users/mapper/user.mapper';
 
 export class CommunityMemberMapper {

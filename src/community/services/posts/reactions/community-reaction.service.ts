@@ -2,12 +2,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CommunityReaction } from '../entities/community-reaction.entity';
-import { CommunityPost } from '../entities/community-post.entity';
+import { CommunityReaction } from '../../../entities/posts/reactions/community-reaction.entity';
+import { CommunityPost } from '../../../entities/posts/community-post.entity';
 import { User } from 'src/users/entities/user.entity';
 import { TransactionService } from 'src/common/services/transaction.service';
-import { CommunityReactionDto } from '../dto/community-reaction.dto';
-import { CommunityReactionMapper } from '../mapper/community-reaction.mapper';
+import { CommunityReactionDto } from '../../../dto/posts/reactions/community-reaction.dto';
+import { CommunityReactionMapper } from '../../../mapper/posts/reaction/community-reaction.mapper';
 
 @Injectable()
 export class CommunityReactionService {

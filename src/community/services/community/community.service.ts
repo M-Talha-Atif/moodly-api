@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Community } from '../entities/community.entity';
-import { CreateCommunityDto } from '../dto/create-community.dto';
-import { UpdateCommunityDto } from '../dto/update-community.dto';
-import { CommunityMapper } from '../mapper/community.mapper';
+import { Community } from '../../entities/community/community.entity';
+import { CreateCommunityDto } from '../../dto/create-community.dto';
+import { UpdateCommunityDto } from '../../dto/update-community.dto';
+import { CommunityMapper } from '../../mapper/community/community.mapper';
 
 @Injectable()
 export class CommunityService {
@@ -31,7 +31,24 @@ export class CommunityService {
 
     if (!community) throw new NotFoundException('Community not found');
 
+    // ensure memberCount is in sync
+    community.memberCount = community.members?.length ?? 0;
+
     return CommunityMapper.toResponseDto(community);
+  }
+
+  async findAll() {
+    const communities = await this.communityRepository.find({
+      relations: ['members'],
+      order: { createdAt: 'DESC' },
+    });
+
+    // sync memberCount for all communities
+    communities.forEach(
+      (c) => (c.memberCount = c.members?.length ?? c.memberCount ?? 0),
+    );
+
+    return communities.map((c) => CommunityMapper.toListItemDto(c));
   }
 
   async update(id: string, dto: UpdateCommunityDto) {
@@ -49,7 +66,7 @@ export class CommunityService {
   }
 
   /**
-   * ✅ Update with ownership check (controller expects this)
+   * Update with ownership check (controller expects this)
    */
   async updateWithOwnerCheck(
     id: string,
@@ -73,7 +90,7 @@ export class CommunityService {
   }
 
   /**
-   * ✅ Remove with ownership check (controller expects this)
+   * Remove with ownership check (controller expects this)
    */
   async removeWithOwnerCheck(id: string, ownerId: string) {
     const community = await this.communityRepository.findOne({

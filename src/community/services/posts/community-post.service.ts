@@ -2,12 +2,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CommunityPost } from '../entities/community-post.entity';
-import { Community } from '../entities/community.entity';
+import { CommunityPost } from '../../entities/posts/community-post.entity';
+import { Community } from '../../entities/community/community.entity';
 import { User } from 'src/users/entities/user.entity';
 import { TransactionService } from 'src/common/services/transaction.service';
-import { CommunityPostDto } from '../dto/community-post.dto';
-import { CommunityPostMapper } from '../mapper/community-post.mapper';
+import { CommunityPostDto } from '../../dto/posts/community-post.dto';
+import { CommunityPostMapper } from '../../mapper/posts/community-post.mapper';
 
 @Injectable()
 export class CommunityPostService {
@@ -69,33 +69,37 @@ export class CommunityPostService {
     communityId: string,
     page = 1,
     limit = 20,
+    currentUserId?: string,
   ): Promise<CommunityPostDto[]> {
     this.logger.log(
-      `Fetching posts for community ${communityId}, page=${page}, limit=${limit}`,
+      `Fetching posts for community ${communityId}, page=${page}, limit=${limit}, user=${currentUserId}`,
     );
 
-    const [posts, total] = await this.postRepo
-      .createQueryBuilder('post')
-      .innerJoinAndSelect('post.author', 'author')
-      .where('post.communityId = :communityId', { communityId })
-      .orderBy('post.createdAt', 'DESC')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
+    const [posts, total] = await this.postRepo.findAndCount({
+      where: { community: { id: communityId } },
+      relations: ['author', 'comments', 'reactions', 'reactions.user'], // reactions.user is important
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
 
     this.logger.log(`Fetched ${posts.length} posts out of total ${total}`);
-    return CommunityPostMapper.toDtos(posts);
+
+    return CommunityPostMapper.toDtos(posts, currentUserId); // <-- pass user
   }
 
   /**
    * Get a single post by ID
    */
-  async getPost(postId: string): Promise<CommunityPostDto | null> {
+  async getPost(
+    postId: string,
+    currentUserId?: string,
+  ): Promise<CommunityPostDto | null> {
     const post = await this.postRepo.findOne({
       where: { id: postId },
       relations: ['author', 'comments', 'reactions'],
     });
-    return post ? CommunityPostMapper.toDto(post) : null;
+    return post ? CommunityPostMapper.toDto(post, currentUserId) : null;
   }
 
   /**
