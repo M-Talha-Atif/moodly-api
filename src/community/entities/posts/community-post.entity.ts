@@ -7,9 +7,9 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { Community } from './community.entity';
-import { CommunityComment } from './community-comment.entity';
-import { CommunityReaction } from './community-reaction.entity';
+import { Community } from '../community/community.entity';
+import { CommunityComment } from './comments/community-comment.entity';
+import { CommunityReaction } from './reactions/community-reaction.entity';
 
 @Entity('community_posts')
 export class CommunityPost {

@@ -7,7 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { CommunityPost } from './community-post.entity';
+import { CommunityPost } from '../community-post.entity';
 
 @Entity('community_reactions')
 @Unique(['post', 'user']) // ensures 1 reaction per user per post

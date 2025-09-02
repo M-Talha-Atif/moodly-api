@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CommunityMember } from '../entities/community-member.entity';
+import { CommunityMember } from '../../entities/community/community-member.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Community } from '../entities/community.entity';
-import { CommunityMemberMapper } from '../mapper/community-member.mapper';
-import { CommunityMemberDto } from '../dto/community-member.dto';
+import { Community } from '../../entities/community/community.entity';
+import { CommunityMemberMapper } from '../../mapper/community/community-member.mapper';
+import { CommunityMemberDto } from '../../dto/community-member.dto';
 import { TransactionService } from 'src/common/services/transaction.service';
 
 @Injectable()

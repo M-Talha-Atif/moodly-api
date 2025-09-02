@@ -17,11 +17,11 @@ import {
   AuthProvider,
   AccountStatus,
 } from 'src/common/enums/user.enums';
-import { Community } from 'src/community/entities/community.entity';
-import { CommunityPost } from 'src/community/entities/community-post.entity';
-import { CommunityComment } from 'src/community/entities/community-comment.entity';
-import { CommunityReaction } from 'src/community/entities/community-reaction.entity';
-import { CommunityMember } from 'src/community/entities/community-member.entity';
+import { Community } from 'src/community/entities/community/community.entity';
+import { CommunityPost } from 'src/community/entities/posts/community-post.entity';
+import { CommunityComment } from 'src/community/entities/posts/comments/community-comment.entity';
+import { CommunityReaction } from 'src/community/entities/posts/reactions/community-reaction.entity';
+import { CommunityMember } from 'src/community/entities/community/community-member.entity';
 
 @Entity('users')
 export class User {

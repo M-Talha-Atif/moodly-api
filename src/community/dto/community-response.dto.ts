@@ -17,6 +17,30 @@ export class CommunityResponseDto {
   @ApiProperty({ example: 'https://example.com/cover.jpg', required: false })
   coverImageUrl?: string;
 
+  @ApiProperty({ example: 'Technology' })
+  category: string;
+
+  @ApiProperty({ example: false })
+  isPrivate: boolean;
+
+  @ApiProperty({
+    example: '1. Be respectful\n2. No spam\n3. Follow guidelines',
+    required: false,
+  })
+  rules?: string;
+
+  @ApiProperty({ example: 'San Francisco, CA', required: false })
+  location?: string;
+
+  @ApiProperty({
+    example: ['nestjs', 'backend', 'typescript'],
+    required: false,
+  })
+  tags?: string[];
+
+  @ApiProperty({ example: 150 })
+  memberCount: number;
+
   @ApiProperty({ type: () => UserResponseDto })
   owner: UserResponseDto;
 

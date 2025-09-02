@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { CommunityPost } from './community-post.entity';
+import { CommunityPost } from '../community-post.entity';
 
 @Entity('community_comments')
 export class CommunityComment {

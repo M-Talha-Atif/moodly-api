@@ -10,20 +10,21 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CommunityService } from './services/community.service';
-import { CommunityQueryService } from './services/community-query.service';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { CommunityService } from './services/community/community.service';
+import { CommunityQueryService } from './services/community/community-query.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
 import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/roles.guard';
 import { ResultDto } from 'src/common/dto/result.dto';
-import { CommunityMemberService } from './services/community-member.service';
-import { CommunityPostService } from './services/community-post.service';
-import { Query } from '@nestjs/common'; // also fix the missing Query import
-// src/community/community.controller.ts
-import { CommunityReactionService } from './services/community-reaction.service';
+import { CommunityMemberService } from './services/community/community-member.service';
+import { CommunityPostService } from './services/posts/community-post.service';
+import { Query } from '@nestjs/common';
+import { CommunityReactionService } from './services/posts/reactions/community-reaction.service';
+import { CommunityQueryDto } from './dto/community-query.dto';
+import { CommunityCommentService } from './services/comments/community-comment.service';
 
 @ApiTags('Communities')
 @Controller('communities')
@@ -34,6 +35,7 @@ export class CommunityController {
     private readonly communityMemberService: CommunityMemberService, // for community membership
     private readonly communityPostService: CommunityPostService, // for community posting
     private readonly communityReactionService: CommunityReactionService, // for reactions
+    private readonly communityCommentService: CommunityCommentService, // for post comments
   ) {}
 
   // =============== Host CRUD =================
@@ -91,8 +93,14 @@ export class CommunityController {
    */
   @Get()
   @ApiOperation({ summary: 'Get all communities (public)' })
-  async findAll() {
-    const communities = await this.communityQueryService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'category', required: false, type: String })
+  @ApiQuery({ name: 'isPrivate', required: false, type: Boolean })
+  @ApiQuery({ name: 'tags', required: false, type: [String] })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  async findAll(@Query() query: CommunityQueryDto) {
+    const communities = await this.communityQueryService.findAll(query);
     return ResultDto.ok(communities, 'Communities fetched successfully');
   }
 
@@ -167,23 +175,28 @@ export class CommunityController {
     return ResultDto.ok(post, 'Post created', 201);
   }
 
+  @UseGuards(JwtCookieGuard)
   @Get(':id/posts')
   async listPosts(
     @Param('id') communityId: string,
     @Query('page') page = 1,
     @Query('limit') limit = 20,
+    @Req() req,
   ) {
     const posts = await this.communityPostService.listPosts(
       communityId,
       Number(page),
       Number(limit),
+      req.user.sub,
     );
     return ResultDto.ok(posts, 'Posts fetched');
   }
 
+  @UseGuards(JwtCookieGuard)
   @Get('posts/:id')
-  async getPost(@Param('id') postId: string) {
-    const post = await this.communityPostService.getPost(postId);
+  async getPost(@Param('id') postId: string, @Req() req) {
+    const userId = req.user.sub; // Now this works
+    const post = await this.communityPostService.getPost(postId, userId);
     if (!post) return ResultDto.fail('Post not found', 404);
     return ResultDto.ok(post, 'Post fetched');
   }
@@ -247,5 +260,66 @@ export class CommunityController {
       req.user?.sub,
     );
     return ResultDto.ok(data, 'Reactions summary fetched');
+  }
+
+  // ================= Community Comments =================
+
+  /**
+   * Add a comment to a post
+   */
+  @UseGuards(JwtCookieGuard)
+  @Post('posts/:id/comments')
+  @ApiOperation({ summary: 'Add a comment to a post' })
+  @ApiResponse({ status: 201, description: 'Comment added successfully' })
+  async addComment(
+    @Param('id') postId: string,
+    @Body('content') content: string,
+    @Req() req: any,
+  ) {
+    const userId = req.user.sub;
+    const comment = await this.communityCommentService.addComment(
+      userId,
+      postId,
+      content,
+    );
+
+    if (!comment) return ResultDto.fail('Cannot add comment', 400);
+
+    return ResultDto.ok(comment, 'Comment added', 201);
+  }
+
+  /**
+   * List all comments for a post
+   */
+  @Get('posts/:id/comments')
+  @ApiOperation({ summary: 'List all comments for a post' })
+  @ApiResponse({ status: 200, description: 'Comments fetched successfully' })
+  async listComments(@Param('id') postId: string) {
+    const comments = await this.communityCommentService.listComments(postId);
+    return ResultDto.ok(comments, 'Comments fetched successfully');
+  }
+
+  /**
+   * Delete a comment by ID (author only)
+   */
+  @UseGuards(JwtCookieGuard)
+  @Delete('posts/comments/:commentId')
+  @ApiOperation({ summary: 'Delete a comment (author only)' })
+  @ApiResponse({ status: 200, description: 'Comment deleted successfully' })
+  @ApiResponse({
+    status: 404,
+    description: 'Comment not found or not authorized',
+  })
+  async deleteComment(@Param('commentId') commentId: string, @Req() req: any) {
+    const userId = req.user.sub;
+    const success = await this.communityCommentService.deleteComment(
+      userId,
+      commentId,
+    );
+
+    if (!success)
+      return ResultDto.fail('Comment not found or not authorized', 404);
+
+    return ResultDto.okEmpty();
   }
 }
