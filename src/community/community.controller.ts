@@ -36,7 +36,7 @@ export class CommunityController {
     private readonly communityPostService: CommunityPostService, // for community posting
     private readonly communityReactionService: CommunityReactionService, // for reactions
     private readonly communityCommentService: CommunityCommentService, // for post comments
-  ) {}
+  ) { }
 
   // =============== Host CRUD =================
 
@@ -91,7 +91,7 @@ export class CommunityController {
   /**
    * Public endpoint: list all communities
    */
-  @Get()
+  @Get('/public')
   @ApiOperation({ summary: 'Get all communities (public)' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -114,6 +114,8 @@ export class CommunityController {
     const community = await this.communityQueryService.findOne(id);
     return ResultDto.ok(community, 'Community fetched successfully');
   }
+
+  
 
   // =============== Membership Endpoints =================
 
@@ -154,6 +156,19 @@ export class CommunityController {
   async listMembers(@Param('id') communityId: string) {
     const members = await this.communityMemberService.listMembers(communityId);
     return ResultDto.ok(members, 'Community members fetched successfully');
+  }
+
+    /**
+   * Authenticated: Get communities with `isJoined`
+   */
+  @UseGuards(JwtCookieGuard)
+  @Get()
+  async findAllWithMembership(
+    @Query() query: CommunityQueryDto,
+    @Req() req: any,
+  ) {
+    const userId = req.user.sub; // `JwtCookieGuard` puts user in request
+    return this.communityQueryService.findAllWithMembership(userId, query);
   }
 
   // Posting
@@ -292,12 +307,16 @@ export class CommunityController {
    * List all comments for a post
    */
   @Get('posts/:id/comments')
-  @ApiOperation({ summary: 'List all comments for a post' })
-  @ApiResponse({ status: 200, description: 'Comments fetched successfully' })
-  async listComments(@Param('id') postId: string) {
-    const comments = await this.communityCommentService.listComments(postId);
-    return ResultDto.ok(comments, 'Comments fetched successfully');
+  async listComments(
+    @Param('id') postId: string,
+    @Query('cursor') cursor?: string,
+    @Query('limit') limit = 10
+  ) {
+    const result = await this.communityCommentService.listComments(postId, cursor, Number(limit));
+    return ResultDto.ok(result, 'Comments fetched successfully');
   }
+
+
 
   /**
    * Delete a comment by ID (author only)

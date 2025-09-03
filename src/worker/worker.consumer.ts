@@ -1,11 +1,10 @@
-// src/worker/worker.consumer.ts
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, Logger, Inject } from '@nestjs/common';
 import { EventPattern, Payload, ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { EmotionAnalysisService } from '../mood-log/services/emotion-analysis.service';
-import { Inject } from '@nestjs/common';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
 type MoodDetectPayload = {
   moodLogId: string;
@@ -23,10 +22,10 @@ export class WorkerConsumer {
   constructor(
     @InjectRepository(MoodLog) private repo: Repository<MoodLog>,
     private readonly emotion: EmotionAnalysisService,
-    @Inject('RMQ_CLIENT') private readonly rmqClient: ClientProxy,
+    @Inject(RMQ_DOMAINS.MOOD.CLIENT) private readonly rmqClient: ClientProxy,
   ) {}
 
-  @EventPattern('mood.detect')
+  @EventPattern(RMQ_DOMAINS.MOOD.ROUTING.DETECT)
   async handleMoodDetect(@Payload() payload: MoodDetectPayload) {
     this.logger.debug(`Processing mood.detect for ${payload.moodLogId}`);
 
@@ -54,7 +53,7 @@ export class WorkerConsumer {
     );
 
     // Emit follow-up event for embedding generation
-    this.rmqClient.emit('mood.analyzed', {
+    this.rmqClient.emit(RMQ_DOMAINS.MOOD.ROUTING.ANALYZED, {
       moodLogId: payload.moodLogId,
       userId: payload.userId,
       combinedText: `${payload.moodLabel ?? ''} ${payload.note ?? ''} ${photoEmotion ?? ''} ${voiceSentiment ?? ''}`,

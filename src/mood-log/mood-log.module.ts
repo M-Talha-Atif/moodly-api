@@ -17,6 +17,8 @@ import { RecommendationModule } from '../recommendation/recommendation.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ValidationService } from './services/validation.service';
 import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+
 
 @Module({
   imports: [
@@ -27,7 +29,12 @@ import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
     EmbeddingModule,
     MoodLogQueueModule,
     RecommendationModule,
-    RmqModule, // Add RMQ module here
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.MOOD.CLIENT,
+      exchange: RMQ_DOMAINS.MOOD.EXCHANGE,
+      queue: RMQ_DOMAINS.MOOD.QUEUE,
+    }),
+
     MulterModule.register({
       dest: './uploads',
       limits: {
@@ -44,4 +51,4 @@ import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
   ],
   exports: [MoodLogService],
 })
-export class MoodLogModule {}
+export class MoodLogModule { }

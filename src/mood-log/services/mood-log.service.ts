@@ -9,17 +9,12 @@ import { MoodLog } from '../entities/mood-log.entity';
 import { Repository, Between } from 'typeorm';
 import { CreateMoodLogDto } from '../dto/create-mood-log.dto';
 import { startOfDay, endOfDay } from 'date-fns';
-import { EmbeddingService } from 'src/embedding/embedding.service';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { MoodLogEmbedding } from 'src/embedding/schemas/moodlog-embedding.schema';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bullmq';
 import { EmotionAnalysisService } from './emotion-analysis.service';
 import { ValidationService } from './validation.service';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { StorageService } from './storage.service';
 import { ClientProxy } from '@nestjs/microservices';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
 @Injectable()
 export class MoodLogService {
@@ -28,15 +23,11 @@ export class MoodLogService {
   constructor(
     @InjectRepository(MoodLog)
     private moodLogRepo: Repository<MoodLog>,
-    private readonly embeddingService: EmbeddingService,
-    @InjectModel(MoodLogEmbedding.name)
-    private moodLogEmbeddingModel: Model<MoodLogEmbedding>,
-    @InjectQueue('mood-queue') private moodQueue: Queue,
-    @Inject('RMQ_CLIENT') private readonly rmqClient: ClientProxy,
-    private readonly emotionAnalysisService: EmotionAnalysisService,
+    @Inject(RMQ_DOMAINS.MOOD.CLIENT)
+    private readonly rmqClient: ClientProxy,
     private readonly validationService: ValidationService,
     private readonly storageService: StorageService,
-  ) {}
+  ) { }
 
   async createForUser(
     userId: string,
@@ -85,7 +76,7 @@ export class MoodLogService {
       const saved = await this.moodLogRepo.save(mood);
 
       // Queue analysis
-      this.rmqClient.emit('mood.detect', {
+      this.rmqClient.emit(RMQ_DOMAINS.MOOD.ROUTING.DETECT, {
         moodLogId: saved.id,
         userId,
         photoPath: dto.photoPath,
@@ -93,6 +84,7 @@ export class MoodLogService {
         moodLabel: dto.moodLabel,
         note: dto.note,
       });
+
 
       return ResultDto.ok(saved, 'Mood log created; analysis queued');
     } catch (error) {
