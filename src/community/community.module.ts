@@ -16,6 +16,8 @@ import { CommunityReaction } from './entities/posts/reactions/community-reaction
 import { CommunityReactionService } from './services/posts/reactions/community-reaction.service';
 import { CommunityCommentService } from './services/comments/community-comment.service';
 import { CommunityComment } from './entities/posts/comments/community-comment.entity';
+import { RmqModule } from 'src/rmq/rmq.module';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
 @Module({
   imports: [
@@ -27,6 +29,11 @@ import { CommunityComment } from './entities/posts/comments/community-comment.en
       User,
       CommunityReaction,
     ]),
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.COMMUNITY.CLIENT,
+      exchange: RMQ_DOMAINS.COMMUNITY.EXCHANGE,
+      queue: RMQ_DOMAINS.COMMUNITY.QUEUE,
+    }),
   ],
   controllers: [CommunityController],
   providers: [

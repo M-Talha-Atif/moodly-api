@@ -28,7 +28,7 @@ export class ExperienceRecommendationService {
           path: 'embedding',
           numCandidates: 100,
           limit,
-          index: 'experience_vector_index',
+          index: 'experience_index',
           metric: 'cosine',
         },
       } as any,

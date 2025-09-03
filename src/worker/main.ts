@@ -64,27 +64,50 @@ async function bootstrap() {
   // -----------------------------
   // Create Worker Microservice
   // -----------------------------
-  const app = await NestFactory.createMicroservice(WorkerModule, {
-    transport: Transport.RMQ,
-    options: {
-      urls: [process.env.RABBITMQ_URL!],
-      queue: process.env.RABBITMQ_QUEUE || 'mood-tasks',
-      queueOptions: { durable: true },
-      prefetchCount: 1,
-    },
+  // Create an application context (not a single microservice)
+  const app = await NestFactory.create(WorkerModule, {
     logger: WinstonModule.createLogger({ transports }),
   });
 
-  await app.listen();
+  // Connect MOOD microservice
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL!],
+      queue: process.env.RMQ_MOOD_QUEUE || 'mood-tasks',
+      queueOptions: { durable: true },
+      exchange: process.env.RMQ_MOOD_EXCHANGE || 'mood-exchange',
+      exchangeType: 'direct',
+      prefetchCount: 1,
+    },
+  });
+
+  // Connect COMMUNITY microservice
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL!],
+      queue: process.env.RMQ_COMM_QUEUE || 'community-tasks',
+      queueOptions: { durable: true },
+      exchange: process.env.RMQ_COMM_EXCHANGE || 'community-exchange',
+      exchangeType: 'direct',
+      prefetchCount: 1,
+    },
+  });
+
+  await app.startAllMicroservices();
+
 
   // -----------------------------
   // Startup logs
   // -----------------------------
   const logger = new Logger('WorkerBootstrap');
   logger.log('✅ Worker is listening for RabbitMQ tasks...');
-  logger.log(
-    `📡 Connected to queue: ${process.env.RABBITMQ_QUEUE || 'mood-tasks'}`,
-  );
+  logger.log(`📡 Listening on queues: 
+  - ${process.env.RMQ_MOOD_QUEUE || 'mood-tasks'}
+  - ${process.env.RMQ_COMM_QUEUE || 'community-tasks'}
+`);
+
 }
 
 bootstrap();

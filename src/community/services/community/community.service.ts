@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   NotFoundException,
   ForbiddenException,
@@ -9,17 +10,38 @@ import { Community } from '../../entities/community/community.entity';
 import { CreateCommunityDto } from '../../dto/create-community.dto';
 import { UpdateCommunityDto } from '../../dto/update-community.dto';
 import { CommunityMapper } from '../../mapper/community/community.mapper';
+import { ClientProxy } from '@nestjs/microservices';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+
 
 @Injectable()
 export class CommunityService {
   constructor(
     @InjectRepository(Community)
     private readonly communityRepository: Repository<Community>,
-  ) {}
+    @Inject(RMQ_DOMAINS.COMMUNITY.CLIENT)
+    private readonly communityClient: ClientProxy,
+  ) { }
 
   async create(dto: CreateCommunityDto, ownerId: string) {
     const entity = CommunityMapper.fromCreateDto(dto, ownerId);
     const saved = await this.communityRepository.save(entity);
+
+    // emit background job
+    this.communityClient.emit(
+      RMQ_DOMAINS.COMMUNITY.ROUTING.EMBED,
+      {
+        communityId: saved.id,
+        name: saved.name,
+        description: saved.description,
+        category: saved.category,
+        tags: saved.tags,
+        rules: saved.rules,
+        location: saved.location,
+      },
+    );
+
+
     return CommunityMapper.toResponseDto(saved);
   }
 

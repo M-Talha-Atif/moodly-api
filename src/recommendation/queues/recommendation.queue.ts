@@ -1,7 +1,7 @@
 // src/recommendation/queues/recommendation.queue.ts
 import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bullmq';
+import type { Queue } from 'bull';
 
 @Injectable()
 export class RecommendationQueue {

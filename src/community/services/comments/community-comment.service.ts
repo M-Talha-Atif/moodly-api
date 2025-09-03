@@ -23,7 +23,7 @@ export class CommunityCommentService {
     private readonly userRepo: Repository<User>,
 
     private readonly transactionService: TransactionService,
-  ) {}
+  ) { }
 
   /**
    * Create a comment on a post
@@ -60,15 +60,36 @@ export class CommunityCommentService {
   /**
    * List all comments for a post
    */
-  async listComments(postId: string): Promise<CommunityCommentDto[]> {
-    const comments = await this.commentRepo.find({
-      where: { post: { id: postId } },
-      relations: ['author'],
-      order: { createdAt: 'ASC' }, // oldest first
-    });
+  // community-comment.service.ts
+  async listComments(
+    postId: string,
+    cursor?: string,
+    limit = 10
+  ): Promise<{ data: CommunityCommentDto[]; nextCursor: string | null }> {
+    const qb = this.commentRepo
+      .createQueryBuilder("comment")
+      .leftJoinAndSelect("comment.author", "author")
+      .where("comment.postId = :postId", { postId })
+      .orderBy("comment.createdAt", "ASC") // oldest first
+      .limit(limit + 1); // fetch one extra to check if more exist
 
-    return CommunityCommentMapper.toDtos(comments);
+    if (cursor) {
+      qb.andWhere("comment.createdAt > :cursor", { cursor: new Date(cursor) });
+    }
+
+    const comments = await qb.getMany();
+    const hasMore = comments.length > limit;
+    const data = comments.slice(0, limit);
+
+    return {
+      data: CommunityCommentMapper.toDtos(data),
+      nextCursor: hasMore
+        ? data[data.length - 1].createdAt.toISOString()
+        : null,
+    };
   }
+
+
 
   /**
    * Delete a comment (only author can delete)

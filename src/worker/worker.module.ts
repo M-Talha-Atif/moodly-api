@@ -11,10 +11,15 @@ import {
   MoodLogEmbedding,
   MoodLogEmbeddingSchema,
 } from '../embedding/schemas/moodlog-embedding.schema';
+import {
+  CommunityEmbedding,
+  CommunityEmbeddingSchema,
+} from '../embedding/schemas/community-embedding.schema';
 import { BullModule } from '@nestjs/bull';
 import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RmqModule } from 'src/rmq/rmq.module';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
 @Module({
   imports: [
@@ -29,6 +34,7 @@ import { RmqModule } from 'src/rmq/rmq.module';
     // Mongo feature models
     MongooseModule.forFeature([
       { name: MoodLogEmbedding.name, schema: MoodLogEmbeddingSchema },
+      { name: CommunityEmbedding.name, schema: CommunityEmbeddingSchema },
     ]),
 
     // Bull queues
@@ -44,10 +50,20 @@ import { RmqModule } from 'src/rmq/rmq.module';
     ),
 
     // RabbitMQ client, works for consumer
-    RmqModule,
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.MOOD.CLIENT,
+      exchange: RMQ_DOMAINS.MOOD.EXCHANGE,
+      queue: RMQ_DOMAINS.MOOD.QUEUE,
+    }),
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.COMMUNITY.CLIENT,
+      exchange: RMQ_DOMAINS.COMMUNITY.EXCHANGE,
+      queue: RMQ_DOMAINS.COMMUNITY.QUEUE,
+    }),
+
   ],
 
   controllers: [WorkerConsumer, EmbeddingConsumer],
   providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
 })
-export class WorkerModule {}
+export class WorkerModule { }

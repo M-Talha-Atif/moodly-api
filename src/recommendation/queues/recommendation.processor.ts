@@ -8,7 +8,7 @@ import { RecommendationGateway } from '../recommendation.gateway';
 export class RecommendationProcessor {
   constructor(
     private readonly recommendationService: RecommendationService,
-    private readonly recommendationGateway: RecommendationGateway, // 👈 inject gateway
+    private readonly recommendationGateway: RecommendationGateway,
   ) {}
 
   @Process('recommendation.generate')
