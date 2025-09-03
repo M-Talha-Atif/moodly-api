@@ -27,7 +27,7 @@ export class MoodLogService {
     private readonly rmqClient: ClientProxy,
     private readonly validationService: ValidationService,
     private readonly storageService: StorageService,
-  ) { }
+  ) {}
 
   async createForUser(
     userId: string,
@@ -84,7 +84,6 @@ export class MoodLogService {
         moodLabel: dto.moodLabel,
         note: dto.note,
       });
-
 
       return ResultDto.ok(saved, 'Mood log created; analysis queued');
     } catch (error) {

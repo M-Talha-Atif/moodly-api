@@ -23,7 +23,7 @@ export class CommunityCommentService {
     private readonly userRepo: Repository<User>,
 
     private readonly transactionService: TransactionService,
-  ) { }
+  ) {}
 
   /**
    * Create a comment on a post
@@ -64,17 +64,17 @@ export class CommunityCommentService {
   async listComments(
     postId: string,
     cursor?: string,
-    limit = 10
+    limit = 10,
   ): Promise<{ data: CommunityCommentDto[]; nextCursor: string | null }> {
     const qb = this.commentRepo
-      .createQueryBuilder("comment")
-      .leftJoinAndSelect("comment.author", "author")
-      .where("comment.postId = :postId", { postId })
-      .orderBy("comment.createdAt", "ASC") // oldest first
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.author', 'author')
+      .where('comment.postId = :postId', { postId })
+      .orderBy('comment.createdAt', 'ASC') // oldest first
       .limit(limit + 1); // fetch one extra to check if more exist
 
     if (cursor) {
-      qb.andWhere("comment.createdAt > :cursor", { cursor: new Date(cursor) });
+      qb.andWhere('comment.createdAt > :cursor', { cursor: new Date(cursor) });
     }
 
     const comments = await qb.getMany();
@@ -88,8 +88,6 @@ export class CommunityCommentService {
         : null,
     };
   }
-
-
 
   /**
    * Delete a comment (only author can delete)

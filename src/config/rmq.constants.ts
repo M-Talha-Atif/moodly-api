@@ -6,17 +6,19 @@ export const RMQ_DOMAINS = {
     QUEUE: process.env.RMQ_MOOD_QUEUE || 'mood-tasks',
     ROUTING: {
       DETECT: 'mood.detect',
-      ANALYZED: 'mood.analyzed'
-    }
+      ANALYZED: 'mood.analyzed',
+    },
   },
   COMMUNITY: {
     CLIENT: 'COMM_RMQ_CLIENT',
     EXCHANGE: process.env.RMQ_COMM_EXCHANGE || 'community-exchange',
     QUEUE: process.env.RMQ_COMM_QUEUE || 'community-tasks',
     ROUTING: {
-      EMBED: 'community.embedding.generate'
-    }
+      EMBED: 'community.embedding.generate',
+    },
   },
-  EXPERIENCE: { /* same pattern */ },
+  EXPERIENCE: {
+    /* same pattern */
+  },
   // add FEEDBACK, BOOKINGS, ONBOARDING... as needed
 };

@@ -13,7 +13,6 @@ import { CommunityMapper } from '../../mapper/community/community.mapper';
 import { ClientProxy } from '@nestjs/microservices';
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
-
 @Injectable()
 export class CommunityService {
   constructor(
@@ -21,26 +20,22 @@ export class CommunityService {
     private readonly communityRepository: Repository<Community>,
     @Inject(RMQ_DOMAINS.COMMUNITY.CLIENT)
     private readonly communityClient: ClientProxy,
-  ) { }
+  ) {}
 
   async create(dto: CreateCommunityDto, ownerId: string) {
     const entity = CommunityMapper.fromCreateDto(dto, ownerId);
     const saved = await this.communityRepository.save(entity);
 
     // emit background job
-    this.communityClient.emit(
-      RMQ_DOMAINS.COMMUNITY.ROUTING.EMBED,
-      {
-        communityId: saved.id,
-        name: saved.name,
-        description: saved.description,
-        category: saved.category,
-        tags: saved.tags,
-        rules: saved.rules,
-        location: saved.location,
-      },
-    );
-
+    this.communityClient.emit(RMQ_DOMAINS.COMMUNITY.ROUTING.EMBED, {
+      communityId: saved.id,
+      name: saved.name,
+      description: saved.description,
+      category: saved.category,
+      tags: saved.tags,
+      rules: saved.rules,
+      location: saved.location,
+    });
 
     return CommunityMapper.toResponseDto(saved);
   }

@@ -12,7 +12,7 @@ export class CommunityQueryService {
   constructor(
     @InjectRepository(Community)
     private communityRepository: Repository<Community>,
-  ) { }
+  ) {}
 
   /**
    * Get paginated + filtered list of communities
@@ -86,9 +86,9 @@ export class CommunityQueryService {
   }
 
   /**
- * Get paginated + filtered list of communities
- * with `isJoined` for an authenticated user
- */
+   * Get paginated + filtered list of communities
+   * with `isJoined` for an authenticated user
+   */
   async findAllWithMembership(
     userId: string,
     query?: CommunityQueryDto,
@@ -150,10 +150,11 @@ export class CommunityQueryService {
     const [communities, total] = await qb.getManyAndCount();
 
     // Extract raw results for `isJoined`
-    const raw = await qb.getRawMany<{ community_id: string; isJoined: boolean }>();
-    const isJoinedMap = new Map(
-      raw.map((r) => [r.community_id, r.isJoined]),
-    );
+    const raw = await qb.getRawMany<{
+      community_id: string;
+      isJoined: boolean;
+    }>();
+    const isJoinedMap = new Map(raw.map((r) => [r.community_id, r.isJoined]));
 
     communities.forEach(
       (c) => (c.memberCount = c.members?.length ?? c.memberCount ?? 0),
@@ -169,7 +170,6 @@ export class CommunityQueryService {
       limit,
     };
   }
-
 
   /**
    * Get detailed community data by ID

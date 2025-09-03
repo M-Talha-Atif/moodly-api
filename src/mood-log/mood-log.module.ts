@@ -19,7 +19,6 @@ import { ValidationService } from './services/validation.service';
 import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([MoodLog]),
@@ -51,4 +50,4 @@ import { RMQ_DOMAINS } from 'src/config/rmq.constants';
   ],
   exports: [MoodLogService],
 })
-export class MoodLogModule { }
+export class MoodLogModule {}
