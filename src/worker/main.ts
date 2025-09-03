@@ -97,7 +97,6 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
 
-
   // -----------------------------
   // Startup logs
   // -----------------------------
@@ -107,7 +106,6 @@ async function bootstrap() {
   - ${process.env.RMQ_MOOD_QUEUE || 'mood-tasks'}
   - ${process.env.RMQ_COMM_QUEUE || 'community-tasks'}
 `);
-
 }
 
 bootstrap();

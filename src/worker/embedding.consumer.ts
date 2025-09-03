@@ -64,8 +64,12 @@ export class EmbeddingConsumer {
   }
 
   @EventPattern(RMQ_DOMAINS.COMMUNITY.ROUTING.EMBED)
-  async handleCommunityEmbedding(@Payload() payload: CommunityEmbeddingPayload) {
-    this.logger.debug(`Generating embedding for community ${payload.communityId}`);
+  async handleCommunityEmbedding(
+    @Payload() payload: CommunityEmbeddingPayload,
+  ) {
+    this.logger.debug(
+      `Generating embedding for community ${payload.communityId}`,
+    );
 
     const text = `
       ${payload.name}

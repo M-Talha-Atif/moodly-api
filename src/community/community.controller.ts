@@ -36,7 +36,7 @@ export class CommunityController {
     private readonly communityPostService: CommunityPostService, // for community posting
     private readonly communityReactionService: CommunityReactionService, // for reactions
     private readonly communityCommentService: CommunityCommentService, // for post comments
-  ) { }
+  ) {}
 
   // =============== Host CRUD =================
 
@@ -115,8 +115,6 @@ export class CommunityController {
     return ResultDto.ok(community, 'Community fetched successfully');
   }
 
-  
-
   // =============== Membership Endpoints =================
 
   @UseGuards(JwtCookieGuard)
@@ -158,7 +156,7 @@ export class CommunityController {
     return ResultDto.ok(members, 'Community members fetched successfully');
   }
 
-    /**
+  /**
    * Authenticated: Get communities with `isJoined`
    */
   @UseGuards(JwtCookieGuard)
@@ -310,13 +308,15 @@ export class CommunityController {
   async listComments(
     @Param('id') postId: string,
     @Query('cursor') cursor?: string,
-    @Query('limit') limit = 10
+    @Query('limit') limit = 10,
   ) {
-    const result = await this.communityCommentService.listComments(postId, cursor, Number(limit));
+    const result = await this.communityCommentService.listComments(
+      postId,
+      cursor,
+      Number(limit),
+    );
     return ResultDto.ok(result, 'Comments fetched successfully');
   }
-
-
 
   /**
    * Delete a comment by ID (author only)

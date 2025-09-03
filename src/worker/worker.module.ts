@@ -60,10 +60,9 @@ import { RMQ_DOMAINS } from 'src/config/rmq.constants';
       exchange: RMQ_DOMAINS.COMMUNITY.EXCHANGE,
       queue: RMQ_DOMAINS.COMMUNITY.QUEUE,
     }),
-
   ],
 
   controllers: [WorkerConsumer, EmbeddingConsumer],
   providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
 })
-export class WorkerModule { }
+export class WorkerModule {}
