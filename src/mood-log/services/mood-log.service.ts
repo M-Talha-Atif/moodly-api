@@ -9,7 +9,6 @@ import { MoodLog } from '../entities/mood-log.entity';
 import { Repository, Between } from 'typeorm';
 import { CreateMoodLogDto } from '../dto/create-mood-log.dto';
 import { startOfDay, endOfDay } from 'date-fns';
-import { EmotionAnalysisService } from './emotion-analysis.service';
 import { ValidationService } from './validation.service';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { StorageService } from './storage.service';
