@@ -7,6 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "husky install",
+    "docs:build": "typedoc",
+    "docs:clean": "rm -rf docs/*",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start -r tsconfig-paths/register",
@@ -109,6 +111,8 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "typedoc": "^0.28.12",
+    "typedoc-plugin-markdown": "^4.8.1",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
