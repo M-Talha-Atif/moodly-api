@@ -1,0 +1,12 @@
+{
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "out": "docs",
+  "tsconfig": "tsconfig.json",
+  "plugin": ["typedoc-plugin-markdown"],
+  "hideGenerator": true,
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "readme": "none",
+  "githubPages": false
+}
