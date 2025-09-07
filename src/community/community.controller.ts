@@ -36,7 +36,7 @@ export class CommunityController {
     private readonly communityPostService: CommunityPostService, // for community posting
     private readonly communityReactionService: CommunityReactionService, // for reactions
     private readonly communityCommentService: CommunityCommentService, // for post comments
-  ) {}
+  ) { }
 
   // =============== Host CRUD =================
 
@@ -113,6 +113,18 @@ export class CommunityController {
   async findOne(@Param('id') id: string) {
     const community = await this.communityQueryService.findOne(id);
     return ResultDto.ok(community, 'Community fetched successfully');
+  }
+
+  @Get('public/categories')
+  @ApiOperation({ summary: 'Get all available community categories (public)' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of categories fetched successfully',
+    type: [String]
+  })
+  async findAllCategories() {
+    const categories = await this.communityQueryService.findAllCategories();
+    return ResultDto.ok(categories, 'Categories fetched successfully');
   }
 
   // =============== Membership Endpoints =================

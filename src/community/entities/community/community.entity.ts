@@ -14,6 +14,7 @@ import { CommunityPost } from '../posts/community-post.entity';
 
 @Entity('communities')
 @Index(['createdAt'])
+@Index(['category']) 
 export class Community {
   @PrimaryGeneratedColumn('uuid')
   id: string;
