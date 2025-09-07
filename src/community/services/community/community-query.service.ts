@@ -12,7 +12,7 @@ export class CommunityQueryService {
   constructor(
     @InjectRepository(Community)
     private communityRepository: Repository<Community>,
-  ) {}
+  ) { }
 
   /**
    * Get paginated + filtered list of communities
@@ -186,4 +186,31 @@ export class CommunityQueryService {
 
     return CommunityMapper.toResponseDto(community);
   }
+
+  async findAllCategories(): Promise<string[]> {
+    try {
+      const result = await this.communityRepository.query(
+        `SELECT DISTINCT category 
+       FROM communities 
+       WHERE category IS NOT NULL AND category != '' 
+       ORDER BY category ASC`
+      );
+
+      return result.map(item => item.category);
+    } 
+    catch (error) {
+      // Fallback to query builder if raw query fails
+      const result = await this.communityRepository
+        .createQueryBuilder('community')
+        .select('DISTINCT(community.category)', 'category')
+        .where('community.category IS NOT NULL')
+        .andWhere('community.category != :empty', { empty: '' })
+        .orderBy('category', 'ASC')
+        .getRawMany();
+
+      return result.map(item => item.category);
+    }
+  }
+
+
 }
