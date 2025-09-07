@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [mood-log/mood-log.controller](../README.md) / MoodLogController
 
@@ -58,7 +58,7 @@ Defined in: [src/mood-log/mood-log.controller.ts:49](https://github.com/Progambl
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`void`\> \| [`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`MoodLog`](../../entities/mood-log.entity/classes/MoodLog.md)\>\>
 
-***
+---
 
 ### getHistory()
 
@@ -84,7 +84,7 @@ Defined in: [src/mood-log/mood-log.controller.ts:91](https://github.com/Progambl
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<\{ `data`: [`MoodLog`](../../entities/mood-log.entity/classes/MoodLog.md)[]; `limit`: `number`; `page`: `number`; `total`: `number`; `totalPages`: `number`; \}\>\>
 
-***
+---
 
 ### getToday()
 

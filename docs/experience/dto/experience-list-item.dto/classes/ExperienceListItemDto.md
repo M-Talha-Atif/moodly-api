@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [experience/dto/experience-list-item.dto](../README.md) / ExperienceListItemDto
 
@@ -26,7 +26,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:3](https://github.co
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:44](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L44)
 
-***
+---
 
 ### bookingStatus?
 
@@ -34,7 +34,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:44](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:47](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L47)
 
-***
+---
 
 ### culturalTags
 
@@ -42,7 +42,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:47](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:32](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L32)
 
-***
+---
 
 ### date
 
@@ -50,7 +50,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:32](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:11](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L11)
 
-***
+---
 
 ### desiredOutcomes
 
@@ -58,7 +58,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:11](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:38](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L38)
 
-***
+---
 
 ### host
 
@@ -78,7 +78,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:55](https://github.c
 
 > **name**: `string`
 
-***
+---
 
 ### id
 
@@ -86,7 +86,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:55](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:5](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L5)
 
-***
+---
 
 ### image
 
@@ -94,7 +94,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:5](https://github.co
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:17](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L17)
 
-***
+---
 
 ### isBooked
 
@@ -102,7 +102,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:17](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:41](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L41)
 
-***
+---
 
 ### isVirtual
 
@@ -110,7 +110,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:41](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:23](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L23)
 
-***
+---
 
 ### location
 
@@ -118,7 +118,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:23](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:14](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L14)
 
-***
+---
 
 ### price
 
@@ -126,7 +126,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:14](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:20](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L20)
 
-***
+---
 
 ### spotsFilled
 
@@ -134,7 +134,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:20](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:26](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L26)
 
-***
+---
 
 ### targetEmotions
 
@@ -142,7 +142,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:26](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:35](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L35)
 
-***
+---
 
 ### title
 
@@ -150,7 +150,7 @@ Defined in: [src/experience/dto/experience-list-item.dto.ts:35](https://github.c
 
 Defined in: [src/experience/dto/experience-list-item.dto.ts:8](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-list-item.dto.ts#L8)
 
-***
+---
 
 ### totalSpots
 

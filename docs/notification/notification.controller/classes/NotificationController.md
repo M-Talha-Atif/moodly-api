@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [notification/notification.controller](../README.md) / NotificationController
 
@@ -44,7 +44,7 @@ Defined in: [src/notification/notification.controller.ts:46](https://github.com/
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`any`\>\>
 
-***
+---
 
 ### getUserNotifications()
 
@@ -70,7 +70,7 @@ Defined in: [src/notification/notification.controller.ts:76](https://github.com/
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`any`[]\>\>
 
-***
+---
 
 ### markAllAsRead()
 
@@ -88,7 +88,7 @@ Defined in: [src/notification/notification.controller.ts:129](https://github.com
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`any`\>\>
 
-***
+---
 
 ### markAsRead()
 

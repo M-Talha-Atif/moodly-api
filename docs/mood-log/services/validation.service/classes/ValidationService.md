@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [mood-log/services/validation.service](../README.md) / ValidationService
 
@@ -38,7 +38,7 @@ Validates existing voice file path
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<`void`\>
 
-***
+---
 
 ### validateInputs()
 
@@ -68,7 +68,7 @@ Validates that at least one input type is provided
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<`void`\>
 
-***
+---
 
 ### validateVoiceFile()
 

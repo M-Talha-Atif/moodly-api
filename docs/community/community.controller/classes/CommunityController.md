@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [community/community.controller](../README.md) / CommunityController
 
@@ -74,7 +74,7 @@ Add a comment to a post
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### create()
 
@@ -98,7 +98,7 @@ Host creates a new community
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`CommunityResponseDto`](../../dto/community-response.dto/classes/CommunityResponseDto.md)\>\>
 
-***
+---
 
 ### createPost()
 
@@ -130,7 +130,7 @@ Defined in: [src/community/community.controller.ts:176](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### deleteComment()
 
@@ -154,7 +154,7 @@ Delete a comment by ID (author only)
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### deletePost()
 
@@ -176,7 +176,7 @@ Defined in: [src/community/community.controller.ts:222](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### findAll()
 
@@ -196,7 +196,7 @@ Public endpoint: list all communities
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<\{ `data`: [`CommunityListItemDto`](../../dto/community-list-item.dto/classes/CommunityListItemDto.md)[]; `limit`: `number`; `page`: `number`; `total`: `number`; \}\>\>
 
-***
+---
 
 ### findAllWithMembership()
 
@@ -220,7 +220,7 @@ Authenticated: Get communities with `isJoined`
 
 `Promise`\<\{ `data`: [`CommunityListItemDto`](../../dto/community-list-item.dto/classes/CommunityListItemDto.md) & `object`[]; `limit`: `number`; `page`: `number`; `total`: `number`; \}\>
 
-***
+---
 
 ### findOne()
 
@@ -240,7 +240,7 @@ Public endpoint: get details of a single community
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`CommunityResponseDto`](../../dto/community-response.dto/classes/CommunityResponseDto.md)\>\>
 
-***
+---
 
 ### getPost()
 
@@ -262,7 +262,7 @@ Defined in: [src/community/community.controller.ts:210](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### join()
 
@@ -284,7 +284,7 @@ Defined in: [src/community/community.controller.ts:122](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### leave()
 
@@ -306,7 +306,7 @@ Defined in: [src/community/community.controller.ts:141](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### listComments()
 
@@ -334,7 +334,7 @@ List all comments for a post
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<\{ `data`: [`CommunityCommentDto`](../../dto/posts/comments/community-comment.dto/classes/CommunityCommentDto.md)[]; `nextCursor`: `null` \| `string`; \}\>\>
 
-***
+---
 
 ### listMembers()
 
@@ -352,7 +352,7 @@ Defined in: [src/community/community.controller.ts:154](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`CommunityMemberDto`](../../dto/community-member.dto/classes/CommunityMemberDto.md)[]\>\>
 
-***
+---
 
 ### listPosts()
 
@@ -382,7 +382,7 @@ Defined in: [src/community/community.controller.ts:193](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`CommunityPostDto`](../../dto/posts/community-post.dto/classes/CommunityPostDto.md)[]\>\>
 
-***
+---
 
 ### listReactions()
 
@@ -404,7 +404,7 @@ Defined in: [src/community/community.controller.ts:270](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<\{ `summary`: `Record`\<`string`, `number`\>; `userReaction`: `null` \| `string`; \}\>\>
 
-***
+---
 
 ### remove()
 
@@ -428,7 +428,7 @@ Host deletes their community
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`void`\>\>
 
-***
+---
 
 ### removeReaction()
 
@@ -450,7 +450,7 @@ Defined in: [src/community/community.controller.ts:257](https://github.com/Proga
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### update()
 
@@ -478,7 +478,7 @@ Host updates their community
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`CommunityResponseDto`](../../dto/community-response.dto/classes/CommunityResponseDto.md)\>\>
 
-***
+---
 
 ### upsertReaction()
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [redis/redis.service](../README.md) / RedisService
 
@@ -42,7 +42,7 @@ Defined in: [src/redis/redis.service.ts:76](https://github.com/Progambler227788/
 
 `Promise`\<`null` \| `string`\>
 
-***
+---
 
 ### del()
 
@@ -60,7 +60,7 @@ Defined in: [src/redis/redis.service.ts:72](https://github.com/Progambler227788/
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### get()
 
@@ -84,7 +84,7 @@ Defined in: [src/redis/redis.service.ts:66](https://github.com/Progambler227788/
 
 `Promise`\<`null` \| `T`\>
 
-***
+---
 
 ### onModuleInit()
 
@@ -96,7 +96,7 @@ Defined in: [src/redis/redis.service.ts:29](https://github.com/Progambler227788/
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### releaseLock()
 
@@ -118,7 +118,7 @@ Defined in: [src/redis/redis.service.ts:82](https://github.com/Progambler227788/
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### set()
 

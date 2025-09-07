@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [auth/strategies/google.strategy](../README.md) / GoogleStrategy
 
@@ -11,6 +11,7 @@ Defined in: [src/auth/strategies/google.strategy.ts:16](https://github.com/Proga
 GoogleStrategy
 
 Handles Google OAuth2 login via Passport.
+
 - Ensures environment variables are set at runtime.
 - Creates or fetches user via AuthService.
 - Issues JWT token to frontend.
@@ -47,23 +48,23 @@ Defined in: [src/auth/strategies/google.strategy.ts:17](https://github.com/Proga
 
 > `protected` **\_oauth2**: `OAuth2`
 
-Defined in: node\_modules/@types/passport-oauth2/index.d.ts:14
+Defined in: node_modules/@types/passport-oauth2/index.d.ts:14
 
-NOTE: The _oauth2 property is considered "protected".  Subclasses are
-        allowed to use it when making protected resource requests to retrieve
-        the user profile.
+NOTE: The \_oauth2 property is considered "protected". Subclasses are
+allowed to use it when making protected resource requests to retrieve
+the user profile.
 
 #### Inherited from
 
 `PassportStrategy(Strategy, 'google')._oauth2`
 
-***
+---
 
 ### name
 
 > **name**: `string`
 
-Defined in: node\_modules/@types/passport-oauth2/index.d.ts:7
+Defined in: node_modules/@types/passport-oauth2/index.d.ts:7
 
 #### Inherited from
 
@@ -75,11 +76,11 @@ Defined in: node\_modules/@types/passport-oauth2/index.d.ts:7
 
 > **authenticate**(`req`, `options?`): `void`
 
-Defined in: node\_modules/@types/passport-oauth2/index.d.ts:19
+Defined in: node_modules/@types/passport-oauth2/index.d.ts:19
 
 Authenticate request.
 
-This function must be overridden by subclasses.  In abstract form, it always
+This function must be overridden by subclasses. In abstract form, it always
 throws an exception.
 
 #### Parameters
@@ -100,13 +101,13 @@ throws an exception.
 
 `PassportStrategy(Strategy, 'google').authenticate`
 
-***
+---
 
 ### authorizationParams()
 
 > **authorizationParams**(`options`): `object`
 
-Defined in: node\_modules/@types/passport-oauth2/index.d.ts:22
+Defined in: node_modules/@types/passport-oauth2/index.d.ts:22
 
 #### Parameters
 
@@ -122,13 +123,13 @@ Defined in: node\_modules/@types/passport-oauth2/index.d.ts:22
 
 `PassportStrategy(Strategy, 'google').authorizationParams`
 
-***
+---
 
 ### error()
 
 > **error**(`err`): `void`
 
-Defined in: node\_modules/@types/passport/index.d.ts:757
+Defined in: node_modules/@types/passport/index.d.ts:757
 
 Internal error while performing authentication.
 
@@ -150,13 +151,13 @@ user directory is not available.
 
 `PassportStrategy(Strategy, 'google').error`
 
-***
+---
 
 ### fail()
 
 > **fail**(`challenge?`, `status?`): `void`
 
-Defined in: node\_modules/@types/passport/index.d.ts:734
+Defined in: node_modules/@types/passport/index.d.ts:734
 
 Fail authentication, with optional `challenge` and `status`, defaulting
 to `401`.
@@ -181,13 +182,13 @@ Strategies should call this function to fail an authentication attempt.
 
 `PassportStrategy(Strategy, 'google').fail`
 
-***
+---
 
 ### parseErrorResponse()
 
 > **parseErrorResponse**(`body`, `status`): `null` \| `Error`
 
-Defined in: node\_modules/@types/passport-oauth2/index.d.ts:24
+Defined in: node_modules/@types/passport-oauth2/index.d.ts:24
 
 #### Parameters
 
@@ -207,18 +208,18 @@ Defined in: node\_modules/@types/passport-oauth2/index.d.ts:24
 
 `PassportStrategy(Strategy, 'google').parseErrorResponse`
 
-***
+---
 
 ### pass()
 
 > **pass**(): `void`
 
-Defined in: node\_modules/@types/passport/index.d.ts:749
+Defined in: node_modules/@types/passport/index.d.ts:749
 
 Pass without making a success or fail decision.
 
 Under most circumstances, Strategies should not need to call this
-function.  It exists primarily to allow previous authentication state
+function. It exists primarily to allow previous authentication state
 to be restored, for example from an HTTP session.
 
 #### Returns
@@ -229,13 +230,13 @@ to be restored, for example from an HTTP session.
 
 `PassportStrategy(Strategy, 'google').pass`
 
-***
+---
 
 ### redirect()
 
 > **redirect**(`url`, `status?`): `void`
 
-Defined in: node\_modules/@types/passport/index.d.ts:741
+Defined in: node_modules/@types/passport/index.d.ts:741
 
 Redirect to `url` with optional `status`, defaulting to 302.
 
@@ -260,20 +261,20 @@ user agent) to a third-party website for authentication.
 
 `PassportStrategy(Strategy, 'google').redirect`
 
-***
+---
 
 ### success()
 
 > **success**(`user`, `info?`): `void`
 
-Defined in: node\_modules/@types/passport/index.d.ts:727
+Defined in: node_modules/@types/passport/index.d.ts:727
 
 Authenticate `user`, with optional `info`.
 
 Strategies should call this function to successfully authenticate a
-user.  `user` should be an object supplied by the application after it
-has been given an opportunity to verify credentials.  `info` is an
-optional argument containing additional user information.  This is
+user. `user` should be an object supplied by the application after it
+has been given an opportunity to verify credentials. `info` is an
+optional argument containing additional user information. This is
 useful for third-party authentication strategies to pass profile
 details.
 
@@ -295,13 +296,13 @@ details.
 
 `PassportStrategy(Strategy, 'google').success`
 
-***
+---
 
 ### tokenParams()
 
 > **tokenParams**(`options`): `object`
 
-Defined in: node\_modules/@types/passport-oauth2/index.d.ts:23
+Defined in: node_modules/@types/passport-oauth2/index.d.ts:23
 
 #### Parameters
 
@@ -317,13 +318,13 @@ Defined in: node\_modules/@types/passport-oauth2/index.d.ts:23
 
 `PassportStrategy(Strategy, 'google').tokenParams`
 
-***
+---
 
 ### userProfile()
 
 > **userProfile**(`accessToken`, `done`): `void`
 
-Defined in: node\_modules/@types/passport-oauth2/index.d.ts:21
+Defined in: node_modules/@types/passport-oauth2/index.d.ts:21
 
 #### Parameters
 
@@ -343,7 +344,7 @@ Defined in: node\_modules/@types/passport-oauth2/index.d.ts:21
 
 `PassportStrategy(Strategy, 'google').userProfile`
 
-***
+---
 
 ### validate()
 
@@ -354,6 +355,7 @@ Defined in: [src/auth/strategies/google.strategy.ts:50](https://github.com/Proga
 validate()
 
 Called by Passport after Google OAuth is successful.
+
 - Extracts user info from Google profile
 - Creates or fetches the user from database
 - Returns user object which Passport attaches to req.user

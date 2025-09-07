@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../README.md) / [community/services/community/community-query.service](../README.md) / CommunityQueryService
 
@@ -46,7 +46,7 @@ Get paginated + filtered list of communities
 
 `Promise`\<\{ `data`: [`CommunityListItemDto`](../../../../dto/community-list-item.dto/classes/CommunityListItemDto.md)[]; `limit`: `number`; `page`: `number`; `total`: `number`; \}\>
 
-***
+---
 
 ### findAllWithMembership()
 
@@ -71,7 +71,7 @@ with `isJoined` for an authenticated user
 
 `Promise`\<\{ `data`: [`CommunityListItemDto`](../../../../dto/community-list-item.dto/classes/CommunityListItemDto.md) & `object`[]; `limit`: `number`; `page`: `number`; `total`: `number`; \}\>
 
-***
+---
 
 ### findOne()
 

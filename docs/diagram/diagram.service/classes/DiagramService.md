@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [diagram/diagram.service](../README.md) / DiagramService
 
@@ -42,7 +42,7 @@ Defined in: [src/diagram/diagram.service.ts:14](https://github.com/Progambler227
 
 > **queues**: `string`
 
-***
+---
 
 ### setApp()
 

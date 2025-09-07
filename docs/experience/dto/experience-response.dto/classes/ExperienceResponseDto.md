@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [experience/dto/experience-response.dto](../README.md) / ExperienceResponseDto
 
@@ -26,7 +26,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:14](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:70](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L70)
 
-***
+---
 
 ### bookingId?
 
@@ -34,7 +34,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:70](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:46](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L46)
 
-***
+---
 
 ### bookingStatus?
 
@@ -42,7 +42,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:46](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:49](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L49)
 
-***
+---
 
 ### cancellationPolicy?
 
@@ -50,7 +50,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:49](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:67](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L67)
 
-***
+---
 
 ### culturalTags?
 
@@ -58,7 +58,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:67](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:88](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L88)
 
-***
+---
 
 ### date
 
@@ -66,7 +66,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:88](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:25](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L25)
 
-***
+---
 
 ### description
 
@@ -74,7 +74,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:25](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:22](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L22)
 
-***
+---
 
 ### desiredOutcomes?
 
@@ -82,7 +82,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:22](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:82](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L82)
 
-***
+---
 
 ### engagementStats?
 
@@ -90,7 +90,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:82](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:100](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L100)
 
-***
+---
 
 ### experienceOutcomeSummary?
 
@@ -98,7 +98,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:100](https://github.c
 
 Defined in: [src/experience/dto/experience-response.dto.ts:94](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L94)
 
-***
+---
 
 ### growthDimensions?
 
@@ -106,7 +106,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:94](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:91](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L91)
 
-***
+---
 
 ### host
 
@@ -114,7 +114,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:91](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:104](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L104)
 
-***
+---
 
 ### id
 
@@ -122,7 +122,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:104](https://github.c
 
 Defined in: [src/experience/dto/experience-response.dto.ts:16](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L16)
 
-***
+---
 
 ### idealParticipantTraits?
 
@@ -130,7 +130,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:16](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:97](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L97)
 
-***
+---
 
 ### image
 
@@ -138,7 +138,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:97](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:31](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L31)
 
-***
+---
 
 ### isBooked
 
@@ -146,7 +146,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:31](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:43](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L43)
 
-***
+---
 
 ### isVirtual
 
@@ -154,7 +154,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:43](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:34](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L34)
 
-***
+---
 
 ### language?
 
@@ -162,7 +162,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:34](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:85](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L85)
 
-***
+---
 
 ### location
 
@@ -170,7 +170,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:85](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:28](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L28)
 
-***
+---
 
 ### meetingLink?
 
@@ -178,7 +178,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:28](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:64](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L64)
 
-***
+---
 
 ### preparation?
 
@@ -186,7 +186,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:64](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:76](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L76)
 
-***
+---
 
 ### price
 
@@ -194,7 +194,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:76](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:52](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L52)
 
-***
+---
 
 ### sessionEndTime
 
@@ -202,7 +202,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:52](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:40](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L40)
 
-***
+---
 
 ### sessionStartTime
 
@@ -210,7 +210,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:40](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:37](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L37)
 
-***
+---
 
 ### spotsFilled
 
@@ -218,7 +218,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:37](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:61](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L61)
 
-***
+---
 
 ### targetEmotions?
 
@@ -226,7 +226,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:61](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:79](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L79)
 
-***
+---
 
 ### testimonials?
 
@@ -234,7 +234,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:79](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:73](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L73)
 
-***
+---
 
 ### timezone
 
@@ -242,7 +242,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:73](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:55](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L55)
 
-***
+---
 
 ### title
 
@@ -250,7 +250,7 @@ Defined in: [src/experience/dto/experience-response.dto.ts:55](https://github.co
 
 Defined in: [src/experience/dto/experience-response.dto.ts:19](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/dto/experience-response.dto.ts#L19)
 
-***
+---
 
 ### totalSpots
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [feedback/pending-feedback.service](../README.md) / PendingFeedbackService
 
@@ -52,7 +52,7 @@ Defined in: [src/feedback/pending-feedback.service.ts:72](https://github.com/Pro
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### create()
 
@@ -74,7 +74,7 @@ Defined in: [src/feedback/pending-feedback.service.ts:25](https://github.com/Pro
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### deleteById()
 
@@ -96,7 +96,7 @@ Defined in: [src/feedback/pending-feedback.service.ts:67](https://github.com/Pro
 
 `Promise`\<`DeleteResult`\>
 
-***
+---
 
 ### findForUser()
 

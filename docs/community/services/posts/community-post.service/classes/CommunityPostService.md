@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../README.md) / [community/services/posts/community-post.service](../README.md) / CommunityPostService
 
@@ -71,7 +71,7 @@ Wrapped in a transaction to ensure consistency
 
 `Promise`\<`null` \| [`CommunityPostDto`](../../../../dto/posts/community-post.dto/classes/CommunityPostDto.md)\>
 
-***
+---
 
 ### deletePost()
 
@@ -95,7 +95,7 @@ Delete a post by its author
 
 `Promise`\<`boolean`\>
 
-***
+---
 
 ### getPost()
 
@@ -119,7 +119,7 @@ Get a single post by ID
 
 `Promise`\<`null` \| [`CommunityPostDto`](../../../../dto/posts/community-post.dto/classes/CommunityPostDto.md)\>
 
-***
+---
 
 ### listPosts()
 

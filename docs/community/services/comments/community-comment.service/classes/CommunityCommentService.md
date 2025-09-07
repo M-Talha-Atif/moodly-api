@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../README.md) / [community/services/comments/community-comment.service](../README.md) / CommunityCommentService
 
@@ -66,7 +66,7 @@ Create a comment on a post
 
 `Promise`\<`null` \| [`CommunityCommentDto`](../../../../dto/posts/comments/community-comment.dto/classes/CommunityCommentDto.md)\>
 
-***
+---
 
 ### deleteComment()
 
@@ -90,7 +90,7 @@ Delete a comment (only author can delete)
 
 `Promise`\<`boolean`\>
 
-***
+---
 
 ### listComments()
 

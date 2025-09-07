@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [booking/services/booking-query.service](../README.md) / BookingQueryService
 
@@ -68,7 +68,7 @@ Defined in: [src/booking/services/booking-query.service.ts:18](https://github.co
 
 `Promise`\<\{ `data`: [`BookingResponseDto`](../../../dto/booking-response.dto/classes/BookingResponseDto.md)[]; `total`: `number`; \}\>
 
-***
+---
 
 ### findBookingById()
 

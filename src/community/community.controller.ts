@@ -36,7 +36,7 @@ export class CommunityController {
     private readonly communityPostService: CommunityPostService, // for community posting
     private readonly communityReactionService: CommunityReactionService, // for reactions
     private readonly communityCommentService: CommunityCommentService, // for post comments
-  ) { }
+  ) {}
 
   // =============== Host CRUD =================
 
@@ -120,7 +120,7 @@ export class CommunityController {
   @ApiResponse({
     status: 200,
     description: 'List of categories fetched successfully',
-    type: [String]
+    type: [String],
   })
   async findAllCategories() {
     const categories = await this.communityQueryService.findAllCategories();

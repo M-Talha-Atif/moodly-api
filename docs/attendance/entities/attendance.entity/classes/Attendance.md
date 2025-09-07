@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [attendance/entities/attendance.entity](../README.md) / Attendance
 
@@ -34,7 +34,7 @@ Each booking can have at most one attendance record.
 Cascade delete ensures that when a booking is removed,
 its attendance record is also deleted.
 
-***
+---
 
 ### bookingId
 
@@ -44,7 +44,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:43](https://github.com
 
 Foreign key reference to the related booking.
 
-***
+---
 
 ### checkInTime
 
@@ -54,7 +54,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:84](https://github.com
 
 Timestamp marking when the user checked in.
 
-***
+---
 
 ### checkOutTime
 
@@ -64,7 +64,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:90](https://github.com
 
 Timestamp marking when the user checked out.
 
-***
+---
 
 ### createdAt
 
@@ -74,7 +74,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:116](https://github.co
 
 Record creation timestamp (automatically managed).
 
-***
+---
 
 ### experience
 
@@ -85,7 +85,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:65](https://github.com
 Many-to-one relationship with Experience.
 Multiple attendances can be tied to a single experience.
 
-***
+---
 
 ### experienceId
 
@@ -95,7 +95,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:71](https://github.com
 
 Foreign key reference to the related experience.
 
-***
+---
 
 ### id
 
@@ -105,7 +105,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:25](https://github.com
 
 Unique identifier for the attendance record (UUID).
 
-***
+---
 
 ### joinCode
 
@@ -115,7 +115,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:104](https://github.co
 
 Unique join code used for validating attendance entry.
 
-***
+---
 
 ### method
 
@@ -127,7 +127,7 @@ Method of attendance.
 Can be "virtual" (remote) or "in_person" (physical).
 Defaults to "in_person".
 
-***
+---
 
 ### qrCodeUrl?
 
@@ -137,7 +137,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:110](https://github.co
 
 Optional QR code URL for quick check-in/out scanning.
 
-***
+---
 
 ### status
 
@@ -148,7 +148,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:78](https://github.com
 Attendance status.
 Defaults to "pending" until check-in/out is completed.
 
-***
+---
 
 ### updatedAt
 
@@ -158,7 +158,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:122](https://github.co
 
 Record last update timestamp (automatically managed).
 
-***
+---
 
 ### user
 
@@ -169,7 +169,7 @@ Defined in: [src/attendance/entities/attendance.entity.ts:51](https://github.com
 Many-to-one relationship with User.
 A user can have multiple attendance records.
 
-***
+---
 
 ### userId
 

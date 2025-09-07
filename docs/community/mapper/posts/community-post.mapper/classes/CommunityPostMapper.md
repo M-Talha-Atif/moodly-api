@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../README.md) / [community/mapper/posts/community-post.mapper](../README.md) / CommunityPostMapper
 
@@ -42,7 +42,7 @@ Map a single CommunityPost entity to DTO
 
 [`CommunityPostDto`](../../../../dto/posts/community-post.dto/classes/CommunityPostDto.md)
 
-***
+---
 
 ### toDtos()
 

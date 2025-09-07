@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [auth/dto/login-response.dto](../README.md) / LoginResponseDto
 
@@ -34,7 +34,7 @@ Initializes the LoginResponseDto with sanitized data.
 `Partial`\<`LoginResponseDto`\>
 
 Partial response properties (success, message, data, etc.).
-                 The `data` field is automatically sanitized via ResultDto.
+The `data` field is automatically sanitized via ResultDto.
 
 #### Returns
 
@@ -52,15 +52,15 @@ Partial response properties (success, message, data, etc.).
 
 Defined in: [src/common/dto/result.dto.ts:23](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/common/dto/result.dto.ts#L23)
 
-#### access\_token
+#### access_token
 
-> **access\_token**: `string`
+> **access_token**: `string`
 
 #### Inherited from
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`data`](../../../../common/dto/result.dto/classes/ResultDto.md#data)
 
-***
+---
 
 ### errorType?
 
@@ -72,7 +72,7 @@ Defined in: [src/common/dto/result.dto.ts:26](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`errorType`](../../../../common/dto/result.dto/classes/ResultDto.md#errortype)
 
-***
+---
 
 ### message?
 
@@ -84,7 +84,7 @@ Defined in: [src/common/dto/result.dto.ts:17](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`message`](../../../../common/dto/result.dto/classes/ResultDto.md#message)
 
-***
+---
 
 ### reason?
 
@@ -96,7 +96,7 @@ Defined in: [src/common/dto/result.dto.ts:20](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`reason`](../../../../common/dto/result.dto/classes/ResultDto.md#reason)
 
-***
+---
 
 ### statusCode
 
@@ -108,7 +108,7 @@ Defined in: [src/common/dto/result.dto.ts:14](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`statusCode`](../../../../common/dto/result.dto/classes/ResultDto.md#statuscode)
 
-***
+---
 
 ### success
 
@@ -156,7 +156,7 @@ Defined in: [src/common/dto/result.dto.ts:81](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`fail`](../../../../common/dto/result.dto/classes/ResultDto.md#fail)
 
-***
+---
 
 ### ok()
 
@@ -192,7 +192,7 @@ Defined in: [src/common/dto/result.dto.ts:72](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`ok`](../../../../common/dto/result.dto/classes/ResultDto.md#ok)
 
-***
+---
 
 ### okEmpty()
 

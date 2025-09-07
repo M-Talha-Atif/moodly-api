@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [feedback/feedback.controller](../README.md) / FeedbackController
 
@@ -56,7 +56,7 @@ Defined in: [src/feedback/feedback.controller.ts:48](https://github.com/Progambl
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`null` \| [`Feedback`](../../entities/feedback.entity/classes/Feedback.md)\>\>
 
-***
+---
 
 ### getAll()
 
@@ -74,7 +74,7 @@ Defined in: [src/feedback/feedback.controller.ts:74](https://github.com/Progambl
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`Feedback`](../../entities/feedback.entity/classes/Feedback.md)[]\>\>
 
-***
+---
 
 ### getPending()
 
@@ -92,7 +92,7 @@ Defined in: [src/feedback/feedback.controller.ts:88](https://github.com/Progambl
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`PendingFeedback`](../../entities/pending-feedback.entity/classes/PendingFeedback.md)[]\>\>
 
-***
+---
 
 ### removePending()
 

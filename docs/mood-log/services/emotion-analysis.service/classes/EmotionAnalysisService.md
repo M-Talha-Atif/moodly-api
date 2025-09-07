@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [mood-log/services/emotion-analysis.service](../README.md) / EmotionAnalysisService
 
@@ -52,7 +52,7 @@ Analyzes an image file for emotional content
 
 `Promise`\<[`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<[`EmotionApiResponse`](../../../interfaces/emotion-api-response-interface/interfaces/EmotionApiResponse.md)\>\>
 
-***
+---
 
 ### analyzeVoiceEmotion()
 

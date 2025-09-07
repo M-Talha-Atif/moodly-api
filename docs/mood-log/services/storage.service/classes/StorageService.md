@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [mood-log/services/storage.service](../README.md) / StorageService
 
@@ -36,7 +36,7 @@ Defined in: [src/mood-log/services/storage.service.ts:24](https://github.com/Pro
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### getPublicUrl()
 
@@ -54,7 +54,7 @@ Defined in: [src/mood-log/services/storage.service.ts:33](https://github.com/Pro
 
 `string`
 
-***
+---
 
 ### save()
 

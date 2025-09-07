@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [onboarding/onboarding.controller](../README.md) / OnboardingController
 
@@ -48,7 +48,7 @@ Defined in: [src/onboarding/onboarding.controller.ts:46](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>\>
 
-***
+---
 
 ### answer()
 
@@ -70,7 +70,7 @@ Defined in: [src/onboarding/onboarding.controller.ts:29](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>\>
 
-***
+---
 
 ### complete()
 
@@ -88,7 +88,7 @@ Defined in: [src/onboarding/onboarding.controller.ts:56](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`null` \| `Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>\>
 
-***
+---
 
 ### goals()
 
@@ -110,7 +110,7 @@ Defined in: [src/onboarding/onboarding.controller.ts:39](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>\>
 
-***
+---
 
 ### start()
 
@@ -128,7 +128,7 @@ Defined in: [src/onboarding/onboarding.controller.ts:22](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md)\>\>
 
-***
+---
 
 ### status()
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../../README.md) / [community/entities/posts/comments/community-comment.entity](../README.md) / CommunityComment
 
@@ -26,7 +26,7 @@ Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:1
 
 Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:20](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/entities/posts/comments/community-comment.entity.ts#L20)
 
-***
+---
 
 ### content
 
@@ -34,7 +34,7 @@ Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:2
 
 Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:23](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/entities/posts/comments/community-comment.entity.ts#L23)
 
-***
+---
 
 ### createdAt
 
@@ -42,7 +42,7 @@ Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:2
 
 Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:26](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/entities/posts/comments/community-comment.entity.ts#L26)
 
-***
+---
 
 ### id
 
@@ -50,7 +50,7 @@ Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:2
 
 Defined in: [src/community/entities/posts/comments/community-comment.entity.ts:14](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/entities/posts/comments/community-comment.entity.ts#L14)
 
-***
+---
 
 ### post
 

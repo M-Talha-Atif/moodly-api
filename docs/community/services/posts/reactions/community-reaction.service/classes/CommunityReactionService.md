@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../../README.md) / [community/services/posts/reactions/community-reaction.service](../README.md) / CommunityReactionService
 
@@ -60,7 +60,7 @@ Defined in: [src/community/services/posts/reactions/community-reaction.service.t
 
 `Promise`\<\{ `summary`: `Record`\<`string`, `number`\>; `userReaction`: `null` \| `string`; \}\>
 
-***
+---
 
 ### removeReaction()
 
@@ -84,7 +84,7 @@ Remove a reaction (regardless of type)
 
 `Promise`\<`boolean`\>
 
-***
+---
 
 ### upsertReaction()
 

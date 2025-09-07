@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [notification/dto/send-email-notification.dto](../README.md) / SendEmailNotificationDto
 
@@ -26,7 +26,7 @@ Defined in: [src/notification/dto/send-email-notification.dto.ts:4](https://gith
 
 Defined in: [src/notification/dto/send-email-notification.dto.ts:15](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/notification/dto/send-email-notification.dto.ts#L15)
 
-***
+---
 
 ### html?
 
@@ -34,7 +34,7 @@ Defined in: [src/notification/dto/send-email-notification.dto.ts:15](https://git
 
 Defined in: [src/notification/dto/send-email-notification.dto.ts:33](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/notification/dto/send-email-notification.dto.ts#L33)
 
-***
+---
 
 ### qrCodeData?
 
@@ -42,7 +42,7 @@ Defined in: [src/notification/dto/send-email-notification.dto.ts:33](https://git
 
 Defined in: [src/notification/dto/send-email-notification.dto.ts:40](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/notification/dto/send-email-notification.dto.ts#L40)
 
-***
+---
 
 ### subject
 
@@ -50,7 +50,7 @@ Defined in: [src/notification/dto/send-email-notification.dto.ts:40](https://git
 
 Defined in: [src/notification/dto/send-email-notification.dto.ts:21](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/notification/dto/send-email-notification.dto.ts#L21)
 
-***
+---
 
 ### text?
 
@@ -58,7 +58,7 @@ Defined in: [src/notification/dto/send-email-notification.dto.ts:21](https://git
 
 Defined in: [src/notification/dto/send-email-notification.dto.ts:27](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/notification/dto/send-email-notification.dto.ts#L27)
 
-***
+---
 
 ### userId
 

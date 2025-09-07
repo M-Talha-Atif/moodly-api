@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [users/entities/user.entity](../README.md) / User
 
@@ -26,7 +26,7 @@ Defined in: [src/users/entities/user.entity.ts:27](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:88](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L88)
 
-***
+---
 
 ### avatarUrl
 
@@ -34,7 +34,7 @@ Defined in: [src/users/entities/user.entity.ts:88](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:44](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L44)
 
-***
+---
 
 ### bookings
 
@@ -42,7 +42,7 @@ Defined in: [src/users/entities/user.entity.ts:44](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:66](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L66)
 
-***
+---
 
 ### comments
 
@@ -50,7 +50,7 @@ Defined in: [src/users/entities/user.entity.ts:66](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:79](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L79)
 
-***
+---
 
 ### communicationStyle
 
@@ -58,7 +58,7 @@ Defined in: [src/users/entities/user.entity.ts:79](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:57](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L57)
 
-***
+---
 
 ### communityMemberships
 
@@ -66,7 +66,7 @@ Defined in: [src/users/entities/user.entity.ts:57](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:85](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L85)
 
-***
+---
 
 ### createdAt
 
@@ -74,7 +74,7 @@ Defined in: [src/users/entities/user.entity.ts:85](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:91](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L91)
 
-***
+---
 
 ### culturalBackground
 
@@ -94,7 +94,7 @@ Defined in: [src/users/entities/user.entity.ts:47](https://github.com/Progambler
 
 > `optional` **values**: `string`[]
 
-***
+---
 
 ### email
 
@@ -102,7 +102,7 @@ Defined in: [src/users/entities/user.entity.ts:47](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:32](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L32)
 
-***
+---
 
 ### experiences
 
@@ -110,7 +110,7 @@ Defined in: [src/users/entities/user.entity.ts:32](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:63](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L63)
 
-***
+---
 
 ### feedbacks
 
@@ -118,7 +118,7 @@ Defined in: [src/users/entities/user.entity.ts:63](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:69](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L69)
 
-***
+---
 
 ### id
 
@@ -126,7 +126,7 @@ Defined in: [src/users/entities/user.entity.ts:69](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:29](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L29)
 
-***
+---
 
 ### languagePreferences
 
@@ -134,7 +134,7 @@ Defined in: [src/users/entities/user.entity.ts:29](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:54](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L54)
 
-***
+---
 
 ### name
 
@@ -142,7 +142,7 @@ Defined in: [src/users/entities/user.entity.ts:54](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:38](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L38)
 
-***
+---
 
 ### ownedCommunities
 
@@ -150,7 +150,7 @@ Defined in: [src/users/entities/user.entity.ts:38](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:73](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L73)
 
-***
+---
 
 ### passwordHash?
 
@@ -158,7 +158,7 @@ Defined in: [src/users/entities/user.entity.ts:73](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:35](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L35)
 
-***
+---
 
 ### posts
 
@@ -166,7 +166,7 @@ Defined in: [src/users/entities/user.entity.ts:35](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:76](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L76)
 
-***
+---
 
 ### privacySettings
 
@@ -174,7 +174,7 @@ Defined in: [src/users/entities/user.entity.ts:76](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:98](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L98)
 
-***
+---
 
 ### provider
 
@@ -182,7 +182,7 @@ Defined in: [src/users/entities/user.entity.ts:98](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:41](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L41)
 
-***
+---
 
 ### reactions
 
@@ -190,7 +190,7 @@ Defined in: [src/users/entities/user.entity.ts:41](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:82](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L82)
 
-***
+---
 
 ### role
 
@@ -198,7 +198,7 @@ Defined in: [src/users/entities/user.entity.ts:82](https://github.com/Progambler
 
 Defined in: [src/users/entities/user.entity.ts:60](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/user.entity.ts#L60)
 
-***
+---
 
 ### updatedAt
 

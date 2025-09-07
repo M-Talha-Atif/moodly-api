@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [users/users.service](../README.md) / UsersService
 
@@ -48,7 +48,7 @@ Defined in: [src/users/users.service.ts:23](https://github.com/Progambler227788/
 
 `Promise`\<[`User`](../../entities/user.entity/classes/User.md)\>
 
-***
+---
 
 ### findAll()
 
@@ -60,7 +60,7 @@ Defined in: [src/users/users.service.ts:61](https://github.com/Progambler227788/
 
 `Promise`\<[`User`](../../entities/user.entity/classes/User.md)[]\>
 
-***
+---
 
 ### findByEmail()
 
@@ -82,7 +82,7 @@ Defined in: [src/users/users.service.ts:74](https://github.com/Progambler227788/
 
 `Promise`\<`null` \| [`User`](../../entities/user.entity/classes/User.md)\>
 
-***
+---
 
 ### findById()
 
@@ -100,7 +100,7 @@ Defined in: [src/users/users.service.ts:109](https://github.com/Progambler227788
 
 `Promise`\<`null` \| [`User`](../../entities/user.entity/classes/User.md)\>
 
-***
+---
 
 ### findOne()
 
@@ -118,7 +118,7 @@ Defined in: [src/users/users.service.ts:65](https://github.com/Progambler227788/
 
 `Promise`\<[`User`](../../entities/user.entity/classes/User.md)\>
 
-***
+---
 
 ### remove()
 
@@ -136,7 +136,7 @@ Defined in: [src/users/users.service.ts:105](https://github.com/Progambler227788
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### update()
 
