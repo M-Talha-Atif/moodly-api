@@ -26,6 +26,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["src/**/*"],   
+  "include": ["src/**/*"],
   "exclude": ["dist", "eslint.config.dev.js", "eslint.config.prod.js"]
 }

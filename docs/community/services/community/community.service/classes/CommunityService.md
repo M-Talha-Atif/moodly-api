@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../README.md) / [community/services/community/community.service](../README.md) / CommunityService
 
@@ -52,7 +52,7 @@ Defined in: [src/community/services/community/community.service.ts:25](https://g
 
 `Promise`\<[`CommunityResponseDto`](../../../../dto/community-response.dto/classes/CommunityResponseDto.md)\>
 
-***
+---
 
 ### findAll()
 
@@ -64,7 +64,7 @@ Defined in: [src/community/services/community/community.service.ts:57](https://g
 
 `Promise`\<[`CommunityListItemDto`](../../../../dto/community-list-item.dto/classes/CommunityListItemDto.md)[]\>
 
-***
+---
 
 ### findOne()
 
@@ -82,7 +82,7 @@ Defined in: [src/community/services/community/community.service.ts:43](https://g
 
 `Promise`\<[`CommunityResponseDto`](../../../../dto/community-response.dto/classes/CommunityResponseDto.md)\>
 
-***
+---
 
 ### removeWithOwnerCheck()
 
@@ -106,7 +106,7 @@ Remove with ownership check (controller expects this)
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### update()
 
@@ -128,7 +128,7 @@ Defined in: [src/community/services/community/community.service.ts:71](https://g
 
 `Promise`\<[`CommunityResponseDto`](../../../../dto/community-response.dto/classes/CommunityResponseDto.md)\>
 
-***
+---
 
 ### updateWithOwnerCheck()
 

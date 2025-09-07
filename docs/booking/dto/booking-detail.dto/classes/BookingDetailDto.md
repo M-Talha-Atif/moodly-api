@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [booking/dto/booking-detail.dto](../README.md) / BookingDetailDto
 
@@ -26,7 +26,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:18](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:50](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L50)
 
-***
+---
 
 ### bookingId
 
@@ -34,7 +34,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:50](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:20](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L20)
 
-***
+---
 
 ### date
 
@@ -42,7 +42,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:20](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:29](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L29)
 
-***
+---
 
 ### experienceId
 
@@ -50,7 +50,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:29](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:23](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L23)
 
-***
+---
 
 ### hostName
 
@@ -58,7 +58,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:23](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:35](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L35)
 
-***
+---
 
 ### isVirtual
 
@@ -66,7 +66,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:35](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:41](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L41)
 
-***
+---
 
 ### location
 
@@ -74,7 +74,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:41](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:38](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L38)
 
-***
+---
 
 ### meetingLink?
 
@@ -82,7 +82,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:38](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:44](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L44)
 
-***
+---
 
 ### qrCodeUrl?
 
@@ -90,7 +90,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:44](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:47](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L47)
 
-***
+---
 
 ### time
 
@@ -98,7 +98,7 @@ Defined in: [src/booking/dto/booking-detail.dto.ts:47](https://github.com/Progam
 
 Defined in: [src/booking/dto/booking-detail.dto.ts:32](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/booking/dto/booking-detail.dto.ts#L32)
 
-***
+---
 
 ### title
 

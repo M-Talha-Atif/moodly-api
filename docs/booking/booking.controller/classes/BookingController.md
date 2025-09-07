@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [booking/booking.controller](../README.md) / BookingController
 
@@ -48,7 +48,7 @@ Defined in: [src/booking/booking.controller.ts:79](https://github.com/Progambler
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`any`\>\>
 
-***
+---
 
 ### create()
 
@@ -70,7 +70,7 @@ Defined in: [src/booking/booking.controller.ts:32](https://github.com/Progambler
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<[`BookingResponseDto`](../../dto/booking-response.dto/classes/BookingResponseDto.md)\>\>
 
-***
+---
 
 ### findAllBookings()
 
@@ -104,7 +104,7 @@ Defined in: [src/booking/booking.controller.ts:138](https://github.com/Progamble
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### getBookingDetail()
 

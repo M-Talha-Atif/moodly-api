@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [auth/auth.controller](../README.md) / AuthController
 
@@ -48,7 +48,7 @@ Defined in: [src/auth/auth.controller.ts:108](https://github.com/Progambler22778
 
 `Promise`\<`Response`\<`any`, `Record`\<`string`, `any`\>\>\>
 
-***
+---
 
 ### googleCallback()
 
@@ -70,7 +70,7 @@ Defined in: [src/auth/auth.controller.ts:82](https://github.com/Progambler227788
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### googleLogin()
 
@@ -84,7 +84,7 @@ Initiates Google OAuth flow
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### login()
 
@@ -106,7 +106,7 @@ Defined in: [src/auth/auth.controller.ts:38](https://github.com/Progambler227788
 
 `Promise`\<`Response`\<`any`, `Record`\<`string`, `any`\>\>\>
 
-***
+---
 
 ### logout()
 
@@ -124,7 +124,7 @@ Defined in: [src/auth/auth.controller.ts:60](https://github.com/Progambler227788
 
 `Promise`\<`Response`\<`any`, `Record`\<`string`, `any`\>\>\>
 
-***
+---
 
 ### signUp()
 

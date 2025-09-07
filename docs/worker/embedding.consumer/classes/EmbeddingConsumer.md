@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [worker/embedding.consumer](../README.md) / EmbeddingConsumer
 
@@ -56,7 +56,7 @@ Defined in: [src/worker/embedding.consumer.ts:67](https://github.com/Progambler2
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### handleMoodAnalyzed()
 

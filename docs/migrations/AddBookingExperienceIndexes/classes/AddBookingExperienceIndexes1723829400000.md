@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [migrations/AddBookingExperienceIndexes](../README.md) / AddBookingExperienceIndexes1723829400000
 
@@ -60,7 +60,7 @@ Reverse the migrations.
 
 `MigrationInterface.down`
 
-***
+---
 
 ### up()
 

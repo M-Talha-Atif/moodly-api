@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../README.md) / [community/mapper/community/community.mapper](../README.md) / CommunityMapper
 
@@ -40,7 +40,7 @@ Defined in: [src/community/mapper/community/community.mapper.ts:56](https://gith
 
 [`Community`](../../../../entities/community/community.entity/classes/Community.md)
 
-***
+---
 
 ### fromCreateDto()
 
@@ -62,7 +62,7 @@ Defined in: [src/community/mapper/community/community.mapper.ts:41](https://gith
 
 [`Community`](../../../../entities/community/community.entity/classes/Community.md)
 
-***
+---
 
 ### toListItemDto()
 
@@ -80,7 +80,7 @@ Defined in: [src/community/mapper/community/community.mapper.ts:10](https://gith
 
 [`CommunityListItemDto`](../../../../dto/community-list-item.dto/classes/CommunityListItemDto.md)
 
-***
+---
 
 ### toResponseDto()
 

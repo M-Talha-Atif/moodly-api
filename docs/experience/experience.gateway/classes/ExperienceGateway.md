@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [experience/experience.gateway](../README.md) / ExperienceGateway
 
@@ -61,7 +61,7 @@ this.emitSpotsUpdate(experienceId, newSpotsLeft)
 
 `void`
 
-***
+---
 
 ### handleConnection()
 
@@ -86,7 +86,7 @@ Equivalent of "on connect" in socket.io
 
 `OnGatewayConnection.handleConnection`
 
-***
+---
 
 ### handleDisconnect()
 
@@ -110,7 +110,7 @@ Triggered when a client disconnects (closes browser, refresh, network drop, etc.
 
 `OnGatewayDisconnect.handleDisconnect`
 
-***
+---
 
 ### handleJoinExperience()
 
@@ -122,7 +122,7 @@ Handles when a client wants to "join" a specific experience room.
 Example: user clicks into an experience detail page → client emits 'join-experience'
 
 - client joins a room (socket.io group channel)
-- room name convention: "experience_<experienceId>"
+- room name convention: "experience\_<experienceId>"
 - Later, we can emit events ONLY to users in this room
 
 #### Parameters

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [notification/notification.service](../README.md) / NotificationService
 
@@ -52,7 +52,7 @@ Defined in: [src/notification/notification.service.ts:22](https://github.com/Pro
 
 `Promise`\<[`Notification`](../../entities/notification.entity/classes/Notification.md)\>
 
-***
+---
 
 ### getUserNotifications()
 
@@ -80,7 +80,7 @@ Defined in: [src/notification/notification.service.ts:59](https://github.com/Pro
 
 `Promise`\<`object`[]\>
 
-***
+---
 
 ### markAllAsRead()
 
@@ -98,7 +98,7 @@ Defined in: [src/notification/notification.service.ts:95](https://github.com/Pro
 
 `Promise`\<\{ `read`: `boolean`; `userId`: `string`; \}\>
 
-***
+---
 
 ### markAsRead()
 
@@ -120,7 +120,7 @@ Defined in: [src/notification/notification.service.ts:83](https://github.com/Pro
 
 `Promise`\<\{ `id`: `string`; `read`: `boolean`; \}\>
 
-***
+---
 
 ### sendEmail()
 

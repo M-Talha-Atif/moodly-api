@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [attendance/dto/check-in-response.dto](../README.md) / CheckInResponseDto
 
@@ -53,7 +53,7 @@ Defined in: [src/attendance/dto/check-in-response.dto.ts:15](https://github.com/
 The attendance entity returned upon a successful check-in.
 This property is optional and only present in case of success.
 
-***
+---
 
 ### data?
 
@@ -65,7 +65,7 @@ Defined in: [src/common/dto/result.dto.ts:23](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`data`](../../../../common/dto/result.dto/classes/ResultDto.md#data)
 
-***
+---
 
 ### errorType?
 
@@ -77,7 +77,7 @@ Defined in: [src/common/dto/result.dto.ts:26](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`errorType`](../../../../common/dto/result.dto/classes/ResultDto.md#errortype)
 
-***
+---
 
 ### message?
 
@@ -89,7 +89,7 @@ Defined in: [src/common/dto/result.dto.ts:17](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`message`](../../../../common/dto/result.dto/classes/ResultDto.md#message)
 
-***
+---
 
 ### reason?
 
@@ -101,7 +101,7 @@ Defined in: [src/common/dto/result.dto.ts:20](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`reason`](../../../../common/dto/result.dto/classes/ResultDto.md#reason)
 
-***
+---
 
 ### statusCode
 
@@ -113,7 +113,7 @@ Defined in: [src/common/dto/result.dto.ts:14](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`statusCode`](../../../../common/dto/result.dto/classes/ResultDto.md#statuscode)
 
-***
+---
 
 ### success
 
@@ -155,7 +155,7 @@ Optional HTTP status code (default: 400).
 
 A response DTO with error details.
 
-***
+---
 
 ### fail()
 
@@ -191,7 +191,7 @@ Defined in: [src/common/dto/result.dto.ts:81](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`fail`](../../../../common/dto/result.dto/classes/ResultDto.md#fail)
 
-***
+---
 
 ### ok()
 
@@ -227,7 +227,7 @@ Defined in: [src/common/dto/result.dto.ts:72](https://github.com/Progambler22778
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`ok`](../../../../common/dto/result.dto/classes/ResultDto.md#ok)
 
-***
+---
 
 ### okEmpty()
 
@@ -243,7 +243,7 @@ Defined in: [src/common/dto/result.dto.ts:100](https://github.com/Progambler2277
 
 [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md).[`okEmpty`](../../../../common/dto/result.dto/classes/ResultDto.md#okempty)
 
-***
+---
 
 ### success()
 

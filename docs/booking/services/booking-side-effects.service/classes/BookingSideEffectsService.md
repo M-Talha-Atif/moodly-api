@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [booking/services/booking-side-effects.service](../README.md) / BookingSideEffectsService
 
@@ -56,7 +56,7 @@ Defined in: [src/booking/services/booking-side-effects.service.ts:22](https://gi
 
 `void`
 
-***
+---
 
 ### queueBookingCreatedSideEffects()
 

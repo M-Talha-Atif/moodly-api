@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [attendance/attendance.module](../README.md) / AttendanceModule
 
@@ -14,6 +14,7 @@ This module encapsulates all attendance-related functionality,
 including entity persistence, business logic, and API endpoints.
 
 Responsibilities:
+
 - Registers the Attendance entity with TypeORM.
 - Provides AttendanceService for handling business logic (check-ins, status updates, etc.).
 - Exposes AttendanceController for REST API endpoints.

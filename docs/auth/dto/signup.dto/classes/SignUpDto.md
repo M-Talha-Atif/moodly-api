@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [auth/dto/signup.dto](../README.md) / SignUpDto
 
@@ -33,7 +33,7 @@ Defined in: [src/auth/dto/signup.dto.ts:80](https://github.com/Progambler227788/
 URL of the user's avatar/profile picture.
 Optional field.
 
-***
+---
 
 ### communicationStyle?
 
@@ -43,7 +43,7 @@ Defined in: [src/auth/dto/signup.dto.ts:105](https://github.com/Progambler227788
 
 Preferred communication style (e.g., formal, casual).
 
-***
+---
 
 ### culturalBackground?
 
@@ -66,7 +66,7 @@ May include ethnicity, religion, and personal values.
 
 > `optional` **values**: `string`[]
 
-***
+---
 
 ### email
 
@@ -77,7 +77,7 @@ Defined in: [src/auth/dto/signup.dto.ts:55](https://github.com/Progambler227788/
 The user's email address.
 Must be in valid email format.
 
-***
+---
 
 ### languagePreferences?
 
@@ -87,7 +87,7 @@ Defined in: [src/auth/dto/signup.dto.ts:98](https://github.com/Progambler227788/
 
 Languages the user prefers for communication.
 
-***
+---
 
 ### name?
 
@@ -98,7 +98,7 @@ Defined in: [src/auth/dto/signup.dto.ts:72](https://github.com/Progambler227788/
 The user's display name.
 Optional field.
 
-***
+---
 
 ### password
 
@@ -109,7 +109,7 @@ Defined in: [src/auth/dto/signup.dto.ts:64](https://github.com/Progambler227788/
 The user's account password.
 Must be between 8 and 64 characters.
 
-***
+---
 
 ### privacySettings?
 
@@ -119,7 +119,7 @@ Defined in: [src/auth/dto/signup.dto.ts:113](https://github.com/Progambler227788
 
 User-defined privacy settings.
 
-***
+---
 
 ### role?
 

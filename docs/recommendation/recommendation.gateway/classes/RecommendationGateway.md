@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [recommendation/recommendation.gateway](../README.md) / RecommendationGateway
 
@@ -53,7 +53,7 @@ Defined in: [src/recommendation/recommendation.gateway.ts:21](https://github.com
 
 `OnGatewayConnection.handleConnection`
 
-***
+---
 
 ### handleDisconnect()
 
@@ -75,7 +75,7 @@ Defined in: [src/recommendation/recommendation.gateway.ts:29](https://github.com
 
 `OnGatewayDisconnect.handleDisconnect`
 
-***
+---
 
 ### sendRecommendations()
 

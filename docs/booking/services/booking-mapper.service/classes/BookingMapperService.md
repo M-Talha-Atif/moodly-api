@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [booking/services/booking-mapper.service](../README.md) / BookingMapperService
 
@@ -36,7 +36,7 @@ Defined in: [src/booking/services/booking-mapper.service.ts:21](https://github.c
 
 [`BookingDetailDto`](../../../dto/booking-detail.dto/classes/BookingDetailDto.md)
 
-***
+---
 
 ### toResponseDto()
 

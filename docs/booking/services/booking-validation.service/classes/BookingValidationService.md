@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [booking/services/booking-validation.service](../README.md) / BookingValidationService
 
@@ -40,7 +40,7 @@ Defined in: [src/booking/services/booking-validation.service.ts:26](https://gith
 
 `void`
 
-***
+---
 
 ### validateCancellationAllowed()
 
@@ -66,7 +66,7 @@ Defined in: [src/booking/services/booking-validation.service.ts:39](https://gith
 
 `void`
 
-***
+---
 
 ### validateExperienceExists()
 

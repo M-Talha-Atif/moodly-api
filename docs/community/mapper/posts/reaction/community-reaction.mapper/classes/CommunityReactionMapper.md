@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../../README.md) / [community/mapper/posts/reaction/community-reaction.mapper](../README.md) / CommunityReactionMapper
 
@@ -36,7 +36,7 @@ Defined in: [src/community/mapper/posts/reaction/community-reaction.mapper.ts:7]
 
 [`CommunityReactionDto`](../../../../../dto/posts/reactions/community-reaction.dto/classes/CommunityReactionDto.md)
 
-***
+---
 
 ### toDtos()
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [auth/auth.service](../README.md) / AuthService
 
@@ -41,6 +41,7 @@ Defined in: [src/auth/auth.service.ts:71](https://github.com/Progambler227788/AI
 Authenticates a user and returns a signed JWT.
 
 Steps:
+
 1. Fetches user by email (with password hash).
 2. Verifies the provided password using bcrypt.
 3. Generates a JWT payload with user id, email, and role.
@@ -60,7 +61,7 @@ DTO containing user login credentials.
 
 LoginResponseDto with JWT access token or an error response.
 
-***
+---
 
 ### logout()
 
@@ -71,6 +72,7 @@ Defined in: [src/auth/auth.service.ts:137](https://github.com/Progambler227788/A
 Logs out the current user.
 
 Note:
+
 - Actual cookie clearing happens in the AuthController.
 - This method just returns a success response object.
 
@@ -80,7 +82,7 @@ Note:
 
 ResultDto with success message and 200 status.
 
-***
+---
 
 ### signUp()
 
@@ -91,6 +93,7 @@ Defined in: [src/auth/auth.service.ts:43](https://github.com/Progambler227788/AI
 Registers a new user.
 
 Steps:
+
 1. Checks if a user with the given email already exists.
 2. Hashes the provided password with bcrypt.
 3. Creates the user in the database with a default or provided role.
@@ -109,7 +112,7 @@ DTO containing user registration details.
 
 SignUpResponseDto with created user data or an error response.
 
-***
+---
 
 ### validateGoogleLogin()
 

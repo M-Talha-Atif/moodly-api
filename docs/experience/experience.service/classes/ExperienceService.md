@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [experience/experience.service](../README.md) / ExperienceService
 
@@ -56,7 +56,7 @@ Defined in: [src/experience/experience.service.ts:33](https://github.com/Progamb
 
 `Promise`\<[`Experience`](../../entities/experience.entity/classes/Experience.md)\>
 
-***
+---
 
 ### findAllForUser()
 
@@ -94,7 +94,7 @@ Defined in: [src/experience/experience.service.ts:80](https://github.com/Progamb
 
 `Promise`\<\{ `data`: `any`[]; `meta`: \{ `limit`: `number`; `page`: `number`; `total`: `number`; `totalPages`: `number`; \}; \}\>
 
-***
+---
 
 ### findAllPublic()
 
@@ -128,7 +128,7 @@ Defined in: [src/experience/experience.service.ts:54](https://github.com/Progamb
 
 `Promise`\<\[[`Experience`](../../entities/experience.entity/classes/Experience.md)[], `number`\]\>
 
-***
+---
 
 ### findOne()
 
@@ -146,7 +146,7 @@ Defined in: [src/experience/experience.service.ts:146](https://github.com/Progam
 
 `Promise`\<`null` \| [`Experience`](../../entities/experience.entity/classes/Experience.md)\>
 
-***
+---
 
 ### findOneWithBooking()
 
@@ -168,7 +168,7 @@ Defined in: [src/experience/experience.service.ts:153](https://github.com/Progam
 
 `Promise`\<`null` \| \{ `aiPrep`: `any`; `bookingId`: `null`; `bookings`: [`Booking`](../../../booking/entities/booking.entity/classes/Booking.md)[]; `bookingStatus`: `null`; `cancellationPolicy`: `string`; `createdAt`: `Date`; `culturalTags`: `string`[]; `date`: `Date`; `description`: `string`; `desiredOutcomes`: `string`[]; `engagementStats`: `any`; `experienceOutcomeSummary`: `string`; `feedbacks`: [`Feedback`](../../../feedback/entities/feedback.entity/classes/Feedback.md)[]; `growthDimensions`: `any`; `host`: [`User`](../../../users/entities/user.entity/classes/User.md); `id`: `string`; `idealParticipantTraits`: `string`[]; `image`: `string`; `isBooked`: `boolean`; `isVirtual`: `boolean`; `language`: `string`; `location`: `string`; `meetingLink`: `string`; `preparation`: `any`; `price`: `number`; `sessionEndTime`: `Date`; `sessionStartTime`: `Date`; `spotsFilled`: `number`; `targetEmotions`: `string`[]; `testimonials`: `any`; `timezone`: `string`; `title`: `string`; `totalSpots`: `number`; `updatedAt`: `Date`; \} \| \{ `aiPrep`: `any`; `bookingId`: `null` \| `string`; `bookings`: [`Booking`](../../../booking/entities/booking.entity/classes/Booking.md)[]; `bookingStatus`: `"confirmed"` \| `"waitlisted"`; `cancellationPolicy`: `string`; `createdAt`: `Date`; `culturalTags`: `string`[]; `date`: `Date`; `description`: `string`; `desiredOutcomes`: `string`[]; `engagementStats`: `any`; `experienceOutcomeSummary`: `string`; `feedbacks`: [`Feedback`](../../../feedback/entities/feedback.entity/classes/Feedback.md)[]; `growthDimensions`: `any`; `host`: [`User`](../../../users/entities/user.entity/classes/User.md); `id`: `string`; `idealParticipantTraits`: `string`[]; `image`: `string`; `isBooked`: `boolean`; `isVirtual`: `boolean`; `language`: `string`; `location`: `string`; `meetingLink`: `string`; `preparation`: `any`; `price`: `number`; `sessionEndTime`: `Date`; `sessionStartTime`: `Date`; `spotsFilled`: `number`; `targetEmotions`: `string`[]; `testimonials`: `any`; `timezone`: `string`; `title`: `string`; `totalSpots`: `number`; `updatedAt`: `Date`; \}\>
 
-***
+---
 
 ### remove()
 
@@ -186,7 +186,7 @@ Defined in: [src/experience/experience.service.ts:214](https://github.com/Progam
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### update()
 

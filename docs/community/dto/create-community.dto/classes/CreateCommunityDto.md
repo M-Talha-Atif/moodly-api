@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [community/dto/create-community.dto](../README.md) / CreateCommunityDto
 
@@ -26,7 +26,7 @@ Defined in: [src/community/dto/create-community.dto.ts:3](https://github.com/Pro
 
 Defined in: [src/community/dto/create-community.dto.ts:16](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/dto/create-community.dto.ts#L16)
 
-***
+---
 
 ### coverImageUrl?
 
@@ -34,7 +34,7 @@ Defined in: [src/community/dto/create-community.dto.ts:16](https://github.com/Pr
 
 Defined in: [src/community/dto/create-community.dto.ts:13](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/dto/create-community.dto.ts#L13)
 
-***
+---
 
 ### description?
 
@@ -42,7 +42,7 @@ Defined in: [src/community/dto/create-community.dto.ts:13](https://github.com/Pr
 
 Defined in: [src/community/dto/create-community.dto.ts:9](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/dto/create-community.dto.ts#L9)
 
-***
+---
 
 ### isPrivate?
 
@@ -50,7 +50,7 @@ Defined in: [src/community/dto/create-community.dto.ts:9](https://github.com/Pro
 
 Defined in: [src/community/dto/create-community.dto.ts:20](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/dto/create-community.dto.ts#L20)
 
-***
+---
 
 ### location?
 
@@ -58,7 +58,7 @@ Defined in: [src/community/dto/create-community.dto.ts:20](https://github.com/Pr
 
 Defined in: [src/community/dto/create-community.dto.ts:28](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/dto/create-community.dto.ts#L28)
 
-***
+---
 
 ### name
 
@@ -66,7 +66,7 @@ Defined in: [src/community/dto/create-community.dto.ts:28](https://github.com/Pr
 
 Defined in: [src/community/dto/create-community.dto.ts:5](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/dto/create-community.dto.ts#L5)
 
-***
+---
 
 ### rules?
 
@@ -74,7 +74,7 @@ Defined in: [src/community/dto/create-community.dto.ts:5](https://github.com/Pro
 
 Defined in: [src/community/dto/create-community.dto.ts:24](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/community/dto/create-community.dto.ts#L24)
 
-***
+---
 
 ### tags?
 

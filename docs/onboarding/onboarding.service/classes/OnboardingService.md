@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [onboarding/onboarding.service](../README.md) / OnboardingService
 
@@ -48,7 +48,7 @@ Defined in: [src/onboarding/onboarding.service.ts:35](https://github.com/Progamb
 
 `Promise`\<`Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>
 
-***
+---
 
 ### complete()
 
@@ -66,7 +66,7 @@ Defined in: [src/onboarding/onboarding.service.ts:63](https://github.com/Progamb
 
 `Promise`\<`null` \| `Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>
 
-***
+---
 
 ### findByUserId()
 
@@ -84,7 +84,7 @@ Defined in: [src/onboarding/onboarding.service.ts:71](https://github.com/Progamb
 
 `Promise`\<`null` \| `Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>
 
-***
+---
 
 ### getStatus()
 
@@ -102,7 +102,7 @@ Defined in: [src/onboarding/onboarding.service.ts:75](https://github.com/Progamb
 
 `Promise`\<\{ `activities?`: `undefined`; `completed?`: `undefined`; `currentStep?`: `undefined`; `goals?`: `undefined`; `started`: `boolean`; \} \| \{ `activities`: `string`[]; `completed`: `boolean`; `currentStep`: `number`; `goals`: `string`[]; `started`: `boolean`; \}\>
 
-***
+---
 
 ### setActivities()
 
@@ -124,7 +124,7 @@ Defined in: [src/onboarding/onboarding.service.ts:54](https://github.com/Progamb
 
 `Promise`\<`Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>
 
-***
+---
 
 ### setGoals()
 
@@ -146,7 +146,7 @@ Defined in: [src/onboarding/onboarding.service.ts:45](https://github.com/Progamb
 
 `Promise`\<`Document`\<`unknown`, \{ \}, [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md), \{ \}, \{ \}\> & [`UserOnboarding`](../../schemas/user-onboarding.schema/classes/UserOnboarding.md) & `Required`\<\{ `_id`: `unknown`; \}\> & `object`\>
 
-***
+---
 
 ### startOnboarding()
 

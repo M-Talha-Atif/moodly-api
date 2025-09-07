@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [experience/entities/experience.entity](../README.md) / Experience
 
@@ -26,7 +26,7 @@ Defined in: [src/experience/entities/experience.entity.ts:15](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:62](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L62)
 
-***
+---
 
 ### bookings
 
@@ -34,7 +34,7 @@ Defined in: [src/experience/entities/experience.entity.ts:62](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:104](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L104)
 
-***
+---
 
 ### cancellationPolicy
 
@@ -42,7 +42,7 @@ Defined in: [src/experience/entities/experience.entity.ts:104](https://github.co
 
 Defined in: [src/experience/entities/experience.entity.ts:59](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L59)
 
-***
+---
 
 ### createdAt
 
@@ -50,7 +50,7 @@ Defined in: [src/experience/entities/experience.entity.ts:59](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:110](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L110)
 
-***
+---
 
 ### culturalTags
 
@@ -58,7 +58,7 @@ Defined in: [src/experience/entities/experience.entity.ts:110](https://github.co
 
 Defined in: [src/experience/entities/experience.entity.ts:82](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L82)
 
-***
+---
 
 ### date
 
@@ -66,7 +66,7 @@ Defined in: [src/experience/entities/experience.entity.ts:82](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:26](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L26)
 
-***
+---
 
 ### description
 
@@ -74,7 +74,7 @@ Defined in: [src/experience/entities/experience.entity.ts:26](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:23](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L23)
 
-***
+---
 
 ### desiredOutcomes
 
@@ -82,7 +82,7 @@ Defined in: [src/experience/entities/experience.entity.ts:23](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:75](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L75)
 
-***
+---
 
 ### engagementStats
 
@@ -90,7 +90,7 @@ Defined in: [src/experience/entities/experience.entity.ts:75](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:97](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L97)
 
-***
+---
 
 ### experienceOutcomeSummary
 
@@ -98,7 +98,7 @@ Defined in: [src/experience/entities/experience.entity.ts:97](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:89](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L89)
 
-***
+---
 
 ### feedbacks
 
@@ -106,7 +106,7 @@ Defined in: [src/experience/entities/experience.entity.ts:89](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:107](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L107)
 
-***
+---
 
 ### growthDimensions
 
@@ -114,7 +114,7 @@ Defined in: [src/experience/entities/experience.entity.ts:107](https://github.co
 
 Defined in: [src/experience/entities/experience.entity.ts:86](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L86)
 
-***
+---
 
 ### host
 
@@ -122,7 +122,7 @@ Defined in: [src/experience/entities/experience.entity.ts:86](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:101](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L101)
 
-***
+---
 
 ### id
 
@@ -130,7 +130,7 @@ Defined in: [src/experience/entities/experience.entity.ts:101](https://github.co
 
 Defined in: [src/experience/entities/experience.entity.ts:17](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L17)
 
-***
+---
 
 ### idealParticipantTraits
 
@@ -138,7 +138,7 @@ Defined in: [src/experience/entities/experience.entity.ts:17](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:93](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L93)
 
-***
+---
 
 ### image
 
@@ -146,7 +146,7 @@ Defined in: [src/experience/entities/experience.entity.ts:93](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:32](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L32)
 
-***
+---
 
 ### isVirtual
 
@@ -154,7 +154,7 @@ Defined in: [src/experience/entities/experience.entity.ts:32](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:35](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L35)
 
-***
+---
 
 ### language
 
@@ -162,7 +162,7 @@ Defined in: [src/experience/entities/experience.entity.ts:35](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:79](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L79)
 
-***
+---
 
 ### location
 
@@ -170,7 +170,7 @@ Defined in: [src/experience/entities/experience.entity.ts:79](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:29](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L29)
 
-***
+---
 
 ### meetingLink
 
@@ -178,7 +178,7 @@ Defined in: [src/experience/entities/experience.entity.ts:29](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:56](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L56)
 
-***
+---
 
 ### preparation
 
@@ -186,7 +186,7 @@ Defined in: [src/experience/entities/experience.entity.ts:56](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:68](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L68)
 
-***
+---
 
 ### price
 
@@ -194,7 +194,7 @@ Defined in: [src/experience/entities/experience.entity.ts:68](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:44](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L44)
 
-***
+---
 
 ### sessionEndTime
 
@@ -202,7 +202,7 @@ Defined in: [src/experience/entities/experience.entity.ts:44](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:41](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L41)
 
-***
+---
 
 ### sessionStartTime
 
@@ -210,7 +210,7 @@ Defined in: [src/experience/entities/experience.entity.ts:41](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:38](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L38)
 
-***
+---
 
 ### spotsFilled
 
@@ -218,7 +218,7 @@ Defined in: [src/experience/entities/experience.entity.ts:38](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:53](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L53)
 
-***
+---
 
 ### targetEmotions
 
@@ -226,7 +226,7 @@ Defined in: [src/experience/entities/experience.entity.ts:53](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:72](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L72)
 
-***
+---
 
 ### testimonials
 
@@ -234,7 +234,7 @@ Defined in: [src/experience/entities/experience.entity.ts:72](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:65](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L65)
 
-***
+---
 
 ### timezone
 
@@ -242,7 +242,7 @@ Defined in: [src/experience/entities/experience.entity.ts:65](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:47](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L47)
 
-***
+---
 
 ### title
 
@@ -250,7 +250,7 @@ Defined in: [src/experience/entities/experience.entity.ts:47](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:20](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L20)
 
-***
+---
 
 ### totalSpots
 
@@ -258,7 +258,7 @@ Defined in: [src/experience/entities/experience.entity.ts:20](https://github.com
 
 Defined in: [src/experience/entities/experience.entity.ts:50](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/experience/entities/experience.entity.ts#L50)
 
-***
+---
 
 ### updatedAt
 

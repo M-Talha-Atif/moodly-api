@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [common/services/transaction.service](../README.md) / TransactionService
 
@@ -50,7 +50,7 @@ Defined in: [src/common/services/transaction.service.ts:35](https://github.com/P
 
 `Promise`\<`T`\>
 
-***
+---
 
 ### withTransaction()
 

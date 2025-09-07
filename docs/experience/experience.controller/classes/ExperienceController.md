@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [experience/experience.controller](../README.md) / ExperienceController
 
@@ -52,7 +52,7 @@ Defined in: [src/experience/experience.controller.ts:46](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### delete()
 
@@ -74,7 +74,7 @@ Defined in: [src/experience/experience.controller.ts:93](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### findAllForUser()
 
@@ -112,7 +112,7 @@ Defined in: [src/experience/experience.controller.ts:168](https://github.com/Pro
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<\{ `data`: [`ExperienceListItemDto`](../../dto/experience-list-item.dto/classes/ExperienceListItemDto.md)[]; `meta`: \{ `limit`: `number`; `page`: `number`; `total`: `number`; `totalPages`: `number`; \}; \}\>\>
 
-***
+---
 
 ### findAllPublic()
 
@@ -146,7 +146,7 @@ Defined in: [src/experience/experience.controller.ts:116](https://github.com/Pro
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<\{ `data`: [`ExperienceListItemDto`](../../dto/experience-list-item.dto/classes/ExperienceListItemDto.md)[]; `meta`: \{ `limit`: `number`; `page`: `number`; `total`: `number`; `totalPages`: `number`; \}; \}\>\>
 
-***
+---
 
 ### findOne()
 
@@ -168,7 +168,7 @@ Defined in: [src/experience/experience.controller.ts:215](https://github.com/Pro
 
 `Promise`\<[`ResultDto`](../../../common/dto/result.dto/classes/ResultDto.md)\<`unknown`\>\>
 
-***
+---
 
 ### update()
 

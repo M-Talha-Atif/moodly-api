@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [booking/services/booking.service](../README.md) / BookingService
 
@@ -56,7 +56,7 @@ Defined in: [src/booking/services/booking.service.ts:63](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<`any`\>\>
 
-***
+---
 
 ### createBooking()
 
@@ -78,7 +78,7 @@ Defined in: [src/booking/services/booking.service.ts:21](https://github.com/Prog
 
 `Promise`\<[`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<[`BookingResponseDto`](../../../dto/booking-response.dto/classes/BookingResponseDto.md)\>\>
 
-***
+---
 
 ### findAllBookings()
 
@@ -112,7 +112,7 @@ Defined in: [src/booking/services/booking.service.ts:85](https://github.com/Prog
 
 `Promise`\<\{ `data`: [`BookingResponseDto`](../../../dto/booking-response.dto/classes/BookingResponseDto.md)[]; `total`: `number`; \}\>
 
-***
+---
 
 ### findBookingById()
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [feedback/feedback.service](../README.md) / FeedbackService
 
@@ -60,7 +60,7 @@ Defined in: [src/feedback/feedback.service.ts:26](https://github.com/Progambler2
 
 `Promise`\<`null` \| [`Feedback`](../../entities/feedback.entity/classes/Feedback.md)\>
 
-***
+---
 
 ### findAllForExperience()
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [experience/dto/update-experience.dto](../README.md) / UpdateExperienceDto
 
@@ -18,7 +18,7 @@ Defined in: [src/experience/dto/update-experience.dto.ts:4](https://github.com/P
 
 > **new UpdateExperienceDto**(): `UpdateExperienceDto`
 
-Defined in: node\_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts:3
+Defined in: node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts:3
 
 #### Returns
 
@@ -32,7 +32,7 @@ Defined in: node\_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts:3
 
 > **new UpdateExperienceDto**(...`args`): `UpdateExperienceDto`
 
-Defined in: node\_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts:3
+Defined in: node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts:3
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:59](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`aiPrep`](../../create-experience.dto/classes/CreateExperienceDto.md#aiprep)
 
-***
+---
 
 ### cancellationPolicy?
 
@@ -72,7 +72,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:55](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`cancellationPolicy`](../../create-experience.dto/classes/CreateExperienceDto.md#cancellationpolicy)
 
-***
+---
 
 ### culturalTags?
 
@@ -84,7 +84,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:84](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`culturalTags`](../../create-experience.dto/classes/CreateExperienceDto.md#culturaltags)
 
-***
+---
 
 ### date?
 
@@ -96,7 +96,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:19](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`date`](../../create-experience.dto/classes/CreateExperienceDto.md#date)
 
-***
+---
 
 ### description?
 
@@ -108,7 +108,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:16](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`description`](../../create-experience.dto/classes/CreateExperienceDto.md#description)
 
-***
+---
 
 ### desiredOutcomes?
 
@@ -120,7 +120,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:75](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`desiredOutcomes`](../../create-experience.dto/classes/CreateExperienceDto.md#desiredoutcomes)
 
-***
+---
 
 ### engagementStats?
 
@@ -132,7 +132,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:100](https://github.com
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`engagementStats`](../../create-experience.dto/classes/CreateExperienceDto.md#engagementstats)
 
-***
+---
 
 ### experienceOutcomeSummary?
 
@@ -144,7 +144,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:92](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`experienceOutcomeSummary`](../../create-experience.dto/classes/CreateExperienceDto.md#experienceoutcomesummary)
 
-***
+---
 
 ### growthDimensions?
 
@@ -156,7 +156,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:88](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`growthDimensions`](../../create-experience.dto/classes/CreateExperienceDto.md#growthdimensions)
 
-***
+---
 
 ### idealParticipantTraits?
 
@@ -168,7 +168,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:96](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`idealParticipantTraits`](../../create-experience.dto/classes/CreateExperienceDto.md#idealparticipanttraits)
 
-***
+---
 
 ### image?
 
@@ -180,7 +180,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:25](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`image`](../../create-experience.dto/classes/CreateExperienceDto.md#image)
 
-***
+---
 
 ### isVirtual?
 
@@ -192,7 +192,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:28](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`isVirtual`](../../create-experience.dto/classes/CreateExperienceDto.md#isvirtual)
 
-***
+---
 
 ### language?
 
@@ -204,7 +204,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:79](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`language`](../../create-experience.dto/classes/CreateExperienceDto.md#language)
 
-***
+---
 
 ### location?
 
@@ -216,7 +216,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:22](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`location`](../../create-experience.dto/classes/CreateExperienceDto.md#location)
 
-***
+---
 
 ### meetingLink?
 
@@ -228,7 +228,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:51](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`meetingLink`](../../create-experience.dto/classes/CreateExperienceDto.md#meetinglink)
 
-***
+---
 
 ### preparation?
 
@@ -240,7 +240,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:67](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`preparation`](../../create-experience.dto/classes/CreateExperienceDto.md#preparation)
 
-***
+---
 
 ### price?
 
@@ -252,7 +252,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:37](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`price`](../../create-experience.dto/classes/CreateExperienceDto.md#price)
 
-***
+---
 
 ### sessionEndTime?
 
@@ -264,7 +264,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:34](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`sessionEndTime`](../../create-experience.dto/classes/CreateExperienceDto.md#sessionendtime)
 
-***
+---
 
 ### sessionStartTime?
 
@@ -276,7 +276,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:31](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`sessionStartTime`](../../create-experience.dto/classes/CreateExperienceDto.md#sessionstarttime)
 
-***
+---
 
 ### spotsFilled?
 
@@ -288,7 +288,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:47](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`spotsFilled`](../../create-experience.dto/classes/CreateExperienceDto.md#spotsfilled)
 
-***
+---
 
 ### targetEmotions?
 
@@ -300,7 +300,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:71](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`targetEmotions`](../../create-experience.dto/classes/CreateExperienceDto.md#targetemotions)
 
-***
+---
 
 ### testimonials?
 
@@ -312,7 +312,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:63](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`testimonials`](../../create-experience.dto/classes/CreateExperienceDto.md#testimonials)
 
-***
+---
 
 ### timezone?
 
@@ -324,7 +324,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:40](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`timezone`](../../create-experience.dto/classes/CreateExperienceDto.md#timezone)
 
-***
+---
 
 ### title?
 
@@ -336,7 +336,7 @@ Defined in: [src/experience/dto/create-experience.dto.ts:13](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`title`](../../create-experience.dto/classes/CreateExperienceDto.md#title)
 
-***
+---
 
 ### totalSpots?
 
@@ -348,49 +348,49 @@ Defined in: [src/experience/dto/create-experience.dto.ts:43](https://github.com/
 
 [`CreateExperienceDto`](../../create-experience.dto/classes/CreateExperienceDto.md).[`totalSpots`](../../create-experience.dto/classes/CreateExperienceDto.md#totalspots)
 
-***
+---
 
 ### arguments
 
 > `static` **arguments**: `any`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:305
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:305
 
 #### Inherited from
 
 `PartialType(CreateExperienceDto).arguments`
 
-***
+---
 
 ### caller
 
 > `static` **caller**: `Function`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:306
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:306
 
 #### Inherited from
 
 `PartialType(CreateExperienceDto).caller`
 
-***
+---
 
 ### length
 
 > `readonly` `static` **length**: `number`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:302
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:302
 
 #### Inherited from
 
 `PartialType(CreateExperienceDto).length`
 
-***
+---
 
 ### name
 
 > `readonly` `static` **name**: `string`
 
-Defined in: node\_modules/typescript/lib/lib.es2015.core.d.ts:97
+Defined in: node_modules/typescript/lib/lib.es2015.core.d.ts:97
 
 Returns the name of the function. Function names are read-only and can not be changed.
 
@@ -404,7 +404,7 @@ Returns the name of the function. Function names are read-only and can not be ch
 
 > `static` **\[hasInstance\]**(`value`): `boolean`
 
-Defined in: node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:164
+Defined in: node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:164
 
 Determines whether the given value inherits from this function if this function was used
 as a constructor function.
@@ -426,13 +426,13 @@ A constructor function can control which objects are recognized as its instances
 
 `PartialType(CreateExperienceDto).[hasInstance]`
 
-***
+---
 
 ### apply()
 
 > `static` **apply**(`this`, `thisArg`, `argArray?`): `any`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:281
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:281
 
 Calls the function, substituting the specified object for the this value of the function, and the specified array for the arguments of the function.
 
@@ -462,13 +462,13 @@ A set of arguments to be passed to the function.
 
 `PartialType(CreateExperienceDto).apply`
 
-***
+---
 
 ### bind()
 
 > `static` **bind**(`this`, `thisArg`, ...`argArray`): `any`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:296
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:296
 
 For a given function, creates a bound function that has the same body as the original function.
 The this object of the bound function is associated with the specified object, and has the specified initial parameters.
@@ -499,13 +499,13 @@ A list of arguments to be passed to the new function.
 
 `PartialType(CreateExperienceDto).bind`
 
-***
+---
 
 ### call()
 
 > `static` **call**(`this`, `thisArg`, ...`argArray`): `any`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:288
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:288
 
 Calls a method of an object, substituting another object for the current object.
 
@@ -535,13 +535,13 @@ A list of arguments to be passed to the method.
 
 `PartialType(CreateExperienceDto).call`
 
-***
+---
 
 ### toString()
 
 > `static` **toString**(): `string`
 
-Defined in: node\_modules/typescript/lib/lib.es5.d.ts:299
+Defined in: node_modules/typescript/lib/lib.es5.d.ts:299
 
 Returns a string representation of a function.
 

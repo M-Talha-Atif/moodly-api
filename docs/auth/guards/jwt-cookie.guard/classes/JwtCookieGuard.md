@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [auth/guards/jwt-cookie.guard](../README.md) / JwtCookieGuard
 
@@ -11,11 +11,13 @@ Defined in: [src/auth/guards/jwt-cookie.guard.ts:17](https://github.com/Progambl
 JwtCookieGuard
 
 Custom NestJS guard that:
+
 - Extracts a JWT from the request cookies.
 - Verifies the token using JwtService.
 - Attaches the decoded user payload to the request object.
 
 Usage:
+
 - Apply to routes or controllers that require authentication.
 - Returns `true` if the token is valid, otherwise blocks the request.
 
@@ -52,6 +54,7 @@ Defined in: [src/auth/guards/jwt-cookie.guard.ts:32](https://github.com/Progambl
 Determines whether the current request is authorized.
 
 Steps:
+
 1. Extracts the `jwt` cookie from the request.
 2. Verifies the token asynchronously with JwtService.
 3. On success, attaches the decoded payload to `request.user`.

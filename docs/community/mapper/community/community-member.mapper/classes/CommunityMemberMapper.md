@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../README.md) / [community/mapper/community/community-member.mapper](../README.md) / CommunityMemberMapper
 
@@ -39,7 +39,7 @@ Returns undefined if the entity is null/undefined
 
 [`CommunityMemberDto`](../../../../dto/community-member.dto/classes/CommunityMemberDto.md)
 
-***
+---
 
 ### toDtos()
 

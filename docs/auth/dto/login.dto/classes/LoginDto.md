@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [auth/dto/login.dto](../README.md) / LoginDto
 
@@ -34,7 +34,7 @@ Defined in: [src/auth/dto/login.dto.ts:15](https://github.com/Progambler227788/A
 The user's email address.
 Must be a valid email format.
 
-***
+---
 
 ### password
 

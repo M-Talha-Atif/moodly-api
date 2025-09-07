@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [users/entities/privacy.entity](../README.md) / PrivacySettings
 
@@ -26,7 +26,7 @@ Defined in: [src/users/entities/privacy.entity.ts:7](https://github.com/Progambl
 
 Defined in: [src/users/entities/privacy.entity.ts:30](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/privacy.entity.ts#L30)
 
-***
+---
 
 ### dataSharingLevel
 
@@ -34,7 +34,7 @@ Defined in: [src/users/entities/privacy.entity.ts:30](https://github.com/Progamb
 
 Defined in: [src/users/entities/privacy.entity.ts:22](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/privacy.entity.ts#L22)
 
-***
+---
 
 ### trackingConsent
 
@@ -42,7 +42,7 @@ Defined in: [src/users/entities/privacy.entity.ts:22](https://github.com/Progamb
 
 Defined in: [src/users/entities/privacy.entity.ts:33](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/privacy.entity.ts#L33)
 
-***
+---
 
 ### user
 
@@ -50,7 +50,7 @@ Defined in: [src/users/entities/privacy.entity.ts:33](https://github.com/Progamb
 
 Defined in: [src/users/entities/privacy.entity.ts:14](https://github.com/Progambler227788/AI-Moodler-Backend/blob/9e2761c5a2364787580718d972a0a562e93ec1e3/src/users/entities/privacy.entity.ts#L14)
 
-***
+---
 
 ### userId
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [users/users.controller](../README.md) / UsersController
 
@@ -44,7 +44,7 @@ Defined in: [src/users/users.controller.ts:31](https://github.com/Progambler2277
 
 `Promise`\<[`User`](../../entities/user.entity/classes/User.md)\>
 
-***
+---
 
 ### findAll()
 
@@ -56,7 +56,7 @@ Defined in: [src/users/users.controller.ts:41](https://github.com/Progambler2277
 
 `Promise`\<[`User`](../../entities/user.entity/classes/User.md)[]\>
 
-***
+---
 
 ### findOne()
 
@@ -74,7 +74,7 @@ Defined in: [src/users/users.controller.ts:50](https://github.com/Progambler2277
 
 `Promise`\<[`User`](../../entities/user.entity/classes/User.md)\>
 
-***
+---
 
 ### remove()
 
@@ -92,7 +92,7 @@ Defined in: [src/users/users.controller.ts:69](https://github.com/Progambler2277
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### update()
 

@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../README.md) / [attendance/attendance.service](../README.md) / AttendanceService
 
@@ -11,6 +11,7 @@ Defined in: [src/attendance/attendance.service.ts:23](https://github.com/Progamb
 AttendanceService
 
 Handles the full attendance lifecycle:
+
 - On booking confirmation → creates attendance records with join codes, JWTs, and QR codes.
 - Sends attendance QR codes via email notifications.
 - On check-in → verifies tokens, validates session time, and marks attendance as "present".
@@ -55,6 +56,7 @@ Defined in: [src/attendance/attendance.service.ts:114](https://github.com/Progam
 Verifies and processes user check-in.
 
 Flow:
+
 1. Validate provided JWT token.
 2. Locate corresponding attendance by joinCode.
 3. Ensure check-in occurs within allowed time window:
@@ -76,7 +78,7 @@ The JWT token from QR code or client app.
 
 Success response with attendance, or error response.
 
-***
+---
 
 ### createAttendance()
 
@@ -87,6 +89,7 @@ Defined in: [src/attendance/attendance.service.ts:59](https://github.com/Progamb
 Creates an attendance record for a booking.
 
 Flow:
+
 1. Generate a join code + JWT token.
 2. Create a QR code from the token.
 3. Persist attendance record in DB.
@@ -118,7 +121,7 @@ The experience details (contains session info).
 
 Success response with attendance and token.
 
-***
+---
 
 ### deleteByBookingId()
 

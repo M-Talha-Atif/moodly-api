@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../README.md) / [mood-log/services/mood-log.service](../README.md) / MoodLogService
 
@@ -70,7 +70,7 @@ Defined in: [src/mood-log/services/mood-log.service.ts:32](https://github.com/Pr
 
 `Promise`\<[`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<`void`\> \| [`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<[`MoodLog`](../../../entities/mood-log.entity/classes/MoodLog.md)\>\>
 
-***
+---
 
 ### getHistoryForUser()
 
@@ -96,7 +96,7 @@ Defined in: [src/mood-log/services/mood-log.service.ts:116](https://github.com/P
 
 `Promise`\<[`ResultDto`](../../../../common/dto/result.dto/classes/ResultDto.md)\<\{ `data`: [`MoodLog`](../../../entities/mood-log.entity/classes/MoodLog.md)[]; `limit`: `number`; `page`: `number`; `total`: `number`; `totalPages`: `number`; \}\>\>
 
-***
+---
 
 ### getTodayLogForUser()
 

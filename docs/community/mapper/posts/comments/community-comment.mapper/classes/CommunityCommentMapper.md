@@ -1,6 +1,6 @@
 [**ai-moodler-backend v0.0.1**](../../../../../../README.md)
 
-***
+---
 
 [ai-moodler-backend](../../../../../../README.md) / [community/mapper/posts/comments/community-comment.mapper](../README.md) / CommunityCommentMapper
 
@@ -38,7 +38,7 @@ Map a single comment entity to DTO
 
 [`CommunityCommentDto`](../../../../../dto/posts/comments/community-comment.dto/classes/CommunityCommentDto.md)
 
-***
+---
 
 ### toDtos()
 
