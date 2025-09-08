@@ -11,7 +11,7 @@ import { Feedback } from './entities/feedback.entity';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { Booking } from '../booking/entities/booking.entity';
 import { PendingFeedback } from './entities/pending-feedback.entity';
-import { ExperienceService } from '../experience/experience.service';
+import { ExperienceService } from '../experience/services/experience.service';
 
 @Injectable()
 export class FeedbackService {

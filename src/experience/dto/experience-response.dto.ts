@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Type, Transform } from 'class-transformer';
 
 class HostResponseDto {
   @Expose()
@@ -22,7 +22,8 @@ export class ExperienceResponseDto {
   description: string;
 
   @Expose()
-  date: Date;
+  @Transform(({ value }) => (value ? new Date(value).toISOString() : null))
+  date: string;
 
   @Expose()
   location: string;

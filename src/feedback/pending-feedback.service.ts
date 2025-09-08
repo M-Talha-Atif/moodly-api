@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PendingFeedback } from './entities/pending-feedback.entity';
 import { Feedback } from './entities/feedback.entity';
-import { ExperienceService } from '../experience/experience.service';
+import { ExperienceService } from '../experience/services/experience.service';
 
 @Injectable()
 export class PendingFeedbackService {
