@@ -198,6 +198,10 @@ export class CommunityQueryService {
 
       return result.map((item) => item.category);
     } catch (error) {
+      console.log(
+        'Raw query for categories failed, falling back to query builder.',
+        error,
+      );
       // Fallback to query builder if raw query fails
       const result = await this.communityRepository
         .createQueryBuilder('community')

@@ -10,7 +10,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ExperienceService } from './services/experience.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
