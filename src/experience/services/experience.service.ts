@@ -71,7 +71,7 @@ export class ExperienceService {
     data: Experience[];
     meta: { total: number; page: number; limit: number; totalPages: number };
   }> {
-    let qb = this.experienceRepo
+    const qb = this.experienceRepo
       .createQueryBuilder('experience')
       .leftJoinAndSelect('experience.host', 'host')
       .leftJoin(
