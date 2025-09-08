@@ -21,8 +21,10 @@ export class CreateExperienceDto {
   @IsString()
   location: string;
 
+  // create-experience.dto.ts
+  @IsOptional()
   @IsString()
-  image: string;
+  image?: string; // in server-side flow this will be set at controller after upload
 
   @IsBoolean()
   isVirtual: boolean;

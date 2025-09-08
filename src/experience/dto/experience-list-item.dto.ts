@@ -8,7 +8,8 @@ export class ExperienceListItemDto {
   title: string;
 
   @Expose()
-  date: Date;
+  @Transform(({ value }) => (value ? new Date(value).toISOString() : null))
+  date: string; // <-- now always a string (ISO format)
 
   @Expose()
   location: string;

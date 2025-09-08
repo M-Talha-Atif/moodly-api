@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
-import { ExperienceService } from './experience.service';
+import { ExperienceService } from './services/experience.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
 import { UsersService } from 'src/users/users.service';
@@ -22,6 +22,11 @@ import { ExperienceResponseDto } from './dto/experience-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { ExperienceListItemDto } from './dto/experience-list-item.dto';
 import { ResultDto } from 'src/common/dto/result.dto';
+import { ExperienceFiltersDto } from './dto/experience-filters.dto';
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
+import { S3Service } from 'src/common/services/s3.service';
 
 @ApiTags('Experiences')
 @Controller('experiences')
@@ -29,6 +34,7 @@ export class ExperienceController {
   constructor(
     private readonly experienceService: ExperienceService,
     private readonly userService: UsersService,
+    private readonly s3Service: S3Service,
   ) {}
 
   // =============== Host CRUD =================
@@ -57,18 +63,12 @@ export class ExperienceController {
 
   @UseGuards(JwtCookieGuard, RolesGuard)
   @Roles('host')
-  @Put(':id')
-  @ApiOperation({ summary: 'Update an experience (host only)' })
-  @ApiResponse({
-    status: 200,
-    description: 'Experience updated successfully',
-    type: ExperienceResponseDto,
-  })
-  @ApiResponse({ status: 404, description: 'Experience not found' })
-  @ApiResponse({ status: 403, description: 'Unauthorized' })
-  async update(
+  @Post(':id/upload-image')
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
+  @ApiOperation({ summary: 'Upload an image for an experience (host only)' })
+  async uploadImage(
     @Param('id') id: string,
-    @Body() dto: UpdateExperienceDto,
+    @UploadedFile() file: Express.Multer.File,
     @Req() req: any,
   ) {
     const exp = await this.experienceService.findOne(id);
@@ -76,7 +76,35 @@ export class ExperienceController {
     if (exp.host.id !== req.user.sub)
       return ResultDto.fail('Unauthorized', 403);
 
-    const updated = await this.experienceService.update(id, dto);
+    const url = await this.s3Service.uploadBuffer(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+    );
+
+    // save image URL in experience record
+    await this.experienceService.update(id, { image: url });
+
+    return ResultDto.ok({ url }, 'Image uploaded successfully');
+  }
+
+  @UseGuards(JwtCookieGuard, RolesGuard)
+  @Roles('host')
+  @Put(':id')
+  @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }))
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateExperienceDto,
+    @UploadedFile() file?: Express.Multer.File,
+    @Req() req: any,
+  ) {
+    const exp = await this.experienceService.findOne(id);
+    if (!exp) return ResultDto.fail('Experience not found', 404);
+    if (exp.host.id !== req.user.sub)
+      return ResultDto.fail('Unauthorized', 403);
+
+    const updated = await this.experienceService.update(id, dto, file);
+
     return ResultDto.ok(
       plainToInstance(ExperienceResponseDto, updated),
       'Experience updated successfully',
@@ -103,36 +131,8 @@ export class ExperienceController {
   // =============== Public Fetch =================
 
   @Get('public')
-  @ApiOperation({ summary: 'Get paginated list of public experiences' })
-  @ApiQuery({ name: 'page', required: false, example: '1' })
-  @ApiQuery({ name: 'limit', required: false, example: '10' })
-  @ApiQuery({ name: 'cultureTags', required: false, example: 'art,music' })
-  @ApiQuery({ name: 'time', required: false, example: 'morning' })
-  @ApiQuery({ name: 'search', required: false, example: 'yoga' })
-  @ApiResponse({
-    status: 200,
-    description: 'Public experiences fetched successfully',
-  })
-  async findAllPublic(
-    @Query('page') page = '1',
-    @Query('limit') limit = '10',
-    @Query('cultureTags') cultureTags: string | string[],
-    @Query('time') time: string,
-    @Query('search') search: string,
-  ) {
-    const pageNum = parseInt(page, 10);
-    const limitNum = parseInt(limit, 10);
-    const tagsArray = Array.isArray(cultureTags)
-      ? cultureTags
-      : (cultureTags?.split(',') ?? []);
-
-    const [data, total] = await this.experienceService.findAllPublic(
-      pageNum,
-      limitNum,
-      tagsArray,
-      time,
-      search,
-    );
+  async findAllPublic(@Query() filters: ExperienceFiltersDto) {
+    const [data, total] = await this.experienceService.findAllPublic(filters);
 
     return ResultDto.ok(
       {
@@ -141,52 +141,22 @@ export class ExperienceController {
         }),
         meta: {
           total,
-          page: pageNum,
-          limit: limitNum,
-          totalPages: Math.ceil(total / limitNum),
+          page: filters.page,
+          limit: filters.limit,
+          totalPages: Math.ceil(total / filters.limit),
         },
       },
       'Public experiences fetched successfully',
     );
   }
 
-  // =============== User Fetch (Personalized) =================
-
   @UseGuards(JwtCookieGuard, RolesGuard)
   @Roles('user')
   @Get('user')
-  @ApiOperation({ summary: 'Get personalized experiences for a user' })
-  @ApiQuery({ name: 'page', required: false, example: '1' })
-  @ApiQuery({ name: 'limit', required: false, example: '10' })
-  @ApiQuery({ name: 'cultureTags', required: false, example: 'art,music' })
-  @ApiQuery({ name: 'time', required: false, example: 'morning' })
-  @ApiQuery({ name: 'search', required: false, example: 'meditation' })
-  @ApiResponse({
-    status: 200,
-    description: 'User experiences fetched successfully',
-  })
-  async findAllForUser(
-    @Req() req,
-    @Query('page') page = '1',
-    @Query('limit') limit = '10',
-    @Query('cultureTags') cultureTags: string | string[],
-    @Query('time') time: string,
-    @Query('search') search: string,
-  ) {
-    const userId = req.user.sub;
-    const pageNum = parseInt(page, 10);
-    const limitNum = parseInt(limit, 10);
-    const tagsArray = Array.isArray(cultureTags)
-      ? cultureTags
-      : (cultureTags?.split(',') ?? []);
-
+  async findAllForUser(@Req() req, @Query() filters: ExperienceFiltersDto) {
     const result = await this.experienceService.findAllForUser(
-      userId,
-      pageNum,
-      limitNum,
-      tagsArray,
-      time,
-      search,
+      req.user.sub,
+      filters,
     );
 
     return ResultDto.ok(
