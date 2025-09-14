@@ -95,8 +95,8 @@ export class ExperienceController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateExperienceDto,
-    @UploadedFile() file?: Express.Multer.File,
     @Req() req: any,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     const exp = await this.experienceService.findOne(id);
     if (!exp) return ResultDto.fail('Experience not found', 404);

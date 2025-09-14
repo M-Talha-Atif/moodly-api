@@ -90,7 +90,10 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     return LoginResponseDto.ok(
-      { access_token: token },
+      {
+        access_token: token,
+        user: { id: user.id, email: user.email, role: user.role },
+      },
       'Login successful',
       200,
     );

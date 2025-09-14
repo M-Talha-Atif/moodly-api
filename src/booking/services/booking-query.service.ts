@@ -50,7 +50,7 @@ export class BookingQueryService {
   }
 
   // Separate optimized count query
-  private async getOptimizedCount(
+  async getOptimizedCount(
     userId?: string,
     status?: 'confirmed' | 'cancelled' | 'waitlisted',
     timeFilter?: 'today' | 'tomorrow' | 'weekend' | 'next-week',

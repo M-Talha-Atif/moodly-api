@@ -23,6 +23,7 @@ import { BookingErrorHandler } from './services/booking-error-handler.service';
 import { TransactionService } from 'src/common/services/transaction.service';
 // infra
 import { RmqModule } from 'src/rmq/rmq.module';
+import { BookingStatsService } from './services/booking.stats.service';
 
 @Module({
   imports: [
@@ -47,7 +48,9 @@ import { RmqModule } from 'src/rmq/rmq.module';
     BookingErrorHandler,
     // Common services
     TransactionService,
+    // Stats services
+    BookingStatsService,
   ],
-  exports: [BookingService],
+  exports: [BookingService, BookingStatsService],
 })
 export class BookingModule {}

@@ -13,15 +13,20 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { BookingService } from './services/booking.service';
+import { BookingStatsService } from './services/booking.stats.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { JwtCookieGuard } from '../auth/guards/jwt-cookie.guard';
 import { ERROR_CODE_MAP } from '../common/constants/error-code-map';
 import { ResultDto } from '../common/dto/result.dto';
 
+// NestJS/Express best practice: hamesha static routes (stats, search, etc.) ko param routes (:id) se upar likho
 @ApiTags('Booking')
 @Controller('booking')
 export class BookingController {
-  constructor(private readonly bookingService: BookingService) {}
+  constructor(
+    private readonly bookingService: BookingService,
+    private readonly bookingStatsService: BookingStatsService,
+  ) {}
 
   @UseGuards(JwtCookieGuard)
   @Post()
@@ -168,6 +173,28 @@ export class BookingController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @UseGuards(JwtCookieGuard)
+  @Get('stats')
+  @ApiOperation({ summary: 'Get booking stats for current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Booking stats fetched successfully',
+  })
+  async getBookingStats(@Req() req: any) {
+    const userId = req.user.sub;
+
+    const [total, upcoming, completed] = await Promise.all([
+      this.bookingStatsService.getTotalBookings(userId),
+      this.bookingStatsService.getUpcomingBookings(userId),
+      this.bookingStatsService.getCompletedBookings(userId),
+    ]);
+
+    return ResultDto.ok(
+      { total, upcoming, completed },
+      'Booking stats fetched successfully',
+    );
   }
 
   @UseGuards(JwtCookieGuard)

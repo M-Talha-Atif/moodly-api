@@ -24,6 +24,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ResultDto } from 'src/common/dto/result.dto';
 
 @ApiTags('Mood Log')
 @ApiBearerAuth()
@@ -104,6 +105,30 @@ export class MoodLogController {
       throw new InternalServerErrorException(
         'Failed to fetch mood log history',
       );
+    }
+  }
+
+  @UseGuards(JwtCookieGuard)
+  @Get('range')
+  @ApiOperation({ summary: 'Get mood logs in a date range' })
+  async getRange(
+    @Req() req: any,
+    @Query('start') start: string,
+    @Query('end') end: string,
+  ) {
+    return this.moodLogService.getLogsInRange(req.user.sub, start, end);
+  }
+
+  @UseGuards(JwtCookieGuard)
+  @Get('streak')
+  @ApiOperation({ summary: 'Get user mood log streak and total days logged' })
+  async getStreak(@Req() req: any) {
+    try {
+      const result = await this.moodLogService.getMoodLogStreak(req.user.sub);
+      return ResultDto.ok(result, 'Streak fetched successfully');
+    } catch (error) {
+      console.error('Error fetching mood log streak:', error);
+      throw new InternalServerErrorException('Failed to fetch mood log streak');
     }
   }
 }
