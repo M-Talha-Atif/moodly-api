@@ -46,17 +46,23 @@ export class WorkerConsumer {
       }
     }
 
-    // Update DB
+    // compute finalMood
+    const finalMood =
+      photoEmotion ?? voiceSentiment ?? payload.moodLabel ?? 'neutral';
+
+    // Update DB with all
     await this.repo.update(
       { id: payload.moodLogId },
-      { photoEmotion, voiceSentiment },
+      { photoEmotion, voiceSentiment, finalMood },
     );
 
-    // Emit follow-up event for embedding generation
+    // Emit follow-up event
     this.rmqClient.emit(RMQ_DOMAINS.MOOD.ROUTING.ANALYZED, {
       moodLogId: payload.moodLogId,
       userId: payload.userId,
-      combinedText: `${payload.moodLabel ?? ''} ${payload.note ?? ''} ${photoEmotion ?? ''} ${voiceSentiment ?? ''}`,
+      combinedText: `${payload.moodLabel ?? ''} ${payload.note ?? ''} ${
+        photoEmotion ?? ''
+      } ${voiceSentiment ?? ''}`,
     });
   }
 }

@@ -70,6 +70,7 @@ export class MoodLogService {
         ...dto,
         photoEmotion: undefined,
         voiceSentiment: undefined,
+        finalMood: dto.moodLabel ?? null,
       });
 
       const saved = await this.moodLogRepo.save(mood);
@@ -99,13 +100,20 @@ export class MoodLogService {
       const log = await this.moodLogRepo.findOne({
         where: { userId, createdAt: Between(todayStart, todayEnd) },
         order: { createdAt: 'DESC' },
+        select: ['id', 'createdAt', 'finalMood'], // 👈 only finalMood
       });
 
       if (!log) {
         return ResultDto.fail('No mood log found for today', 404, 'NOT_FOUND');
       }
 
-      return ResultDto.ok(log, "Fetched today's mood log");
+      const mapped = {
+        id: log.id,
+        finalMood: log.finalMood,
+        createdAt: log.createdAt.toISOString().split('T')[0], // 👈 format yyyy-mm-dd
+      };
+
+      return ResultDto.ok(mapped, "Fetched today's mood log");
     } catch (error) {
       this.logger.error("Error fetching today's mood log:", error);
       throw new InternalServerErrorException('Failed to fetch mood log');
@@ -119,11 +127,18 @@ export class MoodLogService {
         order: { createdAt: 'DESC' },
         take: limit,
         skip: (page - 1) * limit,
+        select: ['id', 'createdAt', 'finalMood'], // 👈 only finalMood
       });
+
+      const mapped = logs.map((log) => ({
+        id: log.id,
+        createdAt: log.createdAt.toISOString().split('T')[0], // 👈 yyyy-mm-dd
+        finalMood: log.finalMood,
+      }));
 
       return ResultDto.ok(
         {
-          data: logs,
+          data: mapped,
           total,
           page,
           limit,
@@ -137,5 +152,85 @@ export class MoodLogService {
         'Failed to fetch mood log history',
       );
     }
+  }
+
+  async getLogsInRange(userId: string, start: string, end: string) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    const logs = await this.moodLogRepo.find({
+      where: {
+        userId,
+        createdAt: Between(startOfDay(startDate), endOfDay(endDate)),
+      },
+      order: { createdAt: 'ASC' },
+      select: ['id', 'createdAt', 'finalMood'],
+    });
+
+    //  Normalize response
+    // log.createdAt is a Date object from DB
+    // .toISOString()  -> converts it to ISO string like "2025-09-13T11:45:30.000Z"
+    // .split('T')[0]  -> splits at 'T' and takes the first part ("2025-09-13")
+    // Result: only the date (YYYY-MM-DD) without tim
+    const mapped = logs.map((log) => ({
+      id: log.id,
+      createdAt: log.createdAt.toISOString().split('T')[0],
+      finalMood: log.finalMood,
+    }));
+
+    return ResultDto.ok(mapped, 'Fetched mood logs for range');
+  }
+
+  async countDailyMoodLogs(userId: string) {
+    // Use QueryBuilder for distinct dates
+    const count = await this.moodLogRepo
+      .createQueryBuilder('log')
+      .select('COUNT(DISTINCT DATE(log.createdAt))', 'daysCount')
+      .where('log.userId = :userId', { userId })
+      .getRawOne();
+
+    return count.daysCount; // number of days user logged mood
+  }
+
+  async getUserMoodLogDates(userId: string) {
+    const logs = await this.moodLogRepo.find({
+      where: { userId },
+      order: { createdAt: 'ASC' },
+      select: ['createdAt'],
+    });
+
+    // Only keep the date part (YYYY-MM-DD)
+    return logs.map((log) => log.createdAt.toISOString().split('T')[0]);
+  }
+
+  private calculateStreak(dates: string[]) {
+    if (!dates.length) return 0;
+
+    let streak = 1;
+    let maxStreak = 1;
+
+    for (let i = 1; i < dates.length; i++) {
+      const prevDate = new Date(dates[i - 1]);
+      const currentDate = new Date(dates[i]);
+
+      // Check if currentDate is exactly 1 day after prevDate
+      const diff =
+        (currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24);
+
+      if (diff === 1) {
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+      } else if (diff > 1) {
+        streak = 1; // streak broken
+      }
+    }
+
+    return maxStreak;
+  }
+
+  async getMoodLogStreak(userId: string) {
+    const dates = await this.getUserMoodLogDates(userId);
+    const streak = this.calculateStreak(dates);
+    return { streak, totalDaysLogged: dates.length };
   }
 }

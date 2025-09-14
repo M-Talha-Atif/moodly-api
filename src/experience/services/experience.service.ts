@@ -12,6 +12,7 @@ import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.
 import { ExperienceFilterService } from './experience-filter.service';
 import { ExperienceFiltersDto } from '../dto/experience-filters.dto';
 import { S3Service } from 'src/common/services/s3.service';
+import { formatDate } from 'src/common/utils/date.utils';
 
 @Injectable()
 export class ExperienceService {
@@ -124,12 +125,35 @@ export class ExperienceService {
     const experience = await qb.getOne();
 
     if (!experience) return null;
+
     const userBooking = experience.bookings?.[0] || null;
+
+    // Normalize all date fields
+    const responseExperience = {
+      ...experience,
+      sessionStartTime: formatDate(experience.sessionStartTime),
+      sessionEndTime: formatDate(experience.sessionEndTime),
+      createdAt: formatDate(experience.createdAt),
+      updatedAt: formatDate(experience.updatedAt),
+
+      host: {
+        ...experience.host,
+        createdAt: formatDate(experience.host?.createdAt),
+        updatedAt: formatDate(experience.host?.updatedAt),
+      },
+
+      bookings: (experience.bookings || []).map((b) => ({
+        ...b,
+        cancelledAt: formatDate(b.cancelledAt),
+        createdAt: formatDate(b.createdAt),
+        updatedAt: formatDate(b.updatedAt),
+      })),
+    };
 
     // if booking exists but is cancelled, ignore it
     if (userBooking?.status === 'cancelled') {
       return {
-        ...experience,
+        ...responseExperience,
         isBooked: false,
         bookingId: null,
         bookingStatus: null,
@@ -137,7 +161,7 @@ export class ExperienceService {
     }
 
     return {
-      ...experience,
+      ...responseExperience,
       isBooked: !!userBooking,
       bookingId: userBooking?.id || null,
       bookingStatus: userBooking?.status || null, // confirmed | waitlisted

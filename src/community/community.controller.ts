@@ -353,4 +353,17 @@ export class CommunityController {
 
     return ResultDto.okEmpty();
   }
+
+  @UseGuards(JwtCookieGuard)
+  @Get('joined/count')
+  async getJoinedCount(@Req() req) {
+    const userId = req.user.sub; // JWT se aya hoga
+    const totalJoined =
+      await this.communityQueryService.countJoinedCommunities(userId);
+
+    return ResultDto.ok(
+      { totalJoined },
+      'Total joined communities fetched successfully',
+    );
+  }
 }

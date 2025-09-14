@@ -6,12 +6,16 @@ import { CommunityListItemDto } from '../../dto/community-list-item.dto';
 import { CommunityResponseDto } from '../../dto/community-response.dto';
 import { CommunityMapper } from '../../mapper/community/community.mapper';
 import { CommunityQueryDto } from '../../dto/community-query.dto';
+import { CommunityMember } from '../../entities/community/community-member.entity';
 
 @Injectable()
 export class CommunityQueryService {
   constructor(
     @InjectRepository(Community)
     private communityRepository: Repository<Community>,
+
+    @InjectRepository(CommunityMember)
+    private communityMemberRepository: Repository<CommunityMember>,
   ) {}
 
   /**
@@ -213,5 +217,14 @@ export class CommunityQueryService {
 
       return result.map((item) => item.category);
     }
+  }
+
+  /**
+   * Get total joined communities by user
+   */
+  async countJoinedCommunities(userId: string): Promise<number> {
+    return this.communityMemberRepository.count({
+      where: { user: { id: userId } },
+    });
   }
 }
