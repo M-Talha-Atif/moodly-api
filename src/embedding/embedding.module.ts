@@ -11,6 +11,7 @@ import {
 } from './schemas/moodlog-embedding.schema';
 import { EmbeddingService } from './embedding.service';
 import { UserEmbeddingService } from './user-embedding.service';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserEmbeddingService } from './user-embedding.service';
       { name: ExperienceEmbedding.name, schema: ExperienceEmbeddingSchema },
       { name: MoodLogEmbedding.name, schema: MoodLogEmbeddingSchema },
     ]),
+    CommonModule,
   ],
   providers: [EmbeddingService, UserEmbeddingService],
   exports: [EmbeddingService, UserEmbeddingService, MongooseModule],

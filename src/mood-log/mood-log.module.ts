@@ -18,7 +18,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ValidationService } from './services/validation.service';
 import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
-
+import { CommonModule } from 'src/common/common.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([MoodLog]),
@@ -27,6 +27,7 @@ import { RMQ_DOMAINS } from 'src/config/rmq.constants';
     ]),
     EmbeddingModule,
     MoodLogQueueModule,
+    CommonModule,
     RecommendationModule,
     RmqModule.register({
       clientName: RMQ_DOMAINS.MOOD.CLIENT,

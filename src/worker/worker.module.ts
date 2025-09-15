@@ -20,6 +20,7 @@ import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RmqModule } from 'src/rmq/rmq.module';
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   imports: [
@@ -60,6 +61,9 @@ import { RMQ_DOMAINS } from 'src/config/rmq.constants';
       exchange: RMQ_DOMAINS.COMMUNITY.EXCHANGE,
       queue: RMQ_DOMAINS.COMMUNITY.QUEUE,
     }),
+
+    // Common Module
+    CommonModule,
   ],
 
   controllers: [WorkerConsumer, EmbeddingConsumer],

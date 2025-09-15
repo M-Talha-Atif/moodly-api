@@ -1,22 +1,22 @@
-// embedding/embedding.service.ts
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ApiClientService } from 'src/common/services/api-client.service';
 
 @Injectable()
 export class EmbeddingService {
-  private readonly EMBEDDING_API = 'http://localhost:8000/embed';
+  private readonly logger = new Logger(EmbeddingService.name);
+
+  constructor(private readonly apiClient: ApiClientService) {}
 
   async generateEmbedding(text: string): Promise<number[]> {
-    const res = await fetch(this.EMBEDDING_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
-    });
-
-    if (!res.ok) {
-      throw new HttpException('Failed to generate embedding', res.status);
+    try {
+      const { embedding } = await this.apiClient.post<{ embedding: number[] }>(
+        '/embed',
+        { text },
+      );
+      return embedding;
+    } catch (error) {
+      this.logger.error('Failed to generate embedding', error);
+      throw error;
     }
-
-    const { embedding } = await res.json();
-    return embedding;
   }
 }
