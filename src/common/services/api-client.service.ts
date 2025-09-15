@@ -54,8 +54,9 @@ export class ApiClientService {
       filename: filePath.split('/').pop(),
     });
 
+    const url = `${this.baseUrl}${endpoint}`;
+
     try {
-      const url = `${this.baseUrl}${endpoint}`;
       this.logger.debug(`POST file to ${url}`);
       const res = await axios.post(url, formData, {
         headers: {
@@ -64,18 +65,43 @@ export class ApiClientService {
         },
         timeout: 35000,
       });
+
       return res.data;
     } catch (err) {
       const error = err as AxiosError;
-      this.logger.error(`File upload failed: ${error.message}`, error.stack);
-      throw new HttpException(
-        error.response?.data || 'File API request failed',
-        error.response?.status || 500,
+
+      // Log detailed error info
+      this.logger.error(
+        `File upload to ${url} failed`,
+        error.stack,
+        'ApiClientService',
       );
+
+      if (error.response) {
+        // Server responded with a status code outside 2xx
+        throw new HttpException(
+          error.response.data || 'File API request failed',
+          error.response.status,
+        );
+      } else if (error.request) {
+        // Request was made but no response received
+        throw new HttpException('No response from API server', 503);
+      } else {
+        // Something else happened
+        throw new HttpException(`Unexpected error: ${error.message}`, 500);
+      }
     } finally {
+      // Clean up temporary file safely
       try {
-        fs.unlinkSync(filePath);
-      } catch {}
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          this.logger.verbose(`Cleaned up temporary file: ${filePath}`);
+        }
+      } catch (cleanupErr) {
+        this.logger.warn(
+          `Failed to clean up file ${filePath}: ${(cleanupErr as Error).message}`,
+        );
+      }
     }
   }
 }
