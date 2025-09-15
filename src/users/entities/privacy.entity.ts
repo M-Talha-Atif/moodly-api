@@ -5,12 +5,12 @@ import { User } from './user.entity';
 
 @Entity('privacy_settings')
 export class PrivacySettings {
-  @PrimaryColumn({ name: 'user_id' })
+  @PrimaryColumn({ name: 'user_id', type: 'uuid' })
   userId: string;
 
-  @OneToOne(() => User, (user) => user.privacySettings)
-  @JoinColumn({ name: 'user_id' })
-  @Exclude() // Prevent circular JSON serialization
+  @OneToOne(() => User, (user) => user.privacySettings, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' }) // Owning side
+  @Exclude()
   user: User;
 
   @Column({

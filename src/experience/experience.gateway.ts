@@ -16,7 +16,7 @@ import { Server, Socket } from 'socket.io';
 // 👇 Decorator tells NestJS to create a WebSocket server
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:5173', // frontend
+    origin: process.env.FRONTEND_URL, // frontend
     credentials: true,
   },
 })
