@@ -87,13 +87,12 @@ export class User {
   @Column({ type: 'enum', enum: AccountStatus, default: AccountStatus.ACTIVE })
   accountStatus: AccountStatus;
 
+  @OneToOne(() => PrivacySettings, (ps) => ps.user)
+  privacySettings: PrivacySettings;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt: Date;
-
-  @OneToOne(() => PrivacySettings, (ps) => ps.user, { nullable: true })
-  @JoinColumn()
-  privacySettings: PrivacySettings;
 }

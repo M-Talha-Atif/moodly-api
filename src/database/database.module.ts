@@ -2,47 +2,52 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as dotenv from 'dotenv';
 import * as path from 'path';
-
-// Load .env file before anything else
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+import * as fs from 'fs';
 
 @Module({
   imports: [
-    // PostgreSQL/TypeORM configuration
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('POSTGRES_HOST'),
-        port: configService.get<number>('POSTGRES_PORT'),
-        username: configService.get('POSTGRES_USER'),
-        password: configService.get('POSTGRES_PASSWORD'),
-        database: configService.get('POSTGRES_DB'),
-        entities: [path.join(__dirname, '../**/*.entity{.ts,.js}')],
-        synchronize: configService.get('NODE_ENV') !== 'production',
-        // synchronize: false, // <-- force OFF for pgvector
-        logging: true,
-        logger: 'advanced-console',
-      }),
-      inject: [ConfigService],
-    }),
-    // MongoDB/Mongoose configuration
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get('MONGO_URI'),
-        // Optional Mongoose settings
-        dbName: configService.get('MONGO_DB'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }),
-      inject: [ConfigService],
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: path.resolve(__dirname, '../../.env'),
+    }),
+
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const isProd = config.get('NODE_ENV') === 'production';
+        return {
+          type: 'postgres',
+          host: config.get<string>('POSTGRES_HOST'),
+          port: parseInt(config.get<string>('POSTGRES_PORT') || '5432', 10),
+          username: config.get<string>('POSTGRES_USER'),
+          password: config.get<string>('POSTGRES_PASSWORD'),
+          database: config.get<string>('POSTGRES_DB'),
+          entities: [path.join(__dirname, '../**/*.entity{.ts,.js}')],
+          synchronize: config.get('NODE_ENV') !== 'production',
+          logging: true,
+          logger: 'advanced-console',
+          ssl: isProd
+            ? {
+                ca: fs
+                  .readFileSync(
+                    path.resolve(__dirname, '../../certs/rds-ca.pem'),
+                  )
+                  .toString(),
+              }
+            : false,
+        };
+      },
+    }),
+
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('MONGO_URI'),
+        dbName: config.get<string>('MONGO_DB'),
+      }),
     }),
   ],
 })
