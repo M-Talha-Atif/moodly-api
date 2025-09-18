@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module'; // <-- import your shared DB module
-import { WorkerConsumer } from './worker.consumer';
-import { EmbeddingConsumer } from './embedding.consumer';
+import { MoodDetectionWorker } from './mood-detection.worker';
+import { EmbeddingWorker } from './embedding.worker';
 import { EmotionAnalysisService } from '../mood-log/services/emotion-analysis.service';
 import { ValidationService } from '../mood-log/services/validation.service';
 import { ConfigModule } from '@nestjs/config';
-import { EmbeddingService } from '../embedding/embedding.service';
+import { EmbeddingService } from '../embedding/services/embedding.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   MoodLogEmbedding,
@@ -15,12 +15,14 @@ import {
   CommunityEmbedding,
   CommunityEmbeddingSchema,
 } from '../embedding/schemas/community-embedding.schema';
-import { BullModule } from '@nestjs/bull';
 import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RmqModule } from 'src/rmq/rmq.module';
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 import { CommonModule } from 'src/common/common.module';
+import { EmbeddingModule } from 'src/embedding/embedding.module';
+import { RecommendationWorker } from './recommendation.worker';
+import { RecommendationModule } from 'src/recommendation/recommendation.module';
 
 @Module({
   imports: [
@@ -38,18 +40,6 @@ import { CommonModule } from 'src/common/common.module';
       { name: CommunityEmbedding.name, schema: CommunityEmbeddingSchema },
     ]),
 
-    // Bull queues
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379', 10),
-      },
-    }),
-    BullModule.registerQueue(
-      { name: 'mood-queue' },
-      { name: 'recommendation-queue' },
-    ),
-
     // RabbitMQ client, works for consumer
     RmqModule.register({
       clientName: RMQ_DOMAINS.MOOD.CLIENT,
@@ -62,11 +52,21 @@ import { CommonModule } from 'src/common/common.module';
       queue: RMQ_DOMAINS.COMMUNITY.QUEUE,
     }),
 
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.RECOMMENDATION.CLIENT,
+      exchange: RMQ_DOMAINS.RECOMMENDATION.EXCHANGE,
+      queue: RMQ_DOMAINS.RECOMMENDATION.QUEUE,
+    }),
+
     // Common Module
     CommonModule,
+
+    EmbeddingModule,
+
+    RecommendationModule,
   ],
 
-  controllers: [WorkerConsumer, EmbeddingConsumer],
+  controllers: [MoodDetectionWorker, EmbeddingWorker, RecommendationWorker],
   providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
 })
 export class WorkerModule {}

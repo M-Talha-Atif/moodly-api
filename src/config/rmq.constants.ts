@@ -17,6 +17,15 @@ export const RMQ_DOMAINS = {
       EMBED: 'community.embedding.generate',
     },
   },
+
+  RECOMMENDATION: {
+    CLIENT: 'REC_RMQ_CLIENT',
+    EXCHANGE: process.env.RMQ_REC_EXCHANGE || 'recommendation-exchange',
+    QUEUE: process.env.RMQ_REC_QUEUE || 'recommendation-tasks',
+    ROUTING: {
+      GENERATE: 'recommendation.generate',
+    },
+  },
   EXPERIENCE: {
     /* same pattern */
   },

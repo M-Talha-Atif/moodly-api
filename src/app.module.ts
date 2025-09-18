@@ -29,6 +29,7 @@ import { CommunityModule } from './community/community.module';
 // ✅ Winston logger
 import { WinstonModule } from 'nest-winston';
 import { buildWinstonOptions } from './logger/winston.config';
+import { InsightsModule } from './insights/insights.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { buildWinstonOptions } from './logger/winston.config';
     NotificationModule,
     AttendanceModule,
     CommunityModule,
+    InsightsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

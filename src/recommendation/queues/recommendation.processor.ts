@@ -1,7 +1,7 @@
 // src/recommendation/queues/recommendation.processor.ts
 import { Process, Processor } from '@nestjs/bull';
 import type { Job } from 'bull';
-import { RecommendationService } from '../recommendation.service';
+import { RecommendationService } from '../services/recommendation.service';
 import { RecommendationGateway } from '../recommendation.gateway';
 
 @Processor('recommendation-queue')
