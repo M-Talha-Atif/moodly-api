@@ -95,6 +95,18 @@ async function bootstrap() {
     },
   });
 
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL!],
+      queue: process.env.RMQ_REC_QUEUE || 'recommendation-tasks',
+      queueOptions: { durable: true },
+      exchange: process.env.RMQ_REC_EXCHANGE || 'recommendation-exchange',
+      exchangeType: 'direct',
+      prefetchCount: 1,
+    },
+  });
+
   await app.startAllMicroservices();
 
   // -----------------------------
@@ -105,6 +117,7 @@ async function bootstrap() {
   logger.log(`📡 Listening on queues: 
   - ${process.env.RMQ_MOOD_QUEUE || 'mood-tasks'}
   - ${process.env.RMQ_COMM_QUEUE || 'community-tasks'}
+  - ${process.env.RMQ_RECOMMENDATION_QUEUE || 'recommendation-tasks'}
 `);
 }
 

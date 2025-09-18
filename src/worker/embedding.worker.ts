@@ -1,12 +1,10 @@
-import { Controller, Logger } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
-import { EmbeddingService } from '../embedding/embedding.service';
+import { Controller, Logger, Inject } from '@nestjs/common';
+import { EventPattern, Payload, ClientProxy } from '@nestjs/microservices';
+import { EmbeddingService } from '../embedding/services/embedding.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MoodLogEmbedding } from '../embedding/schemas/moodlog-embedding.schema';
 import { CommunityEmbedding } from '../embedding/schemas/community-embedding.schema';
-import { InjectQueue } from '@nestjs/bull';
-import type { Queue } from 'bull';
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
 type MoodAnalyzedPayload = {
@@ -25,15 +23,15 @@ type CommunityEmbeddingPayload = {
 };
 
 @Controller()
-export class EmbeddingConsumer {
-  private readonly logger = new Logger(EmbeddingConsumer.name);
+export class EmbeddingWorker {
+  private readonly logger = new Logger(EmbeddingWorker.name);
 
   constructor(
     private readonly embeddingService: EmbeddingService,
     @InjectModel(MoodLogEmbedding.name)
     private moodLogEmbeddingModel: Model<MoodLogEmbedding>,
-    @InjectQueue('recommendation-queue')
-    private readonly recQueue: Queue,
+    @Inject(RMQ_DOMAINS.RECOMMENDATION.CLIENT)
+    private readonly rmqClient: ClientProxy,
     @InjectModel(CommunityEmbedding.name)
     private readonly communityEmbeddingModel: Model<CommunityEmbedding>,
   ) {}
@@ -56,10 +54,10 @@ export class EmbeddingConsumer {
 
     this.logger.log(`✅ Processed embedding for moodLog ${payload.moodLogId}`);
 
-    // Enqueue recommendation job
-    await this.recQueue.add('recommendation.generate', {
+    this.rmqClient.emit(RMQ_DOMAINS.RECOMMENDATION.ROUTING.GENERATE, {
       userId: payload.userId,
       embedding,
+      context: payload.combinedText,
     });
   }
 

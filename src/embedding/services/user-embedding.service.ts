@@ -2,7 +2,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MoodLogEmbedding } from './schemas/moodlog-embedding.schema';
+import { MoodLogEmbedding } from '../schemas/moodlog-embedding.schema';
 
 @Injectable()
 export class UserEmbeddingService {

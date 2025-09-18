@@ -5,9 +5,9 @@ import {
   UseGuards,
   NotFoundException,
 } from '@nestjs/common';
-import { RecommendationService } from './recommendation.service';
+import { RecommendationService } from './services/recommendation.service';
 import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
-import { UserEmbeddingService } from 'src/embedding/user-embedding.service';
+import { UserEmbeddingService } from 'src/embedding/services/user-embedding.service';
 import {
   ApiTags,
   ApiOperation,

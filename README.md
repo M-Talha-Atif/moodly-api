@@ -40,6 +40,15 @@ npx typeorm migration:generate -n AddExperienceTitleToFeedback
 # format code with prettier
 npx prettier --write .
 
+# create module
+nest g module insights
+
+# create service
+nest g service insights
+
+# nest g service insights/services/insights
+
+
 
 # inside WSL
 redis-cli

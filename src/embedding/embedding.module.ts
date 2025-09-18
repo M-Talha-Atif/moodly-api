@@ -9,9 +9,12 @@ import {
   MoodLogEmbedding,
   MoodLogEmbeddingSchema,
 } from './schemas/moodlog-embedding.schema';
-import { EmbeddingService } from './embedding.service';
-import { UserEmbeddingService } from './user-embedding.service';
+import { EmbeddingService } from './services/embedding.service';
+import { UserEmbeddingService } from './services/user-embedding.service';
 import { CommonModule } from '../common/common.module';
+import { UserMoodEmbeddingService } from './services/user-mood-embedding.service';
+import { OnboardingModule } from 'src/onboarding/onboarding.module';
+import { InsightsModule } from 'src/insights/insights.module';
 
 @Module({
   imports: [
@@ -20,8 +23,15 @@ import { CommonModule } from '../common/common.module';
       { name: MoodLogEmbedding.name, schema: MoodLogEmbeddingSchema },
     ]),
     CommonModule,
+    OnboardingModule,
+    InsightsModule,
   ],
-  providers: [EmbeddingService, UserEmbeddingService],
-  exports: [EmbeddingService, UserEmbeddingService, MongooseModule],
+  providers: [EmbeddingService, UserEmbeddingService, UserMoodEmbeddingService],
+  exports: [
+    EmbeddingService,
+    UserEmbeddingService,
+    UserMoodEmbeddingService,
+    MongooseModule,
+  ],
 })
 export class EmbeddingModule {}

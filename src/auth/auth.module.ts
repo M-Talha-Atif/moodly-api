@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { JwtCookieGuard } from './guards/jwt-cookie.guard';
 /**
  * AuthModule
  *
@@ -34,8 +35,8 @@ import { GoogleStrategy } from './strategies/google.strategy';
       }),
     }),
   ],
-  providers: [AuthService, GoogleStrategy],
+  providers: [AuthService, GoogleStrategy, JwtCookieGuard],
   controllers: [AuthController],
-  exports: [JwtModule],
+  exports: [JwtModule, JwtCookieGuard],
 })
 export class AuthModule {}
