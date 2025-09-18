@@ -44,7 +44,7 @@ Respond ONLY with a JSON array of IDs in ranked order.
       `🛠️ Gemini full response: ${JSON.stringify(result, null, 2)}`,
     );
 
-    let raw = result.response.text().trim();
+    const raw = result.response.text().trim();
 
     this.logger.log(`📩 Gemini raw output (before clean): ${raw}`);
 
