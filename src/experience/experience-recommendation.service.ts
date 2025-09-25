@@ -26,7 +26,7 @@ export class ExperienceRecommendationService {
     private readonly experienceRepo: Repository<Experience>,
     @InjectModel(ExperienceEmbedding.name)
     private readonly experienceEmbeddingModel: Model<ExperienceEmbedding>,
-  ) { }
+  ) {}
 
   // === APPROACH 1: Emotion Tag Matching (FAST - <100ms) ===
   async recommendByEmotion(
@@ -68,7 +68,6 @@ export class ExperienceRecommendationService {
 
     return await queryBuilder.getMany();
   }
-
 
   // === APPROACH 2: Existing Embedding-Based Recommendation ===
   async recommendByEmbedding(

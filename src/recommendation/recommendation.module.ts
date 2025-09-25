@@ -22,10 +22,6 @@ import { MoodLogModule } from 'src/mood-log/mood-log.module';
     GeminiRankingProvider,
   ],
   controllers: [RecommendationController],
-  exports: [
-    RecommendationService,
-    RecommendationGateway,
-    LLMRankingService,
-  ],
+  exports: [RecommendationService, RecommendationGateway, LLMRankingService],
 })
-export class RecommendationModule { }
+export class RecommendationModule {}

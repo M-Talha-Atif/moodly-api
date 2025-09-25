@@ -28,7 +28,6 @@ import { HostBookingStatsService } from './services/host/host-booking-stats.serv
 // Controllers
 import { HostBookingController } from './controller/host-booking.controller';
 import { UserBookingController } from './controller/user-booking.controller';
-import { FeedbackModule } from 'src/feedback/feedback.module';
 import { Feedback } from 'src/feedback/entities/feedback.entity';
 // import { User } from '../users/entities/user.entity';
 
