@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { EmotionAnalysisService } from '../mood-log/services/emotion-analysis.service';
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
-import { UserMoodEmbeddingService } from 'src/embedding/services/user-mood-embedding.service';
+// import { UserMoodEmbeddingService } from 'src/embedding/services/user-mood-embedding.service';
 
 type MoodDetectPayload = {
   moodLogId: string;
@@ -23,7 +23,6 @@ export class MoodDetectionWorker {
   constructor(
     @InjectRepository(MoodLog) private repo: Repository<MoodLog>,
     private readonly emotion: EmotionAnalysisService,
-    private readonly userMoodEmbeddingService: UserMoodEmbeddingService, // 👈 inject
     @Inject(RMQ_DOMAINS.MOOD.CLIENT) private readonly rmqClient: ClientProxy,
   ) {}
 
@@ -58,19 +57,10 @@ export class MoodDetectionWorker {
       { photoEmotion, voiceSentiment, finalMood },
     );
 
-    // 👇 Enriched embedding text
-    const enrichedText =
-      await this.userMoodEmbeddingService.buildUserEmbeddingText(
-        payload.userId,
-        finalMood,
-        payload.note,
-      );
-
     // Emit follow-up event
-    this.rmqClient.emit(RMQ_DOMAINS.MOOD.ROUTING.ANALYZED, {
-      moodLogId: payload.moodLogId,
+    this.rmqClient.emit(RMQ_DOMAINS.RECOMMENDATION.ROUTING.GENERATE, {
       userId: payload.userId,
-      combinedText: enrichedText,
+      finalMood,
     });
   }
 }

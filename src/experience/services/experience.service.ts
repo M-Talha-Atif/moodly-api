@@ -69,25 +69,67 @@ export class ExperienceService {
     userId: string,
     filters: ExperienceFiltersDto,
   ): Promise<{
-    data: Experience[];
+    data: any[]; // you can replace with DTO if strict typing needed
     meta: { total: number; page: number; limit: number; totalPages: number };
   }> {
     const qb = this.experienceRepo
       .createQueryBuilder('experience')
-      .leftJoinAndSelect('experience.host', 'host')
+      .leftJoin('experience.host', 'host')
       .leftJoin(
         'experience.bookings',
         'booking',
         `booking.userId = :userId AND booking.status != 'cancelled'`,
         { userId },
       )
-      .orderBy('experience.createdAt', 'DESC');
+      .select([
+        'experience.id',
+        'experience.title',
+        'experience.date',
+        'experience.description',
+        'experience.spotsFilled',
+        'experience.location',
+        'experience.sessionStartTime',
+        'experience.sessionEndTime',
+        'experience.timezone',
+        'experience.totalSpots',
+        'experience.image',
+        'host.id',
+        'host.name',
+      ])
+      .addSelect('booking.id', 'bookingId') // <-- booking id
+      .addSelect(
+        `CASE WHEN booking.id IS NOT NULL THEN true ELSE false END`,
+        'isBooked',
+      )
+      .orderBy('experience.date', 'DESC');
 
     this.experienceFilterService.applyFilters(qb, filters);
 
     qb.skip((filters.page - 1) * filters.limit).take(filters.limit);
 
-    const [data, total] = await qb.getManyAndCount();
+    const [entities, total] = await qb.getManyAndCount();
+    const rawData = await qb.getRawMany(); // get "isBooked"
+
+    const data = entities.map((exp, idx) => ({
+      id: exp.id,
+      title: exp.title,
+      description: exp.description,
+      image: exp.image,
+      date: formatDate(exp.date),
+      createdAt: exp.createdAt,
+      location: exp.location,
+      sessionStartTime: exp.sessionStartTime,
+      sessionEndTime: exp.sessionEndTime,
+      totalSpots: exp.totalSpots,
+      spotsFilled: exp.spotsFilled,
+      host: {
+        id: exp.host.id,
+        name: exp.host.name,
+      },
+      bookingId: rawData[idx]?.bookingId || null,
+      isBooked:
+        rawData[idx]?.isBooked === true || rawData[idx]?.isBooked === 'true',
+    }));
 
     return {
       data,
@@ -123,48 +165,43 @@ export class ExperienceService {
       .where('experience.id = :expId', { expId });
 
     const experience = await qb.getOne();
-
     if (!experience) return null;
 
     const userBooking = experience.bookings?.[0] || null;
 
-    // Normalize all date fields
-    const responseExperience = {
-      ...experience,
+    // Return only relevant fields
+    return {
+      id: experience.id,
+      title: experience.title,
+      description: experience.description,
+      date: formatDate(experience.date),
+      location: experience.location,
+      image: experience.image,
+      price: experience.price,
+      isVirtual: experience.isVirtual,
       sessionStartTime: formatDate(experience.sessionStartTime),
       sessionEndTime: formatDate(experience.sessionEndTime),
-      createdAt: formatDate(experience.createdAt),
-      updatedAt: formatDate(experience.updatedAt),
+      totalSpots: experience.totalSpots,
+      spotsFilled: experience.spotsFilled,
+      timezone: experience.timezone,
 
+      // Booking info (for current user only)
+      isBooked: !!userBooking && userBooking.status !== 'cancelled',
+      bookingId:
+        userBooking && userBooking.status !== 'cancelled'
+          ? userBooking.id
+          : null,
+      bookingStatus:
+        userBooking && userBooking.status !== 'cancelled'
+          ? userBooking.status
+          : null,
+
+      // Host info (basic only)
       host: {
-        ...experience.host,
-        createdAt: formatDate(experience.host?.createdAt),
-        updatedAt: formatDate(experience.host?.updatedAt),
+        id: experience.host.id,
+        name: experience.host.name,
+        avatarUrl: experience.host.avatarUrl,
       },
-
-      bookings: (experience.bookings || []).map((b) => ({
-        ...b,
-        cancelledAt: formatDate(b.cancelledAt),
-        createdAt: formatDate(b.createdAt),
-        updatedAt: formatDate(b.updatedAt),
-      })),
-    };
-
-    // if booking exists but is cancelled, ignore it
-    if (userBooking?.status === 'cancelled') {
-      return {
-        ...responseExperience,
-        isBooked: false,
-        bookingId: null,
-        bookingStatus: null,
-      };
-    }
-
-    return {
-      ...responseExperience,
-      isBooked: !!userBooking,
-      bookingId: userBooking?.id || null,
-      bookingStatus: userBooking?.status || null, // confirmed | waitlisted
     };
   }
 
@@ -227,5 +264,16 @@ export class ExperienceService {
     }
     await this.experienceRepo.delete(id);
     await this.experienceEmbeddingModel.deleteOne({ experienceId: id });
+  }
+
+  async findBookingsForExperience(expId: string) {
+    return this.experienceRepo
+      .createQueryBuilder('experience')
+      .leftJoinAndSelect('experience.bookings', 'booking')
+      .leftJoinAndSelect('booking.user', 'user')
+      .where('experience.id = :expId', { expId })
+      .orderBy('booking.createdAt', 'DESC')
+      .getOne()
+      .then((exp) => exp?.bookings || []);
   }
 }

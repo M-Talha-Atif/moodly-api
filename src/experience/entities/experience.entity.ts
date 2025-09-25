@@ -106,6 +106,9 @@ export class Experience {
   @OneToMany(() => Feedback, (feedback) => feedback.experience)
   feedbacks: Feedback[];
 
+  @Column({ type: 'int', default: 1 })
+  version: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -69,15 +69,10 @@ export class MoodLogController {
   @Get('today')
   @ApiOperation({ summary: "Get today's mood log for the authenticated user" })
   @ApiResponse({ status: 200, description: 'Returns today’s mood log' })
+  @ApiResponse({ status: 404, description: 'No mood log found for today' })
   async getToday(@Req() req: any) {
-    try {
-      return await this.moodLogService.getTodayLogForUser(req.user.sub);
-    } catch (error) {
-      console.error("Error fetching today's mood log:", error);
-      throw new InternalServerErrorException(
-        "Failed to fetch today's mood log",
-      );
-    }
+    // Let the exception bubble up naturally
+    return await this.moodLogService.getTodayLogForUser(req.user.sub);
   }
 
   @UseGuards(JwtCookieGuard)

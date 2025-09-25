@@ -9,12 +9,15 @@ import {
   ExperienceEmbedding,
   ExperienceEmbeddingSchema,
 } from 'src/embedding/schemas/experience-embedding.schema';
-import { ExperienceController } from './experience.controller';
 import { UsersModule } from 'src/users/users.module';
 import { ExperienceGateway } from './experience.gateway';
 import { ExperienceFilterService } from './services/experience-filter.service';
 import { S3Service } from '../common/services/s3.service';
 import { CommonModule } from '../common/common.module';
+import { ExperienceHostController } from './controllers/experience.host.controller';
+import { ExperiencePublicController } from './controllers/experience.public.controller';
+import { ExperienceUserController } from './controllers/experience.user.controller';
+import { ExperienceHostService } from '../experience/services/host/experience-host.service';
 
 @Module({
   imports: [
@@ -26,12 +29,17 @@ import { CommonModule } from '../common/common.module';
     UsersModule,
     CommonModule,
   ],
-  controllers: [ExperienceController],
+  controllers: [
+    ExperienceHostController,
+    ExperiencePublicController,
+    ExperienceUserController,
+  ],
   providers: [
     ExperienceService,
     ExperienceFilterService,
     ExperienceRecommendationService,
     ExperienceGateway,
+    ExperienceHostService,
     S3Service,
   ],
   exports: [

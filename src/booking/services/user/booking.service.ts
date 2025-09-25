@@ -1,12 +1,12 @@
 import { Injectable, Logger, HttpException } from '@nestjs/common';
-import { CreateBookingDto } from '../dto/create-booking.dto';
-import { BookingResponseDto } from '../dto/booking-response.dto';
-import { ResultDto } from '../../common/dto/result.dto';
-import { ERROR_CODE_MAP } from '../../common/constants/error-code-map';
+import { CreateBookingDto } from 'src/booking/dto/create-booking.dto';
+import { BookingResponseDto } from 'src/booking/dto/booking-response.dto';
+import { ResultDto } from 'src/common/dto/result.dto';
+import { ERROR_CODE_MAP } from 'src/common/constants/error-code-map';
 import { BookingCreationService } from './booking-creation.service';
 import { BookingCancellationService } from './booking-cancellation.service';
 import { BookingQueryService } from './booking-query.service';
-import { BookingDetailDto } from '../dto/booking-detail.dto';
+import { BookingDetailDto } from 'src/booking/dto/booking-detail.dto';
 
 @Injectable()
 export class BookingService {

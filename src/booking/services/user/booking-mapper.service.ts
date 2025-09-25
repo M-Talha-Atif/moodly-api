@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Booking } from '../entities/booking.entity';
-import { BookingResponseDto } from '../dto/booking-response.dto';
-import { BookingDetailDto } from '../dto/booking-detail.dto';
+import { Booking } from 'src/booking/entities/booking.entity';
+import { BookingResponseDto } from 'src/booking/dto/booking-response.dto';
+import { BookingDetailDto } from 'src/booking/dto/booking-detail.dto';
 
 @Injectable()
 export class BookingMapperService {
