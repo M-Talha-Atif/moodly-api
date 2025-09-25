@@ -26,7 +26,7 @@ export class ExperienceRecommendationService {
     private readonly experienceRepo: Repository<Experience>,
     @InjectModel(ExperienceEmbedding.name)
     private readonly experienceEmbeddingModel: Model<ExperienceEmbedding>,
-  ) { }
+  ) {}
 
   async recommendByEmotion(
     userMood: string,
@@ -69,7 +69,6 @@ export class ExperienceRecommendationService {
 
     return await queryBuilder.getMany();
   }
-
 
   // === APPROACH 2: Existing Embedding-Based Recommendation ===
   async recommendByEmbedding(
