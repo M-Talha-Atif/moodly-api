@@ -70,7 +70,6 @@ export class Experience {
   @Column('text', { array: true, nullable: true })
   targetEmotions: string[];
 
-
   @Column('simple-array', { nullable: true })
   desiredOutcomes: string[];
 
