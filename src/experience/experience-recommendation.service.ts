@@ -26,9 +26,8 @@ export class ExperienceRecommendationService {
     private readonly experienceRepo: Repository<Experience>,
     @InjectModel(ExperienceEmbedding.name)
     private readonly experienceEmbeddingModel: Model<ExperienceEmbedding>,
-  ) {}
+  ) { }
 
-  // === APPROACH 1: Emotion Tag Matching (FAST - <100ms) ===
   async recommendByEmotion(
     userMood: string,
     userId?: string,
@@ -37,16 +36,18 @@ export class ExperienceRecommendationService {
     const targetEmotions =
       EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
 
+    // Convert JS array -> Postgres array literal: "{happy,calm}"
+    const pgArray = `{${targetEmotions.join(',')}}`;
+
     const queryBuilder = this.experienceRepo
       .createQueryBuilder('exp')
       .leftJoinAndSelect('exp.host', 'host')
-      .where('exp.targetEmotions && :targetEmotions', {
-        targetEmotions,
+      .where('exp.targetEmotions && :targetEmotions::text[]', {
+        targetEmotions: pgArray,
       })
       .andWhere('exp.spotsFilled < exp.totalSpots')
       .andWhere('exp.sessionStartTime > NOW()');
 
-    // Exclude user's booked experiences (only allow cancelled or no bookings)
     if (userId) {
       queryBuilder
         .leftJoin(
@@ -68,6 +69,7 @@ export class ExperienceRecommendationService {
 
     return await queryBuilder.getMany();
   }
+
 
   // === APPROACH 2: Existing Embedding-Based Recommendation ===
   async recommendByEmbedding(

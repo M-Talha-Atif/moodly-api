@@ -67,9 +67,9 @@ export class Experience {
   @Column('jsonb', { nullable: true })
   preparation: any;
 
-  // 🔥 Emotional Matching Fields
-  @Column('simple-array', { nullable: true })
+  @Column('text', { array: true, nullable: true })
   targetEmotions: string[];
+
 
   @Column('simple-array', { nullable: true })
   desiredOutcomes: string[];
