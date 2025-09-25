@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { RecommendationService } from './services/recommendation.service';
 import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
 import {
@@ -12,7 +7,6 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
 import { MoodLogService } from 'src/mood-log/services/mood-log.service';
 
 @ApiTags('recommendations') // Groups under "recommendations"

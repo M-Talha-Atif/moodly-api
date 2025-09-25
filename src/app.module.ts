@@ -18,7 +18,7 @@ import { DiagramModule } from './diagram/diagram.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { NotificationModule } from './notification/notification.module';
 import { AttendanceModule } from './attendance/attendance.module';
-import { RedisModule } from './redis/redis.module';;
+import { RedisModule } from './redis/redis.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 import { CommunityModule } from './community/community.module';

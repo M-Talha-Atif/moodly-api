@@ -12,7 +12,6 @@ import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.
 import { ExperienceFilterService } from '../experience-filter.service';
 import { ExperienceFiltersDto } from '../../dto/experience-filters.dto';
 import { S3Service } from 'src/common/services/s3.service';
-import { formatDate } from 'src/common/utils/date.utils';
 
 @Injectable()
 export class ExperienceHostService {
