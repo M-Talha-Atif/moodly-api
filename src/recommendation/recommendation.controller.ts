@@ -3,17 +3,17 @@ import {
   Get,
   Req,
   UseGuards,
-  NotFoundException,
 } from '@nestjs/common';
 import { RecommendationService } from './services/recommendation.service';
 import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
-import { UserEmbeddingService } from 'src/embedding/services/user-embedding.service';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { Inject } from '@nestjs/common';
+import { MoodLogService } from 'src/mood-log/services/mood-log.service';
 
 @ApiTags('recommendations') // Groups under "recommendations"
 @ApiBearerAuth() // shows JWT auth in Swagger UI
@@ -21,7 +21,7 @@ import {
 export class RecommendationController {
   constructor(
     private readonly recommendationService: RecommendationService,
-    private readonly userEmbeddingService: UserEmbeddingService,
+    private readonly moodLogService: MoodLogService,
   ) {}
 
   @UseGuards(JwtCookieGuard)
@@ -48,13 +48,18 @@ export class RecommendationController {
   async getRecommendations(@Req() req: any) {
     console.log('Fetching recommendations for user:', req.user.sub);
 
-    const embedding = await this.userEmbeddingService.getLatestUserEmbedding(
+    const moodResult = await this.moodLogService.getTodayLogForUser(
       req.user.sub,
     );
 
-    if (!embedding)
-      throw new NotFoundException('No mood embedding found for user');
+    const userMood =
+      (moodResult?.success && moodResult.data?.finalMood) ||
+      moodResult?.data?.moodLabel || // Fallback to moodLabel if finalMood doesn't exist
+      'neutral';
 
-    return this.recommendationService.generateForUser(req.user.sub, embedding);
+    return this.recommendationService.generateForUserByMood(
+      req.user.sub,
+      userMood,
+    );
   }
 }

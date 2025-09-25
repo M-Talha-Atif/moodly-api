@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Booking } from '../entities/booking.entity';
-import { Experience } from '../../experience/entities/experience.entity';
-import { User } from '../../users/entities/user.entity';
-import { ResultDto } from '../../common/dto/result.dto';
+import { Booking } from 'src/booking/entities/booking.entity';
+import { Experience } from 'src/experience/entities/experience.entity';
+import { User } from 'src/users/entities/user.entity';
+import { ResultDto } from 'src/common/dto/result.dto';
 import { HttpStatus } from '@nestjs/common/enums';
-import { BookingErrorHandler } from 'src/booking/services/booking-error-handler.service';
+import { BookingErrorHandler } from 'src/booking/services/user/booking-error-handler.service';
 import { TransactionService } from 'src/common/services/transaction.service';
-import { BookingValidationService } from 'src/booking/services/booking-validation.service';
-import { BookingSideEffectsService } from 'src/booking/services/booking-side-effects.service';
-import { AttendanceService } from '../../attendance/attendance.service';
+import { BookingValidationService } from 'src/booking/services/user/booking-validation.service';
+import { BookingSideEffectsService } from 'src/booking/services/user/booking-side-effects.service';
+import { AttendanceService } from 'src/attendance/attendance.service';
 import { ExperienceGateway } from 'src/experience/experience.gateway';
 
 @Injectable()

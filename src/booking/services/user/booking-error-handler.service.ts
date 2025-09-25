@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ResultDto } from '../../common/dto/result.dto';
-import { ERROR_CODE_MAP } from '../../common/constants/error-code-map';
+import { ResultDto } from 'src/common/dto/result.dto';
+import { ERROR_CODE_MAP } from 'src/common/constants/error-code-map';
 
 @Injectable()
 export class BookingErrorHandler {

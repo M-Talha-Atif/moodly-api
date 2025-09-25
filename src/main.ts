@@ -12,6 +12,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { setupBullBoard } from './bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
+import { ValidationPipe } from '@nestjs/common';
 
 /**
  * --------------------------------
@@ -130,6 +131,13 @@ async function bootstrap() {
   // -----------------------------
   const diagramService = app.get(DiagramService);
   diagramService.setApp(app);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   // -----------------------------
   // Start server

@@ -33,14 +33,13 @@ export class MoodLogService {
     dto: CreateMoodLogDto,
     files?: { photo?: Express.Multer.File; voice?: Express.Multer.File },
   ) {
-    const todayStart = startOfDay(new Date());
-    const todayEnd = endOfDay(new Date());
-
     try {
       // Check existing log
-      const existingLog = await this.moodLogRepo.findOne({
-        where: { userId, createdAt: Between(todayStart, todayEnd) },
-      });
+      const existingLog = await this.moodLogRepo
+        .createQueryBuilder('moodLog')
+        .where('moodLog.userId = :userId', { userId })
+        .andWhere('DATE(moodLog.createdAt) = CURRENT_DATE')
+        .getOne();
       if (existingLog) {
         return ResultDto.ok(existingLog, 'Mood log already exists for today');
       }
@@ -92,32 +91,23 @@ export class MoodLogService {
     }
   }
 
-  async getTodayLogForUser(userId: string) {
-    try {
-      const todayStart = startOfDay(new Date());
-      const todayEnd = endOfDay(new Date());
+  async getTodayLogForUser(userId: string): Promise<ResultDto<MoodLog>> {
+    const todayLog = await this.moodLogRepo
+      .createQueryBuilder('moodLog')
+      .where('moodLog.userId = :userId', { userId })
+      .andWhere('DATE(moodLog.createdAt) = CURRENT_DATE')
+      .orderBy('moodLog.createdAt', 'DESC')
+      .getOne();
 
-      const log = await this.moodLogRepo.findOne({
-        where: { userId, createdAt: Between(todayStart, todayEnd) },
-        order: { createdAt: 'DESC' },
-        select: ['id', 'createdAt', 'finalMood'], // 👈 only finalMood
-      });
-
-      if (!log) {
-        return ResultDto.fail('No mood log found for today', 404, 'NOT_FOUND');
-      }
-
-      const mapped = {
-        id: log.id,
-        finalMood: log.finalMood,
-        createdAt: log.createdAt.toISOString().split('T')[0], // 👈 format yyyy-mm-dd
-      };
-
-      return ResultDto.ok(mapped, "Fetched today's mood log");
-    } catch (error) {
-      this.logger.error("Error fetching today's mood log:", error);
-      throw new InternalServerErrorException('Failed to fetch mood log');
+    if (!todayLog) {
+      return ResultDto.fail<MoodLog>(
+        'No mood log found for today',
+        404,
+        'MOOD_LOG_NOT_FOUND',
+      );
     }
+
+    return ResultDto.ok(todayLog, "Today's mood log retrieved successfully");
   }
 
   async getHistoryForUser(userId: string, limit = 30, page = 1) {

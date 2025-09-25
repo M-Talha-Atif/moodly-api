@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SelectQueryBuilder } from 'typeorm';
-import { Booking } from '../entities/booking.entity';
+import { Booking } from 'src/booking/entities/booking.entity';
 import {
   addDays,
   startOfDay,

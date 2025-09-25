@@ -5,8 +5,8 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
-import { Experience } from '../../experience/entities/experience.entity';
-import { Booking } from '../entities/booking.entity';
+import { Experience } from 'src/experience/entities/experience.entity';
+import { Booking } from 'src/booking/entities/booking.entity';
 
 @Injectable()
 export class BookingValidationService {

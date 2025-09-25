@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Booking } from '../entities/booking.entity';
-import { Experience } from '../../experience/entities/experience.entity';
-import { User } from '../../users/entities/user.entity';
-import { NotificationService } from '../../notification/notification.service';
-import { AttendanceService } from '../../attendance/attendance.service';
+import { Booking } from 'src/booking/entities/booking.entity';
+import { Experience } from 'src/experience/entities/experience.entity';
+import { User } from 'src/users/entities/user.entity';
+import { NotificationService } from 'src/notification/notification.service';
+import { AttendanceService } from 'src/attendance/attendance.service';
 
 @Injectable()
 export class BookingSideEffectsService {

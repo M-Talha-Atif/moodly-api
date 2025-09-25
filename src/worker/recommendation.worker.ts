@@ -4,10 +4,15 @@ import { RecommendationService } from '../recommendation/services/recommendation
 import { RecommendationGateway } from '../recommendation/recommendation.gateway';
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
+// type RecommendationPayload = {
+//   userId: string;
+//   embedding: number[];
+//   context: string;
+// };
+
 type RecommendationPayload = {
   userId: string;
-  embedding: number[];
-  context: string;
+  userMood: string;
 };
 
 @Controller()
@@ -26,14 +31,15 @@ export class RecommendationWorker {
     );
 
     try {
-      const recommendations = await this.recommendationService.generateForUser(
-        payload.userId,
-        payload.embedding,
-        payload.context,
-      );
+      const recommendations =
+        await this.recommendationService.generateForUserByMood(
+          payload.userId,
+          payload.userMood,
+          10,
+        );
 
       this.logger.log(
-        `✅ Got ${recommendations.length} recommendations for user ${payload.userId}`,
+        `✅ Got ${recommendations.length} recommendations for user ${payload.userId} with user mood ${payload.userMood}`,
       );
 
       // Emit via socket

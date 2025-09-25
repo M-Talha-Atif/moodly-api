@@ -42,3 +42,7 @@ GET user:123
 
 TYPE session:abc
 HGETALL session:abc
+
+<!-- Redis Connection -->
+
+redis-cli -u redis://=====

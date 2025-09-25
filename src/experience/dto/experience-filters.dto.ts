@@ -1,21 +1,15 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsOptional, IsInt, Min, IsString } from 'class-validator';
 
 export class ExperienceFiltersDto {
   @IsOptional()
-  @Transform(({ value }) => {
-    const val = parseInt(value, 10);
-    return isNaN(val) ? 1 : val; // default to 1
-  })
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   page: number = 1;
 
   @IsOptional()
-  @Transform(({ value }) => {
-    const val = parseInt(value, 10);
-    return isNaN(val) ? 10 : val; // default to 10
-  })
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   limit: number = 10;

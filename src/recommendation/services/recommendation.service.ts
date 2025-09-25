@@ -12,16 +12,43 @@ export class RecommendationService {
     private readonly llmRanking: LLMRankingService,
   ) {}
 
+  // 1st approach, no llm call
+
+  async generateForUserByMood(userId: string, mood: string, limit = 10) {
+    const cacheKey = getRecommendationCacheKey(userId);
+    const cached = await this.redis.get<any[]>(cacheKey);
+    if (cached) return cached;
+
+    // Direct emotion-based matching (fast, no LLM)
+    const recommendations =
+      await this.experienceRecommendationService.recommendByEmotion(
+        mood,
+        userId,
+        limit,
+      );
+
+    // Cache until midnight
+    const secondsUntilMidnight = Math.floor(
+      (new Date().setHours(24, 0, 0, 0) - Date.now()) / 1000,
+    );
+    await this.redis.set(cacheKey, recommendations, secondsUntilMidnight);
+
+    return recommendations;
+  }
+
+  // 2nd approach
+
   async generateForUser(userId: string, embedding: number[], context?: string) {
     const cacheKey = getRecommendationCacheKey(userId);
     const cached = await this.redis.get<any[]>(cacheKey);
     if (cached) return cached;
 
     // Step 1: fast ANN search
-    const candidates = await this.experienceRecommendationService.recommend(
-      embedding,
-      50,
-    );
+    const candidates =
+      await this.experienceRecommendationService.recommendByEmbedding(
+        embedding,
+        25,
+      );
 
     // Step 2: rerank with LLM (if context available)
     let recommendations = candidates;
@@ -30,7 +57,8 @@ export class RecommendationService {
 
       recommendations = rankedIds
         .map((id) => candidates.find((c) => c.id === id))
-        .filter(Boolean) as any[];
+        .filter(Boolean)
+        .slice(0, 10) as any[];
     }
 
     // Step 3: cache until midnight

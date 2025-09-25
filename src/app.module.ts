@@ -18,15 +18,12 @@ import { DiagramModule } from './diagram/diagram.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { NotificationModule } from './notification/notification.module';
 import { AttendanceModule } from './attendance/attendance.module';
-import { RedisModule } from './redis/redis.module';
-import { BullModule } from '@nestjs/bull';
-import { MoodLogQueueModule } from './mood-log/queues/mood-log-queue.module';
-import { BullBoardModule } from './bull-board/bull-board.module';
+import { RedisModule } from './redis/redis.module';;
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 import { CommunityModule } from './community/community.module';
 
-// ✅ Winston logger
+//  Winston logger
 import { WinstonModule } from 'nest-winston';
 import { buildWinstonOptions } from './logger/winston.config';
 import { InsightsModule } from './insights/insights.module';
@@ -56,16 +53,6 @@ import { InsightsModule } from './insights/insights.module';
     // Infrastructure
     RedisModule,
     RmqModule,
-
-    // Background job processing
-    MoodLogQueueModule,
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
-    }),
-    BullBoardModule,
 
     // AI/Insights
     RecommendationModule,

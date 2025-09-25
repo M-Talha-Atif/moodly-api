@@ -34,11 +34,11 @@ export class Booking {
   @RelationId((booking: Booking) => booking.user)
   userId: string;
 
-  // 🔑 One-to-one relation with Attendance
+  // One-to-one relation with Attendance
   @OneToOne(() => Attendance, (attendance) => attendance.booking, {
     cascade: true,
   })
-  @JoinColumn() // 👈 required on one side of 1:1 to store FK
+  @JoinColumn() // required on one side of 1:1 to store FK
   attendance: Attendance;
 
   @Column({ default: 'confirmed' })
