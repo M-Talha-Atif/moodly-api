@@ -12,6 +12,7 @@ import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.
 import { ExperienceFilterService } from '../experience-filter.service';
 import { ExperienceFiltersDto } from '../../dto/experience-filters.dto';
 import { S3Service } from 'src/common/services/s3.service';
+import { formatDate } from 'src/common/utils/date.utils';
 
 @Injectable()
 export class ExperienceHostService {
@@ -31,16 +32,16 @@ export class ExperienceHostService {
     const experience = this.experienceRepo.create({ ...dto, host });
     const saved = await this.experienceRepo.save(experience);
 
-    // Generate embedding based on title + description + desired outcomes
-    const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
-    const embedding =
-      await this.embeddingService.generateEmbedding(combinedText);
+    // // Generate embedding based on title + description + desired outcomes
+    // const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
+    // const embedding =
+    //   await this.embeddingService.generateEmbedding(combinedText);
 
-    // Store embedding in Mongo
-    await this.experienceEmbeddingModel.create({
-      experienceId: saved.id,
-      embedding,
-    });
+    // // Store embedding in Mongo
+    // await this.experienceEmbeddingModel.create({
+    //   experienceId: saved.id,
+    //   embedding,
+    // });
 
     return saved;
   }
@@ -87,16 +88,16 @@ export class ExperienceHostService {
     // Merge DTO fields
     Object.assign(updated, dto);
 
-    // Re-generate embedding
-    const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
-    const embedding =
-      await this.embeddingService.generateEmbedding(combinedText);
+    // // Re-generate embedding
+    // const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
+    // const embedding =
+    //   await this.embeddingService.generateEmbedding(combinedText);
 
-    await this.experienceEmbeddingModel.updateOne(
-      { experienceId: updated.id },
-      { $set: { embedding } },
-      { upsert: true },
-    );
+    // await this.experienceEmbeddingModel.updateOne(
+    //   { experienceId: updated.id },
+    //   { $set: { embedding } },
+    //   { upsert: true },
+    // );
 
     return this.experienceRepo.save(updated);
   }
@@ -113,7 +114,7 @@ export class ExperienceHostService {
       await this.s3Service.deleteObject(key);
     }
     await this.experienceRepo.delete(id);
-    await this.experienceEmbeddingModel.deleteOne({ experienceId: id });
+    // await this.experienceEmbeddingModel.deleteOne({ experienceId: id });
   }
 
   // =========================================================
@@ -172,10 +173,34 @@ export class ExperienceHostService {
   // =========================================================
   // Find Single Experience by ID (Host Only)
   // =========================================================
-  async findOneForHost(id: string, hostId: string): Promise<Experience | null> {
-    return this.experienceRepo.findOne({
-      where: { id, host: { id: hostId } },
-      relations: ['host'],
-    });
+  async findOneForHost(id: string, hostId: string) {
+    const qb = this.experienceRepo
+      .createQueryBuilder('experience')
+      .where('experience.id = :id', { id })
+      .andWhere('experience.hostId = :hostId', { hostId });
+
+    const experience = await qb.getOne();
+    if (!experience) return null;
+
+    // return fields needed for update form, format dates/times
+    return {
+      id: experience.id,
+      title: experience.title,
+      description: experience.description,
+      date: formatDate(experience.date),
+      location: experience.location,
+      image: experience.image,
+      price: experience.price,
+      isVirtual: experience.isVirtual,
+      sessionStartTime: formatDate(experience.sessionStartTime),
+      sessionEndTime: formatDate(experience.sessionEndTime),
+      totalSpots: experience.totalSpots,
+      timezone: experience.timezone,
+      language: experience.language,
+      cancellationPolicy: experience.cancellationPolicy,
+      targetEmotions: experience.targetEmotions || [],
+      desiredOutcomes: experience.desiredOutcomes || [],
+      culturalTags: experience.culturalTags || [],
+    };
   }
 }

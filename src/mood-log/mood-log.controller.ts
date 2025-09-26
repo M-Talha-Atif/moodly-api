@@ -126,4 +126,11 @@ export class MoodLogController {
       throw new InternalServerErrorException('Failed to fetch mood log streak');
     }
   }
+
+  @Get('heatmap')
+  @UseGuards(JwtCookieGuard)
+  async getMoodHeatmap(@Req() req: any) {
+    const userId = req.user.sub;
+    return this.moodLogService.getHeatmapData(userId);
+  }
 }

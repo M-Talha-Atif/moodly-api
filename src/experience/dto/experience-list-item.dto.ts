@@ -30,12 +30,15 @@ export class ExperienceListItemDto {
   totalSpots: number;
 
   @Expose()
+  @Transform(({ value }) => value ?? [])
   culturalTags: string[];
 
   @Expose()
+  @Transform(({ value }) => value ?? [])
   targetEmotions: string[];
 
   @Expose()
+  @Transform(({ value }) => value ?? [])
   desiredOutcomes: string[];
 
   @Expose()
