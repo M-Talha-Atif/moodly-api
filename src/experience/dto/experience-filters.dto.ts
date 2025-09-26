@@ -1,5 +1,6 @@
-import { Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { IsOptional, IsInt, Min, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class ExperienceFiltersDto {
   @IsOptional()
@@ -16,14 +17,17 @@ export class ExperienceFiltersDto {
 
   @IsOptional()
   @IsString({ each: true })
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   cultureTags?: string[];
 
   @IsOptional()
   @IsString({ each: true })
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   desiredOutcomes?: string[];
 
   @IsOptional()
   @IsString({ each: true })
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   targetEmotions?: string[];
 
   @IsOptional()

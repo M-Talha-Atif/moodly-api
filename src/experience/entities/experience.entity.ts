@@ -70,7 +70,7 @@ export class Experience {
   @Column('text', { array: true, nullable: true })
   targetEmotions: string[];
 
-  @Column('simple-array', { nullable: true })
+  @Column('text', { array: true, nullable: true })
   desiredOutcomes: string[];
 
   // 🌍 Cultural Context

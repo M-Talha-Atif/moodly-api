@@ -5,6 +5,7 @@ import { ExperienceFiltersDto } from '../dto/experience-filters.dto';
 import { ExperienceListItemDto } from '../dto/experience-list-item.dto';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { plainToInstance } from 'class-transformer';
+import { log } from 'node:console';
 
 @ApiTags('Public Experiences')
 @Controller('public/experiences')
@@ -19,6 +20,7 @@ export class ExperiencePublicController {
       {
         data: plainToInstance(ExperienceListItemDto, data, {
           excludeExtraneousValues: true,
+          enableImplicitConversion: true,
         }),
         meta: {
           total,

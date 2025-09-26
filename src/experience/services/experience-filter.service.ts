@@ -15,20 +15,20 @@ export class ExperienceFilterService {
       filters;
 
     if (cultureTags?.length) {
-      qb.andWhere('experience.culturalTags && ARRAY[:...cultureTags]', {
+      qb.andWhere(`experience.culturalTags && :cultureTags::text[]`, {
         cultureTags,
       });
     }
 
-    if (desiredOutcomes?.length) {
-      qb.andWhere('experience.desiredOutcomes && ARRAY[:...desiredOutcomes]', {
-        desiredOutcomes,
+    if (targetEmotions?.length) {
+      qb.andWhere(`experience.targetEmotions && :targetEmotions::text[]`, {
+        targetEmotions,
       });
     }
 
-    if (targetEmotions?.length) {
-      qb.andWhere('experience.targetEmotions && ARRAY[:...targetEmotions]', {
-        targetEmotions,
+    if (desiredOutcomes?.length) {
+      qb.andWhere(`experience.desiredOutcomes && :desiredOutcomes::text[]`, {
+        desiredOutcomes,
       });
     }
 

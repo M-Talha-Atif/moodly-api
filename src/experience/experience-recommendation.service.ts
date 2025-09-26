@@ -13,6 +13,7 @@ const EMOTION_EXPERIENCE_MAP = {
   sad: ['peaceful', 'calm', 'inspired', 'happy', 'excited'],
   angry: ['calm', 'peaceful', 'relaxed', 'happy'],
   fearful: ['calm', 'peaceful', 'safe', 'happy'],
+  fear: ['calm', 'peaceful', 'safe', 'happy'],
   disgusted: ['calm', 'peaceful', 'inspired', 'happy'],
   surprised: ['happy', 'excited', 'inspired', 'calm'],
   neutral: ['happy', 'calm', 'inspired', 'peaceful', 'excited'],

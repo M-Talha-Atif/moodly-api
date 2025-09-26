@@ -135,6 +135,8 @@ export class ExperienceHostController {
     if (!exp)
       return ResultDto.fail('Experience not found or unauthorized', 404);
 
+    // console.log(exp);
+
     return ResultDto.ok(
       plainToInstance(ExperienceResponseDto, exp),
       'Experience fetched successfully',

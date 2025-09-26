@@ -223,4 +223,21 @@ export class MoodLogService {
     const streak = this.calculateStreak(dates);
     return { streak, totalDaysLogged: dates.length };
   }
+
+  async getHeatmapData(userId: string) {
+    const logs = await this.moodLogRepo.find({
+      where: { userId },
+      select: ['createdAt', 'finalMood'],
+      order: { createdAt: 'ASC' },
+    });
+
+    const map = Object.fromEntries(
+      logs.map((log) => [
+        log.createdAt.toISOString().split('T')[0],
+        log.finalMood,
+      ]),
+    );
+
+    return ResultDto.ok(map, 'Mood heatmap data fetched');
+  }
 }
