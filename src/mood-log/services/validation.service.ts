@@ -35,30 +35,68 @@ export class ValidationService {
   /**
    * Validates voice file before saving
    */
+  // TEMPORARY FIX: Allow multiple audio formats
   validateVoiceFile(file: Express.Multer.File): ResultDto<void> {
     if (!file) return ResultDto.okEmpty();
 
-    // Check MIME type first (faster than reading file)
-    if (!file.mimetype.includes('wav') && !file.mimetype.includes('wave')) {
-      return ResultDto.fail(
-        'Only WAV format is supported for voice recordings',
-        400,
-        'INVALID_VOICE_FORMAT',
-      );
-    }
+    console.log('🔊 Voice file validation (TEMPORARY):', {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+    });
 
-    // Check file extension
+    // TEMPORARY: Allow common audio formats
+    const allowedMimeTypes = [
+      'audio/wav',
+      'audio/x-wav',
+      'audio/m4a',
+      'audio/mp4',
+      'audio/aac',
+    ];
+    const allowedExtensions = ['.wav', '.m4a', '.aac', '.mp4'];
+
     const ext = path.extname(file.originalname).toLowerCase();
-    if (ext !== '.wav') {
+
+    if (
+      !allowedMimeTypes.includes(file.mimetype) ||
+      !allowedExtensions.includes(ext)
+    ) {
+      console.log('❌ Unsupported audio format:', file.mimetype, ext);
       return ResultDto.fail(
-        'File must have .wav extension',
+        'Supported formats: WAV, M4A, AAC, MP4',
         400,
         'INVALID_VOICE_FORMAT',
       );
     }
 
+    console.log('✅ Voice file validation passed');
     return ResultDto.okEmpty();
   }
+  // validateVoiceFile(file: Express.Multer.File): ResultDto<void> {
+  //   if (!file) return ResultDto.okEmpty();
+
+  //   // Check MIME type first (faster than reading file)
+  //   if (!file.mimetype.includes('wav') && !file.mimetype.includes('wave')) {
+  //     console.log("File type issue")
+  //     return ResultDto.fail(
+  //       'Only WAV format is supported for voice recordings',
+  //       400,
+  //       'INVALID_VOICE_FORMAT',
+  //     );
+  //   }
+
+  //   // Check file extension
+  //   const ext = path.extname(file.originalname).toLowerCase();
+  //   if (ext !== '.wav') {
+  //     return ResultDto.fail(
+  //       'File must have .wav extension',
+  //       400,
+  //       'INVALID_VOICE_FORMAT',
+  //     );
+  //   }
+
+  //   return ResultDto.okEmpty();
+  // }
 
   /**
    * Validates existing voice file path

@@ -9,8 +9,9 @@ import {
   UserOnboarding,
   UserOnboardingSchema,
 } from './schemas/user-onboarding.schema';
+import { RmqModule } from 'src/rmq/rmq.module';
 import { AuthModule } from 'src/auth/auth.module';
-
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -25,6 +26,11 @@ import { AuthModule } from 'src/auth/auth.module';
       }),
     }),
     AuthModule,
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.ONBOARDING.CLIENT,
+      exchange: RMQ_DOMAINS.ONBOARDING.EXCHANGE,
+      queue: RMQ_DOMAINS.ONBOARDING.QUEUE,
+    }),
   ],
   controllers: [OnboardingController],
   providers: [OnboardingService],

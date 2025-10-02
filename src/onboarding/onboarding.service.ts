@@ -1,5 +1,5 @@
 // src/onboarding/onboarding.service.ts
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserOnboarding } from './schemas/user-onboarding.schema';
@@ -8,12 +8,17 @@ import {
   SetGoalsDto,
   SetActivitiesDto,
 } from './dto/onboarding.dto';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class OnboardingService {
   constructor(
     @InjectModel(UserOnboarding.name)
     private model: Model<UserOnboarding>,
+
+    @Inject(RMQ_DOMAINS.ONBOARDING.CLIENT)
+    private readonly rmqClient: ClientProxy,
   ) {}
 
   async startOnboarding(userId: string): Promise<UserOnboarding> {
@@ -61,11 +66,18 @@ export class OnboardingService {
   }
 
   async complete(userId: string) {
-    return this.model.findOneAndUpdate(
+    const profile = await this.model.findOneAndUpdate(
       { userId },
       { completed: true },
       { new: true },
     );
+
+    // RabbitMQ event emit
+    this.rmqClient.emit(RMQ_DOMAINS.ONBOARDING.ROUTING.COMPLETED, {
+      userId,
+    });
+
+    return profile;
   }
 
   async findByUserId(userId: string) {

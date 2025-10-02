@@ -36,6 +36,9 @@ export class User {
   @Column({ nullable: true })
   name: string;
 
+  @Column({ default: false })
+  onboardingCompleted: boolean;
+
   @Column({ type: 'enum', enum: AuthProvider, default: AuthProvider.LOCAL })
   provider: AuthProvider;
 

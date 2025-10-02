@@ -8,4 +8,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     description: 'Optional new name of the user',
   })
   name?: string;
+  onboardingCompleted?: boolean;
 }

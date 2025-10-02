@@ -32,9 +32,27 @@ import { CommonModule } from 'src/common/common.module';
     }),
 
     MulterModule.register({
-      dest: './uploads',
+      dest: './uploads/temp', // Temporary directory
       limits: {
         fileSize: 5 * 1024 * 1024, // 5 MB
+      },
+      fileFilter: (req, file, cb) => {
+        console.log('📁 MULTER - Processing file:', {
+          fieldname: file.fieldname,
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+        });
+
+        // Allow both images and audio
+        if (
+          file.mimetype.startsWith('image/') ||
+          file.mimetype.startsWith('audio/')
+        ) {
+          cb(null, true);
+        } else {
+          console.log('❌ MULTER - Unsupported file type:', file.mimetype);
+          cb(new Error(`Unsupported file type: ${file.mimetype}`), false);
+        }
       },
     }),
   ],

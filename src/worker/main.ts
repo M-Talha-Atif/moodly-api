@@ -95,6 +95,7 @@ async function bootstrap() {
     },
   });
 
+  // Recommendation Tasks
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
@@ -102,6 +103,18 @@ async function bootstrap() {
       queue: process.env.RMQ_REC_QUEUE || 'recommendation-tasks',
       queueOptions: { durable: true },
       exchange: process.env.RMQ_REC_EXCHANGE || 'recommendation-exchange',
+      exchangeType: 'direct',
+      prefetchCount: 1,
+    },
+  });
+
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL!],
+      queue: process.env.RMQ_ONBOARDING_QUEUE || 'onboarding-tasks',
+      queueOptions: { durable: true },
+      exchange: process.env.RMQ_ONBOARDING_EXCHANGE || 'onboarding-exchange',
       exchangeType: 'direct',
       prefetchCount: 1,
     },
