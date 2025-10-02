@@ -26,6 +26,15 @@ export const RMQ_DOMAINS = {
       GENERATE: 'recommendation.generate',
     },
   },
+  ONBOARDING: {
+    CLIENT: 'ONBOARDING_RMQ_CLIENT',
+    EXCHANGE: process.env.RMQ_ONBOARDING_EXCHANGE || 'onboarding-exchange',
+    QUEUE: process.env.RMQ_ONBOARDING_QUEUE || 'onboarding-tasks',
+    ROUTING: {
+      COMPLETED: 'onboarding.completed',
+    },
+  },
+
   EXPERIENCE: {
     /* same pattern */
   },

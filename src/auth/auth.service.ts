@@ -68,13 +68,10 @@ export class AuthService {
    * @param loginDto - DTO containing user login credentials.
    * @returns LoginResponseDto with JWT access token or an error response.
    */
+  // auth.service.ts
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findByEmail(loginDto.email, true);
-    console.log('User found:', user);
-    if (!user) {
-      return LoginResponseDto.fail('Invalid credentials', 401);
-    }
-    if (!user.passwordHash) {
+    if (!user || !user.passwordHash) {
       return LoginResponseDto.fail('Invalid credentials', 401);
     }
 
@@ -89,14 +86,21 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
 
-    return LoginResponseDto.ok(
-      {
+    return {
+      success: true,
+      statusCode: 200,
+      message: 'Login successful',
+      data: {
         access_token: token,
-        user: { id: user.id, email: user.email, role: user.role },
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          name: user.name,
+          onboardingCompleted: user.onboardingCompleted,
+        },
       },
-      'Login successful',
-      200,
-    );
+    };
   }
 
   // src/auth/auth.service.ts

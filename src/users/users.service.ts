@@ -75,24 +75,31 @@ export class UsersService {
     email: string,
     includePassword = false,
   ): Promise<User | null> {
+    const baseSelect: (keyof User)[] = [
+      'id',
+      'email',
+      'name',
+      'role',
+      'onboardingCompleted',
+    ];
+
+    const withPassword: (keyof User)[] = [...baseSelect, 'passwordHash'];
+
+    const withoutPassword: (keyof User)[] = [
+      ...baseSelect,
+      'avatarUrl',
+      'culturalBackground',
+      'languagePreferences',
+      'communicationStyle',
+      'accountStatus',
+      'createdAt',
+      'updatedAt',
+    ];
+
     return this.usersRepository.findOne({
       where: { email },
       relations: ['privacySettings'],
-      select: includePassword
-        ? undefined // Select all, including passwordHash
-        : [
-            'id',
-            'email',
-            'name',
-            'avatarUrl',
-            'culturalBackground',
-            'languagePreferences',
-            'communicationStyle',
-            'role',
-            'accountStatus',
-            'createdAt',
-            'updatedAt',
-          ],
+      select: includePassword ? withPassword : withoutPassword,
     });
   }
 

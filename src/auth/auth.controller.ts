@@ -50,7 +50,7 @@ export class AuthController {
       });
     }
 
-    return response.status(result.statusCode).json(result);
+    return result;
   }
 
   @HttpCode(HttpStatus.OK)

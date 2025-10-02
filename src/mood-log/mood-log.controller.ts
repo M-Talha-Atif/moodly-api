@@ -54,6 +54,32 @@ export class MoodLogController {
     @Req() req: any,
   ) {
     try {
+      // DETAILED FILES DEBUGGING
+      console.log('📥 CONTROLLER - Raw files received:', {
+        filesObject: files,
+        photoArray: files?.photo,
+        voiceArray: files?.voice,
+        photoFirst: files?.photo?.[0],
+        voiceFirst: files?.voice?.[0],
+        photoCount: files?.photo?.length,
+        voiceCount: files?.voice?.length,
+      });
+
+      // Check if files are properly extracted
+      if (files?.photo?.[0]) {
+        console.log('🖼️ PHOTO FILE DETAILS:', {
+          fieldname: files.photo[0].fieldname,
+          originalname: files.photo[0].originalname,
+          mimetype: files.photo[0].mimetype,
+          size: files.photo[0].size,
+          path: files.photo[0].path,
+          buffer: files.photo[0].buffer
+            ? `Buffer(${files.photo[0].buffer.length} bytes)`
+            : 'No buffer',
+        });
+      } else {
+        console.log('❌ NO PHOTO FILE FOUND IN CONTROLLER');
+      }
       return await this.moodLogService.createForUser(req.user.sub, body, {
         photo: files?.photo?.[0],
         voice: files?.voice?.[0],

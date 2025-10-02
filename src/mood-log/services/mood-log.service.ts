@@ -34,6 +34,34 @@ export class MoodLogService {
     files?: { photo?: Express.Multer.File; voice?: Express.Multer.File },
   ) {
     try {
+      console.log(dto);
+
+      console.log('🛠️ SERVICE - Parameters received:', {
+        userId,
+        dto: {
+          moodLabel: dto.moodLabel,
+          note: dto.note,
+          textSentiment: dto.textSentiment,
+        },
+        files: {
+          hasPhoto: !!files?.photo,
+          hasVoice: !!files?.voice,
+          photo: files?.photo
+            ? {
+                originalname: files.photo.originalname,
+                mimetype: files.photo.mimetype,
+                size: files.photo.size,
+              }
+            : 'NO PHOTO IN SERVICE',
+          voice: files?.voice
+            ? {
+                originalname: files.voice.originalname,
+                mimetype: files.voice.mimetype,
+                size: files.voice.size,
+              }
+            : 'NO VOICE IN SERVICE',
+        },
+      });
       // Check existing log
       const existingLog = await this.moodLogRepo
         .createQueryBuilder('moodLog')
