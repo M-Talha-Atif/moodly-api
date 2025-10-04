@@ -38,6 +38,9 @@ export class BookingDetailDto {
   location: string;
 
   @ApiProperty()
+  image: string;
+
+  @ApiProperty()
   isVirtual: boolean;
 
   @ApiProperty({ required: false })

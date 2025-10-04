@@ -28,6 +28,7 @@ export class BookingMapperService {
       hostName: booking.experience.host?.name ?? 'Unknown Host',
       location: booking.experience.location,
       isVirtual: booking.experience.isVirtual,
+      image: booking.experience.image,
       meetingLink: booking.experience.isVirtual
         ? booking.experience.meetingLink
         : undefined,
