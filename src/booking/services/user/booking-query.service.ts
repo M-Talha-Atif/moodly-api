@@ -5,6 +5,7 @@ import { Booking } from 'src/booking/entities/booking.entity';
 import { BookingResponseDto } from 'src/booking/dto/booking-response.dto';
 import { BookingMapperService } from './booking-mapper.service';
 import { BookingFilterService } from './booking-filter.service';
+import { formatDate } from 'src/common/utils/date.utils';
 
 @Injectable()
 export class BookingQueryService {
@@ -21,32 +22,49 @@ export class BookingQueryService {
     userId?: string,
     status?: 'confirmed' | 'cancelled' | 'waitlisted',
     timeFilter?: 'today' | 'tomorrow' | 'weekend' | 'next-week',
-  ): Promise<{ data: BookingResponseDto[]; total: number }> {
-    console.log(status);
-    // Use indexes and select only needed fields
+  ): Promise<{ data: any[]; total: number }> {
     const query = this.bookingRepository
       .createQueryBuilder('booking')
-      .leftJoinAndSelect('booking.experience', 'experience')
-      .leftJoinAndSelect('experience.host', 'host') // <-- add host
-      .leftJoinAndSelect('experience.bookings', 'otherBookings') // optional for attendees
+      .leftJoin('booking.experience', 'experience')
+      .leftJoin('experience.host', 'host')
+      .select([
+        'booking.id',
+        'booking.status',
+        'booking.createdAt',
+        'experience.id',
+        'experience.title',
+        'experience.date',
+        'experience.image',
+        'experience.location',
+        'experience.price',
+      ])
       .orderBy('booking.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
 
     this.filterService.applyFilters(query, { userId, status, timeFilter });
 
-    // OPTIMIZATION: Use raw query for count to avoid loading all data
     const [bookings, total] = await Promise.all([
       query.getMany(),
       this.getOptimizedCount(userId, status, timeFilter),
     ]);
 
-    return {
-      data: bookings.map((booking) =>
-        this.mapperService.toResponseDto(booking),
-      ),
-      total,
-    };
+    // format the date before returning
+    const data = bookings.map((booking) => ({
+      id: booking.id,
+      status: booking.status,
+      createdAt: formatDate(booking.createdAt),
+      experience: {
+        id: booking.experience.id,
+        title: booking.experience.title,
+        date: formatDate(booking.experience.date),
+        image: booking.experience.image,
+        location: booking.experience.location,
+        price: booking.experience.price,
+      },
+    }));
+
+    return { data, total };
   }
 
   // Separate optimized count query

@@ -34,7 +34,7 @@ import { CommonModule } from 'src/common/common.module';
     MulterModule.register({
       dest: './uploads/temp', // Temporary directory
       limits: {
-        fileSize: 5 * 1024 * 1024, // 5 MB
+        fileSize: 30 * 1024 * 1024, // 30 MB
       },
       fileFilter: (req, file, cb) => {
         console.log('📁 MULTER - Processing file:', {

@@ -62,4 +62,6 @@ Start Python embedding service.
 Run Redis via WSL.
 
 Start the NestJS project.
+
+lt -p 3000 to create a temporary deployed link
 ```
