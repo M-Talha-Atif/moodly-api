@@ -64,7 +64,8 @@ export class ExperienceRecommendationService {
         'exp.createdAt',
         'host.id',
         'host.name',
-        'host.avatarUrl'])
+        'host.avatarUrl',
+      ])
       .where('exp.targetEmotions && :targetEmotions::text[]', {
         targetEmotions: pgArray,
       })
@@ -80,7 +81,7 @@ export class ExperienceRecommendationService {
           {
             userId,
             cancelledStatus: 'cancelled',
-          }
+          },
         )
         .andWhere('userBooking.id IS NULL');
     }
