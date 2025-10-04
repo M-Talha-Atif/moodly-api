@@ -29,6 +29,7 @@ export class ExperienceRecommendationService {
     private readonly experienceEmbeddingModel: Model<ExperienceEmbedding>,
   ) {}
 
+  // first joining then select the columns
   async recommendByEmotion(
     userMood: string,
     userId?: string,
@@ -37,12 +38,33 @@ export class ExperienceRecommendationService {
     const targetEmotions =
       EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
 
-    // Convert JS array -> Postgres array literal: "{happy,calm}"
     const pgArray = `{${targetEmotions.join(',')}}`;
 
     const queryBuilder = this.experienceRepo
       .createQueryBuilder('exp')
-      .leftJoinAndSelect('exp.host', 'host')
+      .leftJoin('exp.host', 'host') // Change to leftJoin (not leftJoinAndSelect)
+      .select([
+        'exp.id',
+        'exp.title',
+        'exp.description',
+        'exp.date',
+        'exp.location',
+        'exp.image',
+        'exp.isVirtual',
+        'exp.sessionStartTime',
+        'exp.sessionEndTime',
+        'exp.price',
+        'exp.timezone',
+        'exp.totalSpots',
+        'exp.spotsFilled',
+        'exp.targetEmotions',
+        'exp.desiredOutcomes',
+        'exp.culturalTags',
+        'exp.language',
+        'exp.createdAt',
+        'host.id',
+        'host.name',
+        'host.avatarUrl'])
       .where('exp.targetEmotions && :targetEmotions::text[]', {
         targetEmotions: pgArray,
       })
@@ -58,7 +80,7 @@ export class ExperienceRecommendationService {
           {
             userId,
             cancelledStatus: 'cancelled',
-          },
+          }
         )
         .andWhere('userBooking.id IS NULL');
     }
@@ -70,6 +92,48 @@ export class ExperienceRecommendationService {
 
     return await queryBuilder.getMany();
   }
+
+  // async recommendByEmotion(
+  //   userMood: string,
+  //   userId?: string,
+  //   limit = 10,
+  // ): Promise<Experience[]> {
+  //   const targetEmotions =
+  //     EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
+
+  //   // Convert JS array -> Postgres array literal: "{happy,calm}"
+  //   const pgArray = `{${targetEmotions.join(',')}}`;
+
+  //   const queryBuilder = this.experienceRepo
+  //     .createQueryBuilder('exp')
+  //     .leftJoinAndSelect('exp.host', 'host')
+  //     .where('exp.targetEmotions && :targetEmotions::text[]', {
+  //       targetEmotions: pgArray,
+  //     })
+  //     .andWhere('exp.spotsFilled < exp.totalSpots')
+  //     .andWhere('exp.sessionStartTime > NOW()');
+
+  //   if (userId) {
+  //     queryBuilder
+  //       .leftJoin(
+  //         'exp.bookings',
+  //         'userBooking',
+  //         'userBooking.userId = :userId AND userBooking.status != :cancelledStatus',
+  //         {
+  //           userId,
+  //           cancelledStatus: 'cancelled',
+  //         },
+  //       )
+  //       .andWhere('userBooking.id IS NULL');
+  //   }
+
+  //   queryBuilder
+  //     .orderBy('exp.spotsFilled', 'ASC')
+  //     .addOrderBy('exp.createdAt', 'DESC')
+  //     .take(limit);
+
+  //   return await queryBuilder.getMany();
+  // }
 
   // === APPROACH 2: Existing Embedding-Based Recommendation ===
   async recommendByEmbedding(
