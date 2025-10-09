@@ -13,6 +13,9 @@ import { ExperienceFilterService } from './experience-filter.service';
 import { ExperienceFiltersDto } from '../dto/experience-filters.dto';
 import { S3Service } from 'src/common/services/s3.service';
 import { formatDate } from 'src/common/utils/date.utils';
+import { formatTime } from 'src/common/utils/time.utils';
+import { ExperienceResponseDto } from '../dto/user-experience-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ExperienceService {
@@ -69,12 +72,11 @@ export class ExperienceService {
     userId: string,
     filters: ExperienceFiltersDto,
   ): Promise<{
-    data: any[]; // you can replace with DTO if strict typing needed
+    data: ExperienceResponseDto[];
     meta: { total: number; page: number; limit: number; totalPages: number };
   }> {
     const qb = this.experienceRepo
       .createQueryBuilder('experience')
-      .leftJoin('experience.host', 'host')
       .leftJoin(
         'experience.bookings',
         'booking',
@@ -82,22 +84,12 @@ export class ExperienceService {
         { userId },
       )
       .select([
-        'experience.id',
-        'experience.title',
-        'experience.date',
-        'experience.price',
-        'experience.description',
-        'experience.spotsFilled',
-        'experience.location',
-        'experience.sessionStartTime',
-        'experience.sessionEndTime',
-        'experience.timezone',
-        'experience.totalSpots',
-        'experience.image',
-        'host.id',
-        'host.name',
+        'experience.id AS id',
+        'experience.title AS title',
+        'experience.price AS price',
+        'experience.image AS image',
       ])
-      .addSelect('booking.id', 'bookingId') // <-- booking id
+      .addSelect('booking.id', 'bookingId')
       .addSelect(
         `CASE WHEN booking.id IS NOT NULL THEN true ELSE false END`,
         'isBooked',
@@ -108,30 +100,15 @@ export class ExperienceService {
 
     qb.skip((filters.page - 1) * filters.limit).take(filters.limit);
 
-    const [entities, total] = await qb.getManyAndCount();
-    const rawData = await qb.getRawMany(); // get "isBooked"
+    const [rawData, total] = await Promise.all([
+      qb.getRawMany(),
+      qb.getCount(),
+    ]);
 
-    const data = entities.map((exp, idx) => ({
-      id: exp.id,
-      title: exp.title,
-      description: exp.description,
-      image: exp.image,
-      price: exp.price,
-      date: formatDate(exp.date),
-      createdAt: exp.createdAt,
-      location: exp.location,
-      sessionStartTime: exp.sessionStartTime,
-      sessionEndTime: exp.sessionEndTime,
-      totalSpots: exp.totalSpots,
-      spotsFilled: exp.spotsFilled,
-      host: {
-        id: exp.host.id,
-        name: exp.host.name,
-      },
-      bookingId: rawData[idx]?.bookingId || null,
-      isBooked:
-        rawData[idx]?.isBooked === true || rawData[idx]?.isBooked === 'true',
-    }));
+    // Transform to DTO
+    const data = plainToInstance(ExperienceResponseDto, rawData, {
+      excludeExtraneousValues: true,
+    });
 
     return {
       data,
@@ -181,8 +158,11 @@ export class ExperienceService {
       image: experience.image,
       price: experience.price,
       isVirtual: experience.isVirtual,
-      sessionStartTime: formatDate(experience.sessionStartTime),
-      sessionEndTime: formatDate(experience.sessionEndTime),
+      outcomes: experience.desiredOutcomes,
+      emotions: experience.targetEmotions,
+      culturalTags: experience.culturalTags,
+      sessionStartTime: formatTime(experience.sessionStartTime),
+      sessionEndTime: formatTime(experience.sessionEndTime),
       totalSpots: experience.totalSpots,
       spotsFilled: experience.spotsFilled,
       timezone: experience.timezone,

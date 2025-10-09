@@ -18,7 +18,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-@ApiTags('users') // 👈 Groups endpoints in Swagger
+@ApiTags('users') // Groups endpoints in Swagger
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
