@@ -5,6 +5,8 @@ import { Experience } from 'src/experience/entities/experience.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.schema';
+import { RecommendationResponseDto } from './dto/recommendation-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 // Pre-defined emotion mapping (production-optimized)
 const EMOTION_EXPERIENCE_MAP = {
@@ -29,12 +31,11 @@ export class ExperienceRecommendationService {
     private readonly experienceEmbeddingModel: Model<ExperienceEmbedding>,
   ) {}
 
-  // first joining then select the columns
   async recommendByEmotion(
     userMood: string,
     userId?: string,
     limit = 10,
-  ): Promise<Experience[]> {
+  ): Promise<RecommendationResponseDto[]> {
     const targetEmotions =
       EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
 
@@ -42,29 +43,16 @@ export class ExperienceRecommendationService {
 
     const queryBuilder = this.experienceRepo
       .createQueryBuilder('exp')
-      .leftJoin('exp.host', 'host') // Change to leftJoin (not leftJoinAndSelect)
       .select([
-        'exp.id',
-        'exp.title',
-        'exp.description',
-        'exp.date',
-        'exp.location',
-        'exp.image',
-        'exp.isVirtual',
-        'exp.sessionStartTime',
-        'exp.sessionEndTime',
-        'exp.price',
-        'exp.timezone',
+        'exp.id AS id',
+        'exp.title AS title',
+        'exp.image AS image',
+        'exp.price AS price',
+        '(exp.targetEmotions)[1] AS "targetEmotion"',
+        'exp.spotsFilled', // for filtering
         'exp.totalSpots',
-        'exp.spotsFilled',
-        'exp.targetEmotions',
-        'exp.desiredOutcomes',
-        'exp.culturalTags',
-        'exp.language',
+        'exp.sessionStartTime',
         'exp.createdAt',
-        'host.id',
-        'host.name',
-        'host.avatarUrl',
       ])
       .where('exp.targetEmotions && :targetEmotions::text[]', {
         targetEmotions: pgArray,
@@ -78,10 +66,7 @@ export class ExperienceRecommendationService {
           'exp.bookings',
           'userBooking',
           'userBooking.userId = :userId AND userBooking.status != :cancelledStatus',
-          {
-            userId,
-            cancelledStatus: 'cancelled',
-          },
+          { userId, cancelledStatus: 'cancelled' },
         )
         .andWhere('userBooking.id IS NULL');
     }
@@ -91,7 +76,11 @@ export class ExperienceRecommendationService {
       .addOrderBy('exp.createdAt', 'DESC')
       .take(limit);
 
-    return await queryBuilder.getMany();
+    const rawResults = await queryBuilder.getRawMany();
+
+    return plainToInstance(RecommendationResponseDto, rawResults, {
+      excludeExtraneousValues: true,
+    });
   }
 
   // async recommendByEmotion(

@@ -6,7 +6,7 @@ import { BookingResponseDto } from 'src/booking/dto/booking-response.dto';
 import { BookingMapperService } from './booking-mapper.service';
 import { BookingFilterService } from './booking-filter.service';
 import { formatDate } from 'src/common/utils/date.utils';
-
+import { formatTime } from 'src/common/utils/time.utils';
 @Injectable()
 export class BookingQueryService {
   constructor(
@@ -30,15 +30,17 @@ export class BookingQueryService {
       .select([
         'booking.id',
         'booking.status',
-        'booking.createdAt',
+        'booking.updatedAt',
         'experience.id',
         'experience.title',
+        'experience.sessionStartTime',
+        'experience.sessionEndTime',
         'experience.date',
         'experience.image',
         'experience.location',
         'experience.price',
       ])
-      .orderBy('booking.createdAt', 'DESC')
+      .orderBy('booking.updatedAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
 
@@ -53,13 +55,15 @@ export class BookingQueryService {
     const data = bookings.map((booking) => ({
       id: booking.id,
       status: booking.status,
-      createdAt: formatDate(booking.createdAt),
+      createdAt: formatDate(booking.updatedAt),
       experience: {
         id: booking.experience.id,
         title: booking.experience.title,
         date: formatDate(booking.experience.date),
         image: booking.experience.image,
         location: booking.experience.location,
+        sessionStartTime: formatTime(booking.experience.sessionStartTime),
+        sessionEndTime: formatTime(booking.experience.sessionEndTime),
         price: booking.experience.price,
       },
     }));
