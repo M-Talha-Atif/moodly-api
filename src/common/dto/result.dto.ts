@@ -103,4 +103,12 @@ export class ResultDto<T> {
       statusCode: 200,
     });
   }
+
+  static okWithMessage(message: string, statusCode = 200): ResultDto<void> {
+    return new ResultDto<void>({
+      success: true,
+      statusCode,
+      message,
+    });
+  }
 }

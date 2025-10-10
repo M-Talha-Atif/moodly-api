@@ -27,6 +27,7 @@ import { CommunityModule } from './community/community.module';
 import { WinstonModule } from 'nest-winston';
 import { buildWinstonOptions } from './logger/winston.config';
 import { InsightsModule } from './insights/insights.module';
+import { ProfileModule } from './users/profile/profile.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { InsightsModule } from './insights/insights.module';
     MoodLogModule,
     EmbeddingModule,
     BookingModule,
+    ProfileModule,
 
     // Infrastructure
     RedisModule,
