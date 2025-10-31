@@ -18,6 +18,7 @@ import { ExperienceHostController } from './controllers/experience.host.controll
 import { ExperiencePublicController } from './controllers/experience.public.controller';
 import { ExperienceUserController } from './controllers/experience.user.controller';
 import { ExperienceHostService } from '../experience/services/host/experience-host.service';
+import { AiExperienceService } from './services/host/ai-experience.service';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ExperienceHostService } from '../experience/services/host/experience-ho
     ExperienceGateway,
     ExperienceHostService,
     S3Service,
+    AiExperienceService,
   ],
   exports: [
     ExperienceService,
