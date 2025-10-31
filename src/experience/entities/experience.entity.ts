@@ -73,25 +73,25 @@ export class Experience {
   @Column('text', { array: true, nullable: true })
   desiredOutcomes: string[];
 
-  // 🌍 Cultural Context
+  // Cultural Context
   @Column({ nullable: true })
   language: string;
 
   @Column('text', { array: true, nullable: true })
   culturalTags: string[];
 
-  // 📈 Growth & Outcomes
+  // Growth & Outcomes
   @Column('jsonb', { nullable: true })
   growthDimensions: any;
 
   @Column({ type: 'text', nullable: true })
   experienceOutcomeSummary: string;
 
-  // 👥 Community / Matchmaking
+  // Community / Matchmaking
   @Column('simple-array', { nullable: true })
   idealParticipantTraits: string[];
 
-  // 📊 AI Engagement Stats
+  // AI Engagement Stats
   @Column('jsonb', { nullable: true })
   engagementStats: any;
 

@@ -47,12 +47,6 @@ export class JwtCookieGuard implements CanActivate {
     try {
       const payload = await this.jwtService.verifyAsync(token); // verfies token is expired or not
       request.user = payload;
-      // request.user = {
-      //   sub: payload.sub,
-      //   email: payload.email,
-      //   role: payload.role,
-      // };
-
       return true;
     } catch {
       return false;

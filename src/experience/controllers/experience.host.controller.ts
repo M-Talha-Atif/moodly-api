@@ -28,6 +28,7 @@ import { plainToInstance } from 'class-transformer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { S3Service } from 'src/common/services/s3.service';
+import { AiExperienceService } from '../services/host/ai-experience.service';
 
 @ApiTags('Host Experiences')
 @Controller('host/experiences')
@@ -38,6 +39,7 @@ export class ExperienceHostController {
     private readonly experienceHostService: ExperienceHostService,
     private readonly userService: UsersService,
     private readonly s3Service: S3Service,
+    private readonly aiExperienceService: AiExperienceService,
   ) {}
 
   @Post()
@@ -52,6 +54,25 @@ export class ExperienceHostController {
       'Experience created successfully',
       201,
     );
+  }
+
+  @Post('generate')
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
+  @ApiOperation({
+    summary: 'Generate experience data using AI (voice or text)',
+  })
+  async generate(
+    @UploadedFile() file?: Express.Multer.File,
+    @Body('voiceText') voiceText?: string,
+  ) {
+    if (!file && !voiceText)
+      return ResultDto.fail('Either voice file or voiceText is required', 400);
+
+    const result = await this.aiExperienceService.handleVoiceOrTextInput(
+      file,
+      voiceText,
+    );
+    return ResultDto.ok(result, 'AI-generated experience data');
   }
 
   @Post(':id/image')

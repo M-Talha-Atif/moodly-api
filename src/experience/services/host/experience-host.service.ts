@@ -2,46 +2,30 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Experience } from '../../entities/experience.entity';
-import { EmbeddingService } from 'src/embedding/services/embedding.service';
 import { CreateExperienceDto } from '../../dto/create-experience.dto';
 import { UpdateExperienceDto } from '../../dto/update-experience.dto';
 import { User } from 'src/users/entities/user.entity';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.schema';
 import { ExperienceFilterService } from '../experience-filter.service';
 import { ExperienceFiltersDto } from '../../dto/experience-filters.dto';
 import { S3Service } from 'src/common/services/s3.service';
 import { formatDate } from 'src/common/utils/date.utils';
+import { formatTime } from 'src/common/utils/time.utils';
 
 @Injectable()
 export class ExperienceHostService {
   constructor(
     @InjectRepository(Experience)
     private readonly experienceRepo: Repository<Experience>,
-    private readonly embeddingService: EmbeddingService, // embedding service
-    @InjectModel(ExperienceEmbedding.name)
-    private readonly experienceEmbeddingModel: Model<ExperienceEmbedding>,
     private readonly experienceFilterService: ExperienceFilterService, // filter service
     private readonly s3Service: S3Service, // S3 service for storage of images
   ) {}
+
   // =========================================================
   // Create Experience + Store Embedding in Mongo
   // =========================================================
   async create(dto: CreateExperienceDto, host: User): Promise<Experience> {
     const experience = this.experienceRepo.create({ ...dto, host });
     const saved = await this.experienceRepo.save(experience);
-
-    // // Generate embedding based on title + description + desired outcomes
-    // const combinedText = `${dto.title} ${dto.description} ${dto.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
-    // const embedding =
-    //   await this.embeddingService.generateEmbedding(combinedText);
-
-    // // Store embedding in Mongo
-    // await this.experienceEmbeddingModel.create({
-    //   experienceId: saved.id,
-    //   embedding,
-    // });
 
     return saved;
   }
@@ -146,22 +130,37 @@ export class ExperienceHostService {
   }
 
   // =========================================================
-  // Find All Experiences for a Host with Filters
+  // Find All Experiences for a Host with Filters (Simplified)
   // =========================================================
   async findAllForHost(hostId: string, filters: ExperienceFiltersDto) {
     const query = this.experienceRepo
       .createQueryBuilder('experience')
-      .leftJoinAndSelect('experience.host', 'host')
+      .select([
+        'experience.id',
+        'experience.title',
+        'experience.description',
+        'experience.date',
+        'experience.image',
+        'experience.createdAt',
+      ])
+      .leftJoin('experience.host', 'host')
       .where('host.id = :hostId', { hostId })
       .orderBy('experience.createdAt', 'DESC');
 
-    // apply filters (using your filter service)
+    // Apply filters (using your filter service)
     this.experienceFilterService.applyFilters(query, filters);
 
     const [data, count] = await query.getManyAndCount();
 
+    // Return only the required fields
     return {
-      data,
+      data: data.map((experience) => ({
+        id: experience.id,
+        title: experience.title,
+        date: formatDate(experience.date),
+        description: experience.description,
+        image: experience.image,
+      })),
       meta: {
         total: count,
         page: filters.page || 1,
@@ -192,12 +191,11 @@ export class ExperienceHostService {
       image: experience.image,
       price: experience.price,
       isVirtual: experience.isVirtual,
-      sessionStartTime: formatDate(experience.sessionStartTime),
-      sessionEndTime: formatDate(experience.sessionEndTime),
+      sessionStartTime: formatTime(experience.sessionStartTime),
+      sessionEndTime: formatTime(experience.sessionEndTime),
       totalSpots: experience.totalSpots,
       timezone: experience.timezone,
       language: experience.language,
-      cancellationPolicy: experience.cancellationPolicy,
       targetEmotions: experience.targetEmotions || [],
       desiredOutcomes: experience.desiredOutcomes || [],
       culturalTags: experience.culturalTags || [],

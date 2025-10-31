@@ -26,6 +26,16 @@ export class ProfileService {
     return ResultDto.ok(result, 'Profile fetched successfully');
   }
 
+  async getProfileImage(userId: string) {
+    const user = await this.usersService.findOne(userId);
+
+    const result = {
+      avatarUrl: user.avatarUrl,
+    };
+
+    return ResultDto.ok(result, 'Profile fetched successfully');
+  }
+
   async updateProfile(
     userId: string,
     dto: UpdateProfileDto,

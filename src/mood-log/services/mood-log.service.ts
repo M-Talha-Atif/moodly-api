@@ -26,7 +26,7 @@ export class MoodLogService {
     private readonly rmqClient: ClientProxy,
     private readonly validationService: ValidationService,
     private readonly storageService: StorageService,
-  ) {}
+  ) { }
 
   async createForUser(
     userId: string,
@@ -48,29 +48,20 @@ export class MoodLogService {
           hasVoice: !!files?.voice,
           photo: files?.photo
             ? {
-                originalname: files.photo.originalname,
-                mimetype: files.photo.mimetype,
-                size: files.photo.size,
-              }
+              originalname: files.photo.originalname,
+              mimetype: files.photo.mimetype,
+              size: files.photo.size,
+            }
             : 'NO PHOTO IN SERVICE',
           voice: files?.voice
             ? {
-                originalname: files.voice.originalname,
-                mimetype: files.voice.mimetype,
-                size: files.voice.size,
-              }
+              originalname: files.voice.originalname,
+              mimetype: files.voice.mimetype,
+              size: files.voice.size,
+            }
             : 'NO VOICE IN SERVICE',
         },
       });
-      // Check existing log
-      const existingLog = await this.moodLogRepo
-        .createQueryBuilder('moodLog')
-        .where('moodLog.userId = :userId', { userId })
-        .andWhere('DATE(moodLog.createdAt) = CURRENT_DATE')
-        .getOne();
-      if (existingLog) {
-        return ResultDto.ok(existingLog, 'Mood log already exists for today');
-      }
 
       // Validate inputs
       const inputValidation = this.validationService.validateInputs(dto, files);
@@ -119,23 +110,47 @@ export class MoodLogService {
     }
   }
 
-  async getTodayLogForUser(userId: string): Promise<ResultDto<MoodLog>> {
-    const todayLog = await this.moodLogRepo
+  async getTodayLogForUser(userId: string): Promise<ResultDto<MoodLog[]>> {
+    const todayLogs = await this.moodLogRepo
       .createQueryBuilder('moodLog')
       .where('moodLog.userId = :userId', { userId })
       .andWhere('DATE(moodLog.createdAt) = CURRENT_DATE')
       .orderBy('moodLog.createdAt', 'DESC')
-      .getOne();
+      .getMany();
 
-    if (!todayLog) {
-      return ResultDto.fail<MoodLog>(
-        'No mood log found for today',
+    if (!todayLogs.length) {
+      return ResultDto.fail<MoodLog[]>(
+        'No mood logs found for today',
         404,
         'MOOD_LOG_NOT_FOUND',
       );
     }
 
-    return ResultDto.ok(todayLog, "Today's mood log retrieved successfully");
+    return ResultDto.ok<MoodLog[]>(
+      todayLogs,
+      "Today's mood logs retrieved successfully",
+    );
+  }
+
+  async getRecentMoodLog(userId: string): Promise<ResultDto<MoodLog>> {
+    const recentLog = await this.moodLogRepo
+      .createQueryBuilder('moodLog')
+      .where('moodLog.userId = :userId', { userId })
+      .orderBy('moodLog.createdAt', 'DESC')
+      .getOne();
+
+    if (!recentLog) {
+      return ResultDto.fail<MoodLog>(
+        'No mood logs found for user',
+        404,
+        'MOOD_LOG_NOT_FOUND',
+      );
+    }
+
+    return ResultDto.ok<MoodLog>(
+      recentLog,
+      'Most recent mood log retrieved successfully',
+    );
   }
 
   async getHistoryForUser(userId: string, limit = 30, page = 1) {
@@ -145,7 +160,7 @@ export class MoodLogService {
         order: { createdAt: 'DESC' },
         take: limit,
         skip: (page - 1) * limit,
-        select: ['id', 'createdAt', 'finalMood'], // 👈 only finalMood
+        select: ['id', 'createdAt', 'finalMood'], // 
       });
 
       const mapped = logs.map((log) => ({

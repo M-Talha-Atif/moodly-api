@@ -35,6 +35,12 @@ export class ProfileController {
     return this.profileService.getProfile(req.user.sub);
   }
 
+  @Get('image')
+  @ApiOperation({ summary: 'Fetch current user profile details' })
+  async getProfileImage(@Req() req) {
+    return this.profileService.getProfileImage(req.user.sub);
+  }
+
   @Patch()
   @ApiOperation({ summary: 'Update profile (name, optional avatar upload)' })
   @ApiConsumes('multipart/form-data')
