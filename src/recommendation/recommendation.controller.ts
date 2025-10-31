@@ -16,7 +16,7 @@ export class RecommendationController {
   constructor(
     private readonly recommendationService: RecommendationService,
     private readonly moodLogService: MoodLogService,
-  ) { }
+  ) {}
 
   @UseGuards(JwtCookieGuard)
   @Get()
@@ -42,9 +42,7 @@ export class RecommendationController {
   async getRecommendations(@Req() req: any) {
     console.log('Fetching recommendations for user:', req.user.sub);
 
-    const moodResult = await this.moodLogService.getRecentMoodLog(
-      req.user.sub,
-    );
+    const moodResult = await this.moodLogService.getRecentMoodLog(req.user.sub);
 
     const userMood =
       (moodResult?.success && moodResult.data?.finalMood) ||

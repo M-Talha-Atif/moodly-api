@@ -107,6 +107,7 @@ export class AiExperienceService {
     try {
       return JSON.parse(cleaned);
     } catch (e) {
+      console.log(e);
       this.logger.warn('Failed to parse Gemini JSON, returning raw text.');
       return { raw: cleaned };
     }
