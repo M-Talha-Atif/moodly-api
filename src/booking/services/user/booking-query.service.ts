@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from 'src/booking/entities/booking.entity';
-import { BookingResponseDto } from 'src/booking/dto/booking-response.dto';
 import { BookingMapperService } from './booking-mapper.service';
 import { BookingFilterService } from './booking-filter.service';
 import { formatDate } from 'src/common/utils/date.utils';

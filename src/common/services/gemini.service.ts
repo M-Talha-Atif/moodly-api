@@ -15,7 +15,7 @@ export class GeminiService {
     }
 
     this.logger.log('GeminiService initialized successfully.');
-    this.gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    this.gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   }
 
   async generateText(prompt: string): Promise<string> {
@@ -37,12 +37,12 @@ export class GeminiService {
         '';
 
       if (!raw) {
-        this.logger.warn('⚠️ Gemini returned empty response content.');
+        this.logger.warn('Gemini returned empty response content.');
       }
 
-      // 🧹 Clean markdown fences if present
+      //  Clean markdown fences if present
       const cleaned = raw.replace(/```json|```/g, '').trim();
-      this.logger.log(`🧹 Gemini cleaned output: ${cleaned}`);
+      this.logger.log(`Gemini cleaned output: ${cleaned}`);
 
       return cleaned;
     } catch (error: any) {
