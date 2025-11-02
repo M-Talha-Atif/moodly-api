@@ -30,7 +30,7 @@ import { ResultDto } from 'src/common/dto/result.dto';
 @ApiBearerAuth()
 @Controller('mood-log')
 export class MoodLogController {
-  constructor(private readonly moodLogService: MoodLogService) { }
+  constructor(private readonly moodLogService: MoodLogService) {}
 
   @UseGuards(JwtCookieGuard)
   @Post()
@@ -93,7 +93,7 @@ export class MoodLogController {
 
   @UseGuards(JwtCookieGuard)
   @Get('recent')
-  @ApiOperation({ summary: "Get recent mood log for the authenticated user" })
+  @ApiOperation({ summary: 'Get recent mood log for the authenticated user' })
   @ApiResponse({ status: 200, description: 'Returns recent mood log' })
   @ApiResponse({ status: 404, description: 'No mood log found recently' })
   async getToday(@Req() req: any) {
@@ -135,7 +135,7 @@ export class MoodLogController {
   @ApiResponse({ status: 200, description: 'Returns mood summary for today' })
   @ApiResponse({ status: 404, description: 'No mood logs found for today' })
   async getDailySummary(@Req() req: any) {
-    // Calls the service layer function 
+    // Calls the service layer function
     return await this.moodLogService.getDailySummary(req.user.sub);
   }
 

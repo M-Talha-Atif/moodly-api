@@ -26,7 +26,7 @@ export class MoodLogService {
     private readonly rmqClient: ClientProxy,
     private readonly validationService: ValidationService,
     private readonly storageService: StorageService,
-  ) { }
+  ) {}
 
   async createForUser(
     userId: string,
@@ -48,17 +48,17 @@ export class MoodLogService {
           hasVoice: !!files?.voice,
           photo: files?.photo
             ? {
-              originalname: files.photo.originalname,
-              mimetype: files.photo.mimetype,
-              size: files.photo.size,
-            }
+                originalname: files.photo.originalname,
+                mimetype: files.photo.mimetype,
+                size: files.photo.size,
+              }
             : 'NO PHOTO IN SERVICE',
           voice: files?.voice
             ? {
-              originalname: files.voice.originalname,
-              mimetype: files.voice.mimetype,
-              size: files.voice.size,
-            }
+                originalname: files.voice.originalname,
+                mimetype: files.voice.mimetype,
+                size: files.voice.size,
+              }
             : 'NO VOICE IN SERVICE',
         },
       });
