@@ -8,9 +8,7 @@ export class GeminiService {
 
   constructor() {
     if (!process.env.GEMINI_API_KEY) {
-      this.logger.error(
-        '❌ GEMINI_API_KEY is missing in environment variables.',
-      );
+      this.logger.error('GEMINI_API_KEY is missing in environment variables.');
       throw new Error('GEMINI_API_KEY not configured.');
     }
 

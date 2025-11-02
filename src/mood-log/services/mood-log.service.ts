@@ -26,7 +26,7 @@ export class MoodLogService {
     private readonly rmqClient: ClientProxy,
     private readonly validationService: ValidationService,
     private readonly storageService: StorageService,
-  ) {}
+  ) { }
 
   async createForUser(
     userId: string,
@@ -48,17 +48,17 @@ export class MoodLogService {
           hasVoice: !!files?.voice,
           photo: files?.photo
             ? {
-                originalname: files.photo.originalname,
-                mimetype: files.photo.mimetype,
-                size: files.photo.size,
-              }
+              originalname: files.photo.originalname,
+              mimetype: files.photo.mimetype,
+              size: files.photo.size,
+            }
             : 'NO PHOTO IN SERVICE',
           voice: files?.voice
             ? {
-                originalname: files.voice.originalname,
-                mimetype: files.voice.mimetype,
-                size: files.voice.size,
-              }
+              originalname: files.voice.originalname,
+              mimetype: files.voice.mimetype,
+              size: files.voice.size,
+            }
             : 'NO VOICE IN SERVICE',
         },
       });
@@ -110,7 +110,7 @@ export class MoodLogService {
     }
   }
 
-  async getTodayLogForUser(userId: string): Promise<ResultDto<MoodLog[]>> {
+  async getTodayLogsForUser(userId: string): Promise<ResultDto<MoodLog[]>> {
     const todayLogs = await this.moodLogRepo
       .createQueryBuilder('moodLog')
       .where('moodLog.userId = :userId', { userId })
@@ -165,7 +165,7 @@ export class MoodLogService {
 
       const mapped = logs.map((log) => ({
         id: log.id,
-        createdAt: log.createdAt.toISOString().split('T')[0], // 👈 yyyy-mm-dd
+        createdAt: log.createdAt.toISOString().split('T')[0],
         finalMood: log.finalMood,
       }));
 
@@ -282,5 +282,62 @@ export class MoodLogService {
     );
 
     return ResultDto.ok(map, 'Mood heatmap data fetched');
+  }
+
+  async getDailySummary(userId: string): Promise<ResultDto<any>> {
+    const todayLogs = await this.moodLogRepo
+      .createQueryBuilder('moodLog')
+      .where('moodLog.userId = :userId', { userId })
+      .andWhere('DATE(moodLog.createdAt) = CURRENT_DATE')
+      .orderBy('moodLog.createdAt', 'ASC')
+      .getMany();
+
+    if (!todayLogs.length) {
+      return ResultDto.fail('No mood logs found for today', 404);
+    }
+
+    const summary = {
+      morning: [] as MoodLog[],
+      afternoon: [] as MoodLog[],
+      night: [] as MoodLog[],
+    };
+
+    for (const log of todayLogs) {
+      const hour = new Date(log.createdAt).getHours();
+
+      if (hour >= 5 && hour < 12) summary.morning.push(log);
+      else if (hour >= 12 && hour < 18) summary.afternoon.push(log);
+      else summary.night.push(log);
+    }
+
+    // Helper: get most frequent mood in a group
+    const getDominantMood = (logs: MoodLog[]) => {
+      const freq: Record<string, number> = {};
+      for (const log of logs) {
+        const mood = log.finalMood || log.moodLabel || 'unknown';
+        freq[mood] = (freq[mood] || 0) + 1;
+      }
+      return Object.entries(freq).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+    };
+
+    const result = {
+      morning: {
+        count: summary.morning.length,
+        dominantMood: getDominantMood(summary.morning),
+        logs: summary.morning,
+      },
+      afternoon: {
+        count: summary.afternoon.length,
+        dominantMood: getDominantMood(summary.afternoon),
+        logs: summary.afternoon,
+      },
+      night: {
+        count: summary.night.length,
+        dominantMood: getDominantMood(summary.night),
+        logs: summary.night,
+      },
+    };
+
+    return ResultDto.ok(result, "Today's mood summary generated successfully");
   }
 }
