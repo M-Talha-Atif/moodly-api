@@ -53,12 +53,23 @@ export class AuthController {
     return result;
   }
 
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh access token using refresh token' })
+  @ApiResponse({ status: 200, description: 'Tokens refreshed successfully' })
+  @ApiResponse({ status: 403, description: 'Invalid or expired refresh token' })
+  async refresh(@Body() body: { userId: string; refresh_token: string }) {
+    return this.authService.refreshTokens(body.userId, body.refresh_token);
+  }
+
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   @ApiOperation({ summary: 'Logout user and clear JWT cookie' })
-  @ApiResponse({ status: 200, description: 'User logged out successfully' })
-  async logout(@Res({ passthrough: true }) response: Response) {
-    const result = await this.authService.logout();
+  async logout(
+    @Req() req: any,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const userId = req.user?.sub; // if JwtGuard is active
+    const result = await this.authService.logout(userId);
     response.clearCookie('jwt');
     return response.status(result.statusCode).json(result);
   }

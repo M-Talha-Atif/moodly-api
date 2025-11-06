@@ -58,6 +58,13 @@ export class UsersService {
     return savedUser;
   }
 
+  async updateRefreshToken(
+    userId: string,
+    refreshTokenHash: string | null,
+  ): Promise<void> {
+    await this.usersRepository.update(userId, { refreshTokenHash } as any);
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({ relations: ['privacySettings'] });
   }

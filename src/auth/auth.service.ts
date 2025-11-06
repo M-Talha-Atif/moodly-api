@@ -30,6 +30,27 @@ export class AuthService {
   ) {}
 
   /**
+   * Function to generate the refresh token and access token for the user
+   * @param userId
+   * @param email
+   * @param role
+   * @returns
+   */
+  private async generateTokens(userId: string, email: string, role: string) {
+    const payload = { sub: userId, email, role };
+
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m',
+    });
+
+    const refresh_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+    });
+
+    return { access_token, refresh_token };
+  }
+
+  /**
    * Registers a new user.
    *
    * Steps:
@@ -84,14 +105,19 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email, role: user.role };
-    const token = this.jwtService.sign(payload);
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+
+    // Hash refresh token before saving
+    const refreshHash = await bcrypt.hash(tokens.refresh_token, 10);
+    await this.usersService.updateRefreshToken(user.id, refreshHash);
 
     return {
       success: true,
       statusCode: 200,
       message: 'Login successful',
       data: {
-        access_token: token,
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
         user: {
           id: user.id,
           email: user.email,
@@ -103,7 +129,37 @@ export class AuthService {
     };
   }
 
-  // src/auth/auth.service.ts
+  async refreshTokens(
+    userId: string,
+    refreshToken: string,
+  ): Promise<ResultDto<any>> {
+    const user = await this.usersService.findById(userId);
+    if (!user || !user.refreshTokenHash) {
+      return ResultDto.fail('Access denied', 403);
+    }
+
+    const isMatch = await bcrypt.compare(refreshToken, user.refreshTokenHash);
+    if (!isMatch) {
+      return ResultDto.fail('Invalid refresh token', 403);
+    }
+
+    // Generate new tokens
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+
+    // Hash and save new refresh token (rotate it)
+    const newRefreshHash = await bcrypt.hash(tokens.refresh_token, 10);
+    await this.usersService.updateRefreshToken(user.id, newRefreshHash);
+
+    return ResultDto.ok(
+      {
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+      },
+      'Tokens refreshed successfully',
+      200,
+    );
+  }
+
   /**
    * Validate or create a Google OAuth user, then return JWT
    */
@@ -141,7 +197,8 @@ export class AuthService {
    *
    * @returns ResultDto with success message and 200 status.
    */
-  async logout(): Promise<ResultDto<null>> {
+  async logout(userId: string): Promise<ResultDto<null>> {
+    await this.usersService.updateRefreshToken(userId, null);
     return ResultDto.ok(null, 'Logout successful', 200);
   }
 }

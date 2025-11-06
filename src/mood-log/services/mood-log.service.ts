@@ -132,6 +132,24 @@ export class MoodLogService {
     );
   }
 
+  async getTodayRecentMoodLog(userId: string): Promise<ResultDto<MoodLog>> {
+    const todayRecentMood = await this.moodLogRepo
+      .createQueryBuilder('moodLog')
+      .where('moodLog.userId = :userId', { userId })
+      .andWhere('DATE(moodLog.createdAt) = CURRENT_DATE')
+      .orderBy('moodLog.createdAt', 'DESC')
+      .getOne();
+
+    if (!todayRecentMood) {
+      return ResultDto.fail('No recent mood log found for today', 404);
+    }
+
+    return ResultDto.ok(
+      todayRecentMood,
+      "Today's most recent mood log retrieved successfully",
+    );
+  }
+
   async getRecentMoodLog(userId: string): Promise<ResultDto<MoodLog>> {
     const recentLog = await this.moodLogRepo
       .createQueryBuilder('moodLog')
@@ -160,7 +178,7 @@ export class MoodLogService {
         order: { createdAt: 'DESC' },
         take: limit,
         skip: (page - 1) * limit,
-        select: ['id', 'createdAt', 'finalMood'], //
+        select: ['id', 'createdAt', 'finalMood'],
       });
 
       const mapped = logs.map((log) => ({

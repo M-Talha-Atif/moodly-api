@@ -11,7 +11,7 @@ export class AiExperienceService {
   constructor(
     private readonly apiClient: ApiClientService,
     private readonly geminiService: GeminiService,
-  ) {}
+  ) { }
 
   /**
    * Handles both voice file and text input.
@@ -83,21 +83,32 @@ export class AiExperienceService {
    */
   async generateExperienceDataFromVoice(voiceText: string) {
     const prompt = `
-      You are an AI experience generator. Based on this input:
-      "${voiceText}"
-      Fill in the following JSON fields:
-      {
-        "title": string,
-        "description": string,
-        "isVirtual": boolean,
-        "culturalTags": ["beach","music","dance","food","art","nature","festival","cultural"],
-        "desiredOutcomes": ["happiness","calmness","relief","excitement","peace","inspiration","connection","relaxation"],
-        "targetEmotions": ["happy","sad","angry","excited","calm","anxious","peaceful","inspired"],
-        "emotionalSummary": string,
-        "location": string (optional)
-      }
-      Return JSON only.
-    `;
+You are an AI experience generator. Based on this input:
+"${voiceText}"
+
+Fill in the following JSON fields:
+{
+  "title": string,
+  "description": string,       // Must be tailored to the title, do not mention time
+  "isVirtual": boolean,
+  "totalSpots": number,
+  "sessionStartTime": string,  // ISO 8601 format, must be in the future
+  "sessionEndTime": string,    // ISO 8601 format, must be in the future
+  "date": string,              // ISO 8601 date, must be in the future
+  "culturalTags": ["beach","music","dance","food","art","nature","festival","cultural"],
+  "desiredOutcomes": ["happiness","calmness","relief","excitement","peace","inspiration","connection","relaxation"],
+  "targetEmotions": ["happy","sad","angry","excited","calm","anxious","peaceful","inspired"],
+  "emotionalSummary": string,
+  "location": string (optional)
+}
+⚠️ Rules:
+1. Never include any mention of time in the description.
+2. If the input date or times are in the past, automatically adjust them to future dates/times.
+3. Make the description specific to the title, avoiding generic content.
+4. Return JSON only.
+Ensure sessionStartTime, sessionEndTime, and date are valid ISO strings.
+`;
+
 
     const rawResponse = await this.geminiService.generateText(prompt);
 
