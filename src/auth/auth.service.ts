@@ -37,15 +37,19 @@ export class AuthService {
    * @returns
    */
   private async generateTokens(userId: string, email: string, role: string) {
-    const payload = { sub: userId, email, role };
+    const accessTokenPayload = { sub: userId, email, role };
+    const refreshTokenPayload = { sub: userId }; // Minimal payload for refresh
 
-    const access_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '15m',
-    });
-
-    const refresh_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d',
-    });
+    const [access_token, refresh_token] = await Promise.all([
+      this.jwtService.signAsync(accessTokenPayload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '3m',
+      }),
+      this.jwtService.signAsync(refreshTokenPayload, {
+        secret: process.env.JWT_REFRESH_SECRET, // Different secret for refresh tokens
+        expiresIn: '7d',
+      }),
+    ]);
 
     return { access_token, refresh_token };
   }
@@ -104,7 +108,6 @@ export class AuthService {
       return LoginResponseDto.fail('Invalid credentials', 401);
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
     const tokens = await this.generateTokens(user.id, user.email, user.role);
 
     // Hash refresh token before saving
@@ -130,34 +133,55 @@ export class AuthService {
   }
 
   async refreshTokens(
-    userId: string,
-    refreshToken: string,
+    refreshToken: string, // Remove userId from parameters
   ): Promise<ResultDto<any>> {
-    const user = await this.usersService.findById(userId);
-    if (!user || !user.refreshTokenHash) {
-      return ResultDto.fail('Access denied', 403);
+    try {
+      // 1. Verify the refresh token and extract payload
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET, // Use same secret that was used to sign
+      });
+      const userId = payload.sub;
+
+      // 2. Find user by ID from the token
+      const user = await this.usersService.findById(userId);
+      if (!user || !user.refreshTokenHash) {
+        return ResultDto.fail('Access denied', 403);
+      }
+
+      // 3. Compare the raw refresh token with the stored hash
+      const isMatch = await bcrypt.compare(refreshToken, user.refreshTokenHash);
+      if (!isMatch) {
+        return ResultDto.fail('Invalid refresh token', 403);
+      }
+
+      // 4. Generate new tokens
+      const tokens = await this.generateTokens(user.id, user.email, user.role);
+
+      // 5. Hash and save new refresh token (rotate it)
+      const newRefreshHash = await bcrypt.hash(tokens.refresh_token, 10);
+      await this.usersService.updateRefreshToken(user.id, newRefreshHash);
+
+      return ResultDto.ok(
+        {
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+        },
+        'Tokens refreshed successfully',
+        200,
+      );
+    } catch (error) {
+      console.log(error);
+      console.log('❌ Refresh token error:', error.message);
+
+      if (error.name === 'JsonWebTokenError') {
+        return ResultDto.fail('Invalid token', 403);
+      }
+      if (error.name === 'TokenExpiredError') {
+        return ResultDto.fail('Refresh token expired', 403);
+      }
+
+      return ResultDto.fail('Invalid or expired refresh token', 403);
     }
-
-    const isMatch = await bcrypt.compare(refreshToken, user.refreshTokenHash);
-    if (!isMatch) {
-      return ResultDto.fail('Invalid refresh token', 403);
-    }
-
-    // Generate new tokens
-    const tokens = await this.generateTokens(user.id, user.email, user.role);
-
-    // Hash and save new refresh token (rotate it)
-    const newRefreshHash = await bcrypt.hash(tokens.refresh_token, 10);
-    await this.usersService.updateRefreshToken(user.id, newRefreshHash);
-
-    return ResultDto.ok(
-      {
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token,
-      },
-      'Tokens refreshed successfully',
-      200,
-    );
   }
 
   /**

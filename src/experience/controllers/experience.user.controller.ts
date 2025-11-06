@@ -9,10 +9,11 @@ import { ExperienceListItemDto } from '../dto/experience-list-item.dto';
 import { ExperienceResponseDto } from '../dto/experience-response.dto';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { plainToInstance } from 'class-transformer';
+import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
 
 @ApiTags('User Experiences')
 @Controller('user/experiences')
-@UseGuards(JwtCookieGuard, RolesGuard)
+@UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)
 @Roles('user')
 export class ExperienceUserController {
   constructor(private readonly experienceService: ExperienceService) {}

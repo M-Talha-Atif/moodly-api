@@ -8,17 +8,19 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { MoodLogService } from 'src/mood-log/services/mood-log.service';
+import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
+import { RolesGuard } from 'src/common/roles.guard';
 
 @ApiTags('recommendations') // Groups under "recommendations"
 @ApiBearerAuth() // shows JWT auth in Swagger UI
 @Controller('recommendations')
+@UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)
 export class RecommendationController {
   constructor(
     private readonly recommendationService: RecommendationService,
     private readonly moodLogService: MoodLogService,
   ) {}
 
-  @UseGuards(JwtCookieGuard)
   @Get()
   @ApiOperation({ summary: 'Get personalized recommendations' })
   @ApiResponse({

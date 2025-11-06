@@ -11,7 +11,7 @@ export class AiExperienceService {
   constructor(
     private readonly apiClient: ApiClientService,
     private readonly geminiService: GeminiService,
-  ) { }
+  ) {}
 
   /**
    * Handles both voice file and text input.
@@ -108,7 +108,6 @@ Fill in the following JSON fields:
 4. Return JSON only.
 Ensure sessionStartTime, sessionEndTime, and date are valid ISO strings.
 `;
-
 
     const rawResponse = await this.geminiService.generateText(prompt);
 
