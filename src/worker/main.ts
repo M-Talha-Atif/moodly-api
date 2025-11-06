@@ -126,8 +126,8 @@ async function bootstrap() {
   // Startup logs
   // -----------------------------
   const logger = new Logger('WorkerBootstrap');
-  logger.log('✅ Worker is listening for RabbitMQ tasks...');
-  logger.log(`📡 Listening on queues: 
+  logger.log('Worker is listening for RabbitMQ tasks...');
+  logger.log(`Listening on queues: 
   - ${process.env.RMQ_MOOD_QUEUE || 'mood-tasks'}
   - ${process.env.RMQ_COMM_QUEUE || 'community-tasks'}
   - ${process.env.RMQ_RECOMMENDATION_QUEUE || 'recommendation-tasks'}

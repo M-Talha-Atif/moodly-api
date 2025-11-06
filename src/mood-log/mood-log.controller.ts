@@ -92,11 +92,29 @@ export class MoodLogController {
   }
 
   @UseGuards(JwtCookieGuard)
+  @Get('today')
+  @ApiOperation({
+    summary: 'Get today recent mood log for the authenticated user',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns recent mood log for today',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No mood log found for today recently',
+  })
+  async getToday(@Req() req: any) {
+    // Let the exception bubble up naturally
+    return await this.moodLogService.getTodayRecentMoodLog(req.user.sub);
+  }
+
+  @UseGuards(JwtCookieGuard)
   @Get('recent')
   @ApiOperation({ summary: 'Get recent mood log for the authenticated user' })
   @ApiResponse({ status: 200, description: 'Returns recent mood log' })
   @ApiResponse({ status: 404, description: 'No mood log found recently' })
-  async getToday(@Req() req: any) {
+  async getRecentMood(@Req() req: any) {
     // Let the exception bubble up naturally
     return await this.moodLogService.getRecentMoodLog(req.user.sub);
   }

@@ -146,11 +146,9 @@ async function bootstrap() {
   await app.listen(port);
 
   const logger = new Logger('Bootstrap');
-  logger.log(`🚀 Application is running on: http://localhost:${port}`);
-  logger.log(`📖 Swagger docs available at: http://localhost:${port}/api-docs`);
-  logger.log(
-    `🔧 Bull Board available at: http://localhost:${port}/admin/queues`,
-  );
+  logger.log(`Application is running on: http://localhost:${port}`);
+  logger.log(`Swagger docs available at: http://localhost:${port}/api-docs`);
+  logger.log(`Bull Board available at: http://localhost:${port}/admin/queues`);
 }
 
 bootstrap();

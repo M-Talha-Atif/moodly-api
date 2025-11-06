@@ -23,6 +23,9 @@ export class LoginData {
   @ApiProperty()
   access_token: string;
 
+  @ApiProperty()
+  refresh_token: string;
+
   @ApiProperty({ type: UserLoginData })
   user: UserLoginData;
 }
