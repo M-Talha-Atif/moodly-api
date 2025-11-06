@@ -19,10 +19,12 @@ import { CreateBookingDto } from '../dto/create-booking.dto';
 import { JwtCookieGuard } from '../../auth/guards/jwt-cookie.guard';
 import { ERROR_CODE_MAP } from '../../common/constants/error-code-map';
 import { ResultDto } from '../../common/dto/result.dto';
+import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
+import { RolesGuard } from '../../common/roles.guard';
 
 @ApiTags('User Bookings')
 @Controller('user/bookings')
-@UseGuards(JwtCookieGuard)
+@UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)
 export class UserBookingController {
   constructor(
     private readonly bookingService: BookingService,

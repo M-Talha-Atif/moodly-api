@@ -29,10 +29,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { S3Service } from 'src/common/services/s3.service';
 import { AiExperienceService } from '../services/host/ai-experience.service';
+import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
 
 @ApiTags('Host Experiences')
 @Controller('host/experiences')
-@UseGuards(JwtCookieGuard, RolesGuard)
+@UseGuards(JwtCookieGuard, JwtBearerGuard, RolesGuard)
 @Roles('host')
 export class ExperienceHostController {
   constructor(

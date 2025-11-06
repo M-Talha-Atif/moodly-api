@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UnauthorizedException } from '@nestjs/common';
 
 /**
  * JwtCookieGuard
@@ -42,14 +43,23 @@ export class JwtCookieGuard implements CanActivate {
       }
     }
 
-    if (!token) return false;
+    if (!token) {
+      throw new UnauthorizedException('No token provided');
+    }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token); // verfies token is expired or not
+      const payload = await this.jwtService.verifyAsync(token);
       request.user = payload;
       return true;
-    } catch {
-      return false;
+    } catch (error) {
+      // 🚨 CRITICAL FIX: Throw proper 401 for token issues
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token expired');
+      }
+      if (error.name === 'JsonWebTokenError') {
+        throw new UnauthorizedException('Invalid token');
+      }
+      throw new UnauthorizedException('Authentication failed');
     }
   }
 }

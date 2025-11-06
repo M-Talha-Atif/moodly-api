@@ -7,10 +7,11 @@ import { JwtCookieGuard } from '../../auth/guards/jwt-cookie.guard';
 import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
 import { ResultDto } from '../../common/dto/result.dto';
+import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
 
 @ApiTags('Host Bookings')
 @Controller('host/bookings')
-@UseGuards(JwtCookieGuard, RolesGuard)
+@UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)
 @Roles('host')
 export class HostBookingController {
   constructor(
