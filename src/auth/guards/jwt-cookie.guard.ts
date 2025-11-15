@@ -52,7 +52,7 @@ export class JwtCookieGuard implements CanActivate {
       request.user = payload;
       return true;
     } catch (error) {
-      // 🚨 CRITICAL FIX: Throw proper 401 for token issues
+      // CRITICAL FIX: Throw proper 401 for token issues
       if (error.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token expired');
       }

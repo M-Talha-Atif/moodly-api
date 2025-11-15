@@ -58,6 +58,42 @@ export class HostBookingController {
     );
   }
 
+  @Get('trend')
+  @ApiOperation({
+    summary: 'Get booking trend (line chart data) for host dashboard',
+  })
+  async getBookingTrend(@Req() req: any) {
+    const hostId = req.user.sub;
+
+    const trend = await this.hostBookingQueryService.getBookingTrend(
+      hostId,
+      90, // last 90 days
+    );
+
+    return ResultDto.ok(trend, 'Booking trend fetched successfully');
+  }
+
+  @Get('emotional-outcomes')
+  @ApiOperation({ summary: 'Get emotional outcome stats for host dashboard' })
+  async getEmotionalOutcomes(@Req() req: any) {
+    const hostId = req.user.sub;
+
+    const result =
+      await this.hostBookingQueryService.getEmotionalOutcomesForHost(hostId);
+
+    return ResultDto.ok(result, 'Emotional outcomes fetched successfully');
+  }
+
+  @Get('funnel')
+  @ApiOperation({ summary: 'Get booking funnel stats for host dashboard' })
+  async getFunnel(@Req() req: any) {
+    const hostId = req.user.sub;
+
+    const result = await this.hostBookingQueryService.getFunnelForHost(hostId);
+
+    return ResultDto.ok(result, 'Funnel stats fetched successfully');
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get booking detail for host’s experience' })
   async getHostBookingDetail(@Param('id') bookingId: string, @Req() req: any) {

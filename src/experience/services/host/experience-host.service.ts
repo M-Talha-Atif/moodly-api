@@ -6,10 +6,11 @@ import { CreateExperienceDto } from '../../dto/create-experience.dto';
 import { UpdateExperienceDto } from '../../dto/update-experience.dto';
 import { User } from 'src/users/entities/user.entity';
 import { ExperienceFilterService } from '../experience-filter.service';
-import { ExperienceFiltersDto } from '../../dto/experience-filters.dto';
 import { S3Service } from 'src/common/services/s3.service';
 import { formatDate } from 'src/common/utils/date.utils';
 import { formatTime } from 'src/common/utils/time.utils';
+import { HostExperienceFiltersDto } from 'src/experience/dto/host/experience-filters-host.dto';
+import { ExperienceSortBy } from '../../dto/host/experience-filters-host.dto';
 
 @Injectable()
 export class ExperienceHostService {
@@ -130,41 +131,75 @@ export class ExperienceHostService {
   }
 
   // =========================================================
-  // Find All Experiences for a Host with Filters (Simplified)
+  // Find All Experiences for a host
   // =========================================================
-  async findAllForHost(hostId: string, filters: ExperienceFiltersDto) {
-    const query = this.experienceRepo
+  async findAllForHost(hostId: string, filters: HostExperienceFiltersDto) {
+    const qb = this.experienceRepo
       .createQueryBuilder('experience')
-      .select([
-        'experience.id',
-        'experience.title',
-        'experience.description',
-        'experience.date',
-        'experience.image',
-        'experience.createdAt',
-      ])
       .leftJoin('experience.host', 'host')
-      .where('host.id = :hostId', { hostId })
-      .orderBy('experience.createdAt', 'DESC');
+      .leftJoin('experience.bookings', 'booking')
+      .where('host.id = :hostId', { hostId });
 
-    // Apply filters (using your filter service)
-    this.experienceFilterService.applyFilters(query, filters);
+    // Apply filters first
+    this.experienceFilterService.applyFiltersForHost(qb, filters);
 
-    const [data, count] = await query.getManyAndCount();
+    // Add COUNT of bookings
+    qb.addSelect('COUNT(booking.id)', 'totalBookings').groupBy('experience.id');
 
-    // Return only the required fields
+    // Sorting
+    if (filters.sortBy === ExperienceSortBy.BOOKINGS) {
+      qb.orderBy('totalBookings', 'DESC');
+    } else if (filters.sortBy === ExperienceSortBy.DATE) {
+      qb.orderBy('experience.sessionStartTime', 'ASC');
+    } else {
+      qb.orderBy('experience.createdAt', 'DESC');
+    }
+
+    // FIX: Use offset and limit instead of skip and take for better GROUP BY support
+    qb.offset((filters.page - 1) * filters.limit).limit(filters.limit);
+
+    // Get raw results
+    const raw = await qb.getRawMany();
+
+    // Map results
+    const result = raw.map((row) => ({
+      id: row.experience_id,
+      title: row.experience_title,
+      image: row.experience_image,
+      date: row.experience_sessionStartTime,
+      totalSpots: row.experience_totalSpots,
+      totalBookings: Number(row.totalBookings) || 0,
+      status:
+        new Date(row.experience_sessionStartTime).getTime() > Date.now()
+          ? 'upcoming'
+          : 'past',
+    }));
+
+    // Count query with same filters
+    const countQb = this.experienceRepo
+      .createQueryBuilder('experience')
+      .leftJoin('experience.host', 'host')
+      .where('host.id = :hostId', { hostId });
+
+    this.experienceFilterService.applyFiltersForHost(countQb, filters);
+
+    const total = await countQb.getCount();
+
+    const totalPages = Math.ceil(total / filters.limit);
+    const hasNextPage = filters.page < totalPages;
+    const hasPrevPage = filters.page > 1;
+
     return {
-      data: data.map((experience) => ({
-        id: experience.id,
-        title: experience.title,
-        date: formatDate(experience.date),
-        description: experience.description,
-        image: experience.image,
-      })),
+      data: result,
       meta: {
-        total: count,
-        page: filters.page || 1,
-        limit: filters.limit || 10,
+        total,
+        page: filters.page,
+        limit: filters.limit,
+        totalPages,
+        hasNextPage,
+        hasPrevPage,
+        nextPage: hasNextPage ? filters.page + 1 : null,
+        prevPage: hasPrevPage ? filters.page - 1 : null,
       },
     };
   }
@@ -189,6 +224,7 @@ export class ExperienceHostService {
       date: formatDate(experience.date),
       location: experience.location,
       image: experience.image,
+      meetLink: experience.meetingLink,
       price: experience.price,
       isVirtual: experience.isVirtual,
       sessionStartTime: formatTime(experience.sessionStartTime),
