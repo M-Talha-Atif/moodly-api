@@ -30,6 +30,8 @@ import { memoryStorage } from 'multer';
 import { S3Service } from 'src/common/services/s3.service';
 import { AiExperienceService } from '../services/host/ai-experience.service';
 import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
+import { HostExperienceListItemDto } from '../dto/host/host-experience-list-item.dto';
+import { HostExperienceFiltersDto } from '../dto/host/experience-filters-host.dto';
 
 @ApiTags('Host Experiences')
 @Controller('host/experiences')
@@ -132,7 +134,7 @@ export class ExperienceHostController {
 
   @Get()
   @ApiOperation({ summary: 'Get all experiences for the current host' })
-  async findAll(@Req() req: any, @Query() filters: ExperienceFiltersDto) {
+  async findAll(@Req() req: any, @Query() filters: HostExperienceFiltersDto) {
     const { data, meta } = await this.experienceHostService.findAllForHost(
       req.user.sub,
       filters,
@@ -140,7 +142,9 @@ export class ExperienceHostController {
 
     return ResultDto.ok(
       {
-        data: data.map((exp) => plainToInstance(ExperienceListItemDto, exp)),
+        data: data.map((exp) =>
+          plainToInstance(HostExperienceListItemDto, exp),
+        ),
         meta,
       },
       'Experiences fetched successfully',

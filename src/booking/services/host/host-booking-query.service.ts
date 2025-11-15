@@ -84,4 +84,125 @@ export class HostBookingQueryService {
       status: b.status,
     }));
   }
+
+  /**
+   * Get booking trend for the host's experiences (grouped by date)
+   */
+  async getBookingTrend(hostId: string, days = 90) {
+    const sinceDate = new Date();
+    sinceDate.setDate(sinceDate.getDate() - days);
+
+    const raw = await this.bookingRepo
+      .createQueryBuilder('booking')
+      .innerJoin('booking.experience', 'experience')
+      .where('experience.hostId = :hostId', { hostId })
+      .andWhere('booking.createdAt >= :sinceDate', { sinceDate })
+      .andWhere('booking.status = :status', { status: 'confirmed' })
+      .select(
+        `
+      DATE(booking.createdAt) AS date,
+      COUNT(*) AS count
+    `,
+      )
+      .groupBy('DATE(booking.createdAt)')
+      .orderBy('DATE(booking.createdAt)', 'ASC')
+      .getRawMany();
+
+    return raw.map((row) => ({
+      date: formatDate(row.date),
+      count: Number(row.count),
+    }));
+  }
+
+  /**
+   * Emotional outcomes dashboard scores based ONLY on:
+   * - experience.desiredOutcomes[]
+   * - weighted by number of bookings
+   */
+  async getEmotionalOutcomesForHost(hostId: string) {
+    const rows = await this.bookingRepo
+      .createQueryBuilder('booking')
+      .innerJoin('booking.experience', 'experience')
+      .where('experience.hostId = :hostId', { hostId })
+      .select([
+        'experience.desiredOutcomes AS desiredOutcomes',
+        'COUNT(booking.id) AS bookingCount',
+      ])
+      .groupBy('experience.id')
+      .getRawMany();
+
+    const tags = ['happiness', 'calmness', 'relief', 'excitement'];
+
+    const totals: Record<string, number> = {
+      happiness: 0,
+      calmness: 0,
+      relief: 0,
+      excitement: 0,
+    };
+
+    let totalBookings = 0;
+
+    rows.forEach((row) => {
+      const bookingCount = Number(row.bookingcount);
+      totalBookings += bookingCount;
+
+      const desired: string[] = row.desiredoutcomes || [];
+
+      desired.forEach((d) => {
+        if (totals[d] !== undefined) {
+          totals[d] += bookingCount; // weight by popularity
+        }
+      });
+    });
+
+    // fallback: no bookings yet → use experiences count
+    if (totalBookings === 0) totalBookings = rows.length || 1;
+
+    const scores = tags.map((t) =>
+      Number((totals[t] / totalBookings).toFixed(2)),
+    );
+
+    return {
+      labels: tags.map((t) => t.charAt(0).toUpperCase() + t.slice(1)),
+      scores,
+    };
+  }
+
+  /**
+   * Funnel Stages:
+   * - booked
+   * - rebooked
+   * - feedbackGiven
+   * - positiveFeedback (rating >= 4)
+   * - attended30
+   */
+  async getFunnelForHost(hostId: string) {
+    // 1) Get bookings for this host
+    const bookings = await this.bookingRepo
+      .createQueryBuilder('booking')
+      .innerJoin('booking.experience', 'experience')
+      .where('experience.hostId = :hostId', { hostId })
+      .select(['booking.id AS bookingId', 'booking.userId AS userId'])
+      .getRawMany();
+
+    const booked = bookings.length;
+
+    // 2) Users who booked more than once (re-bookers)
+    const bookingCountByUser = new Map<string, number>();
+    bookings.forEach((b) => {
+      bookingCountByUser.set(
+        b.userId,
+        (bookingCountByUser.get(b.userId) || 0) + 1,
+      );
+    });
+
+    const rebooked = [...bookingCountByUser.values()].filter(
+      (count) => count > 1,
+    ).length;
+
+    return {
+      booked,
+      rebooked,
+    };
+  }
 }
