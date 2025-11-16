@@ -23,7 +23,7 @@ export class LLMRankingService {
       this.provider = new OpenAIRankingProvider(this.config);
     }
 
-    this.logger.log(`📦 Using ${providerName} as ranking provider`);
+    this.logger.log(` Using ${providerName} as ranking provider`);
   }
 
   async rerank(

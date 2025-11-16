@@ -35,7 +35,7 @@ export class RecommendationController {
   })
   @ApiResponse({
     status: 404,
-    description: 'No mood embedding found for user',
+    description: 'No mood found for user',
   })
   @ApiResponse({
     status: 401,
