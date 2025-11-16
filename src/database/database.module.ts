@@ -28,6 +28,7 @@ import * as fs from 'fs';
           synchronize: config.get('NODE_ENV') !== 'production',
           logging: true,
           logger: 'advanced-console',
+          // ssl: false
           ssl: isProd
             ? {
                 ca: fs
