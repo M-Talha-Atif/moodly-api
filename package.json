@@ -15,7 +15,7 @@
     "start:dev": "nest start --watch -r tsconfig-paths/register",
     "start:worker": "ts-node -r tsconfig-paths/register src/worker/main.ts",
     "worker": "ts-node -r tsconfig-paths/register src/worker/main.ts",
-      "migration:run": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts",
+    "migration:run": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts",
     "migration:generate": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d src/database/data-source.ts",
     "migration:revert": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d src/database/data-source.ts",
     "migration:create": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:create",
