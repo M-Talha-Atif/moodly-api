@@ -1,9 +1,14 @@
+// src/database/data-source.ts
 import { DataSource } from 'typeorm';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
 
-// Load env
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+const isProd = process.env.NODE_ENV === 'production';
+const root = isProd
+  ? path.resolve(__dirname, '../../dist')
+  : path.resolve(__dirname, '..');
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -13,10 +18,13 @@ export const AppDataSource = new DataSource({
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
   entities: [
-    path.resolve(__dirname, '..', '**', 'entities', '**', '*.entity.{ts,js}'),
+    // in dev: src/**/entities/*.entity.ts, in prod: dist/**/entities/*.entity.js
+    path.resolve(root, '**', 'entities', '**', '*.entity.{ts,js}'),
   ],
-
-  migrations: [path.resolve(__dirname, './migrations/*.{ts,js}')],
+  migrations: [
+    // in dev: src/...ts  in prod: dist/...js
+    path.resolve(root, '**', 'migrations', '*.{ts,js}'),
+  ],
   ssl:
     process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }
