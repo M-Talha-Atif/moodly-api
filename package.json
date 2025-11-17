@@ -11,7 +11,7 @@
     "docs:clean": "rm -rf docs/*",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start -r tsconfig-paths/register",
+    "start": "node dist/main",
     "start:dev": "nest start --watch -r tsconfig-paths/register",
     "start:worker": "ts-node -r tsconfig-paths/register src/worker/main.ts",
     "worker": "ts-node -r tsconfig-paths/register src/worker/main.ts",

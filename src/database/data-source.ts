@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const isProd = process.env.NODE_ENV === 'production';
+console.log(isProd);
 const root = isProd
   ? path.resolve(__dirname, '../../dist')
   : path.resolve(__dirname, '..');
