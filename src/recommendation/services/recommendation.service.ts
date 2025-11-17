@@ -37,7 +37,7 @@ export class RecommendationService {
     // );
     // await this.redis.set(cacheKey, recommendations, 60);
 
-    console.log(recommendations)
+    console.log(recommendations);
 
     return recommendations;
   }
