@@ -121,7 +121,10 @@ async function bootstrap() {
   };
 
   const moodQueue = new Queue('mood-queue', redisConnection);
-  const recommendationQueue = new Queue('recommendation-queue', redisConnection);
+  const recommendationQueue = new Queue(
+    'recommendation-queue',
+    redisConnection,
+  );
   const notificationQueue = new Queue('notification-queue', redisConnection);
   // // -----------------------------
   // const moodQueue = new Queue('mood-queue', {
@@ -133,7 +136,6 @@ async function bootstrap() {
   // const notificationQueue = new Queue('notification-queue', {
   //   connection: { host: 'localhost', port: 6379 },
   // });
-
 
   const bullBoardAdapter = setupBullBoard([
     moodQueue,
