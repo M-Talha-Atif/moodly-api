@@ -39,7 +39,9 @@ export class ExperienceRecommendationService {
     const targetEmotions =
       EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
 
-    const pgArray = `{${targetEmotions.join(',')}}`;
+    // const pgArray = `{${targetEmotions.join(',')}}`;
+
+    const targetEmotionsArray = targetEmotions;
 
     const queryBuilder = this.experienceRepo
       .createQueryBuilder('exp')
@@ -55,7 +57,7 @@ export class ExperienceRecommendationService {
         'exp.createdAt',
       ])
       .where('exp.targetEmotions && :targetEmotions::text[]', {
-        targetEmotions: pgArray,
+        targetEmotions: targetEmotionsArray,
       })
       .andWhere('exp.spotsFilled < exp.totalSpots')
       .andWhere('exp.sessionStartTime > NOW()');

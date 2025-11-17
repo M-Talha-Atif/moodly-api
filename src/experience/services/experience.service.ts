@@ -83,17 +83,13 @@ export class ExperienceService {
         `booking.userId = :userId AND booking.status != 'cancelled'`,
         { userId },
       )
+      .where('booking.id IS NULL')
       .select([
         'experience.id AS id',
         'experience.title AS title',
         'experience.price AS price',
         'experience.image AS image',
       ])
-      .addSelect('booking.id', 'bookingId')
-      .addSelect(
-        `CASE WHEN booking.id IS NOT NULL THEN true ELSE false END`,
-        'isBooked',
-      )
       .orderBy('experience.date', 'DESC');
 
     this.experienceFilterService.applyFilters(qb, filters);
