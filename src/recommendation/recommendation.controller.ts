@@ -42,8 +42,6 @@ export class RecommendationController {
     description: 'Unauthorized (JWT missing/invalid)',
   })
   async getRecommendations(@Req() req: any) {
-   
-
     const moodResult = await this.moodLogService.getRecentMoodLog(req.user.sub);
 
     const userMood =
@@ -51,7 +49,11 @@ export class RecommendationController {
       moodResult?.data?.moodLabel || // Fallback to moodLabel if finalMood doesn't exist
       'neutral';
 
-     console.log('Fetching recommendations for user with mood:', req.user.sub, userMood);
+    console.log(
+      'Fetching recommendations for user with mood:',
+      req.user.sub,
+      userMood,
+    );
 
     return this.recommendationService.generateForUserByMood(
       req.user.sub,

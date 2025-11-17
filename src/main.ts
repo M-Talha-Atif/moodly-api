@@ -146,7 +146,6 @@ async function bootstrap() {
   // await app.listen(port);
   await app.listen(port, '0.0.0.0'); // public access
 
-
   const logger = new Logger('Bootstrap');
   logger.log(`Application is running on: http://localhost:${port}`);
   logger.log(`Swagger docs available at: http://localhost:${port}/api-docs`);
