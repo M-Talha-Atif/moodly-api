@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nest build",
     "start": "node dist/main",
+    "start:prod": "node dist/main",
     "start:worker": "node dist/worker/main.js",
     "migration:run:prod": "node ./node_modules/typeorm/cli.js migration:run -d dist/database/data-source.js",
     "migration:revert:prod": "node ./node_modules/typeorm/cli.js migration:revert -d dist/database/data-source.js"
