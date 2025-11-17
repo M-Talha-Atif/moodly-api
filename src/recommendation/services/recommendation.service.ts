@@ -15,9 +15,13 @@ export class RecommendationService {
   // 1st approach, no llm call
 
   async generateForUserByMood(userId: string, mood: string, limit = 10) {
-    const cacheKey = getRecommendationCacheKey(userId);
-    const cached = await this.redis.get<any[]>(cacheKey);
-    if (cached) return cached;
+    // const cacheKey = getRecommendationCacheKey(userId);
+    // console.log(mood)
+    // const cached = await this.redis.get<any[]>(cacheKey);
+    // if (cached != null) {
+    //   console.log("returned cached results")
+    //   return cached;
+    // }
 
     // Direct emotion-based matching (fast, no LLM)
     const recommendations =
@@ -28,10 +32,12 @@ export class RecommendationService {
       );
 
     // Cache until midnight
-    const secondsUntilMidnight = Math.floor(
-      (new Date().setHours(24, 0, 0, 0) - Date.now()) / 1000,
-    );
-    await this.redis.set(cacheKey, recommendations, secondsUntilMidnight);
+    // const secondsUntilMidnight = Math.floor(
+    //   (new Date().setHours(24, 0, 0, 0) - Date.now()) / 1000,
+    // );
+    // await this.redis.set(cacheKey, recommendations, 60);
+
+    console.log(recommendations)
 
     return recommendations;
   }
