@@ -12,7 +12,7 @@ export class OnboardingWorker {
 
   @EventPattern(RMQ_DOMAINS.ONBOARDING.ROUTING.COMPLETED)
   async handleOnboardingCompleted(@Payload() data: { userId: string }) {
-    this.logger.log(`✅ Onboarding completed for user ${data.userId}`);
+    this.logger.log(`Onboarding completed for user ${data.userId}`);
 
     await this.usersService.update(data.userId, {
       onboardingCompleted: true,

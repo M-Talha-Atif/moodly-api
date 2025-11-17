@@ -52,7 +52,7 @@ export class EmbeddingWorker {
       embedding,
     });
 
-    this.logger.log(`✅ Processed embedding for moodLog ${payload.moodLogId}`);
+    this.logger.log(`Processed embedding for moodLog ${payload.moodLogId}`);
 
     this.rmqClient.emit(RMQ_DOMAINS.RECOMMENDATION.ROUTING.GENERATE, {
       userId: payload.userId,

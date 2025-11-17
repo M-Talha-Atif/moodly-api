@@ -13,6 +13,7 @@ import { setupBullBoard } from './bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
 import { ValidationPipe } from '@nestjs/common';
+import IORedis from 'ioredis';
 
 /**
  * --------------------------------
@@ -108,16 +109,32 @@ async function bootstrap() {
 
   // -----------------------------
   // Bull queues + Bull Board
-  // -----------------------------
-  const moodQueue = new Queue('mood-queue', {
-    connection: { host: 'localhost', port: 6379 },
-  });
-  const recommendationQueue = new Queue('recommendation-queue', {
-    connection: { host: 'localhost', port: 6379 },
-  });
-  const notificationQueue = new Queue('notification-queue', {
-    connection: { host: 'localhost', port: 6379 },
-  });
+
+  if (!process.env.REDIS_URL) {
+    throw new Error('REDIS_URL is not defined');
+  }
+
+  const redisConnection = {
+    connection: {
+      url: process.env.REDIS_URL,
+    },
+  };
+
+  const moodQueue = new Queue('mood-queue', redisConnection);
+  const recommendationQueue = new Queue('recommendation-queue', redisConnection);
+  const notificationQueue = new Queue('notification-queue', redisConnection);
+  // // -----------------------------
+  // const moodQueue = new Queue('mood-queue', {
+  //   connection: { host: 'localhost', port: 6379 },
+  // });
+  // const recommendationQueue = new Queue('recommendation-queue', {
+  //   connection: { host: 'localhost', port: 6379 },
+  // });
+  // const notificationQueue = new Queue('notification-queue', {
+  //   connection: { host: 'localhost', port: 6379 },
+  // });
+
+
   const bullBoardAdapter = setupBullBoard([
     moodQueue,
     recommendationQueue,

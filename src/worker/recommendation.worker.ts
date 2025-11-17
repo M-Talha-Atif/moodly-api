@@ -27,7 +27,7 @@ export class RecommendationWorker {
   @EventPattern(RMQ_DOMAINS.RECOMMENDATION.ROUTING.GENERATE)
   async handleGenerate(@Payload() payload: RecommendationPayload) {
     this.logger.log(
-      `🔄 Processing recommendation for user in broker ${payload.userId}`,
+      `Processing recommendation for user in broker ${payload.userId}`,
     );
 
     try {
@@ -39,7 +39,7 @@ export class RecommendationWorker {
         );
 
       this.logger.log(
-        `✅ Got ${recommendations.length} recommendations for user ${payload.userId} with user mood ${payload.userMood}`,
+        `Got ${recommendations.length} recommendations for user ${payload.userId} with user mood ${payload.userMood}`,
       );
 
       // Emit via socket
@@ -49,7 +49,7 @@ export class RecommendationWorker {
       );
     } catch (err) {
       this.logger.error(
-        `❌ Failed to process recommendation for ${payload.userId}`,
+        ` Failed to process recommendation for ${payload.userId}`,
         err,
       );
       throw err;
