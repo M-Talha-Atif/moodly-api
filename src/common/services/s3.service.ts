@@ -4,6 +4,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
@@ -83,5 +84,37 @@ export class S3Service {
     } catch (err) {
       this.logger.error(`Failed to delete file from S3: ${key}`, err);
     }
+  }
+
+  /** Download file from S3 and return as Buffer */
+  async downloadBuffer(key: string): Promise<Buffer> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      });
+
+      const response = await this.s3.send(command);
+
+      if (!response.Body) {
+        throw new Error('No body in S3 response');
+      }
+
+      // Convert stream to buffer
+      const chunks: Buffer[] = [];
+      for await (const chunk of response.Body as any) {
+        chunks.push(chunk);
+      }
+
+      return Buffer.concat(chunks);
+    } catch (error) {
+      this.logger.error(`Failed to download file from S3: ${key}`, error);
+      throw new Error(`S3 download failed: ${error.message}`);
+    }
+  }
+
+  /** Extract key from S3 URL */
+  extractKeyFromUrl(s3Url: string): string {
+    return s3Url.replace(`${process.env.S3_BASE_URL}/`, '');
   }
 }

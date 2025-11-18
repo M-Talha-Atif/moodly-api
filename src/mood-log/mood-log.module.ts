@@ -17,6 +17,7 @@ import { ValidationService } from './services/validation.service';
 import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
 import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 import { CommonModule } from 'src/common/common.module';
+import { memoryStorage } from 'multer';
 @Module({
   imports: [
     TypeOrmModule.forFeature([MoodLog]),
@@ -32,7 +33,7 @@ import { CommonModule } from 'src/common/common.module';
     }),
 
     MulterModule.register({
-      dest: './uploads/temp', // Temporary directory
+      storage: memoryStorage(),
       limits: {
         fileSize: 30 * 1024 * 1024, // 30 MB
       },
