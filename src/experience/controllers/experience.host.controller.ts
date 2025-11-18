@@ -21,8 +21,6 @@ import { RolesGuard } from 'src/common/roles.guard';
 import { CreateExperienceDto } from '../dto/create-experience.dto';
 import { UpdateExperienceDto } from '../dto/update-experience.dto';
 import { ExperienceResponseDto } from '../dto/experience-response.dto';
-import { ExperienceFiltersDto } from '../dto/experience-filters.dto';
-import { ExperienceListItemDto } from '../dto/experience-list-item.dto';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { plainToInstance } from 'class-transformer';
 import { FileInterceptor } from '@nestjs/platform-express';

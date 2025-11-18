@@ -13,7 +13,6 @@ import { setupBullBoard } from './bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
 import { ValidationPipe } from '@nestjs/common';
-import IORedis from 'ioredis';
 
 /**
  * --------------------------------
