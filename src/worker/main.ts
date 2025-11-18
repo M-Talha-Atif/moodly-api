@@ -132,6 +132,10 @@ async function bootstrap() {
   - ${process.env.RMQ_COMM_QUEUE || 'community-tasks'}
   - ${process.env.RMQ_RECOMMENDATION_QUEUE || 'recommendation-tasks'}
 `);
+
+  const port = 3001;
+  // await app.listen(port);
+  await app.listen(port); // public access
 }
 
 bootstrap();
