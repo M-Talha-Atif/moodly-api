@@ -2,31 +2,36 @@
 import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import { promises as fs } from 'fs';
+import { S3Service } from 'src/common/services/s3.service';
 
 @Injectable()
 export class StorageService {
+  constructor(private readonly s3: S3Service) {}
+
   private baseUploadDir = join(process.cwd(), 'uploads');
 
   async save(
     file: Express.Multer.File,
     type: 'photo' | 'voice',
   ): Promise<string> {
-    const uploadDir = join(this.baseUploadDir, type);
-    await fs.mkdir(uploadDir, { recursive: true });
 
-    // multer already stored file on disk, so just move/rename it
-    const targetPath = join(uploadDir, file.originalname);
-    await fs.rename(file.path, targetPath);
+    const ext = file.originalname.split('.').pop();
+    const key = `${type}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-    return targetPath;
+    const url = await this.s3.uploadBuffer(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+    );
+
+    return url; // public URL
   }
 
-  async delete(filePath: string): Promise<void> {
-    try {
-      await fs.unlink(filePath);
-    } catch (err) {
-      console.warn(`⚠️ Failed to delete file ${filePath}`, err.message);
-    }
+  async deleteFromS3(url: string) {
+    if (!url) return;
+
+    const key = url.replace(process.env.S3_BASE_URL + '/', '');
+    await this.s3.deleteObject(key);
   }
 
   // optional: map to public URL
