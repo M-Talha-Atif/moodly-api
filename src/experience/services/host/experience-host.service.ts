@@ -23,7 +23,7 @@ export class ExperienceHostService {
     private readonly s3Service: S3Service, // S3 service for storage of images
     @Inject(RMQ_DOMAINS.EXPERIENCE.CLIENT)
     private readonly rmqClient: ClientProxy,
-  ) {}
+  ) { }
 
   // =========================================================
   // Create Experience
@@ -77,7 +77,12 @@ export class ExperienceHostService {
     }
 
     // Merge DTO fields
-    Object.assign(updated, dto);
+    const updatedExperience = Object.assign(updated, dto);
+
+    // Emit AI generation event after update
+    this.rmqClient.emit(RMQ_DOMAINS.EXPERIENCE.ROUTING.GENERATE_AI, {
+      experienceId: updatedExperience.id,
+    });
 
     return this.experienceRepo.save(updated);
   }
