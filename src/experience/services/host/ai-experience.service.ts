@@ -83,30 +83,44 @@ export class AiExperienceService {
    */
   async generateExperienceDataFromVoice(voiceText: string) {
     const prompt = `
-You are an AI experience generator. Based on this input:
+You are an expert experience curator and wellness event designer specializing in mood-based therapeutic activities. Your role is to transform user ideas into compelling, bookable experiences that align with current wellness trends (2024-2025).
+
+**INPUT TO ANALYZE:**
 "${voiceText}"
+
+**CONTEXT & TRENDS TO CONSIDER:**
+- Emphasize authentic, transformative experiences over passive entertainment
+- Incorporate elements of mindfulness, community connection, and personal growth
+- Reference current wellness movements: sound healing, forest bathing, creative expression therapy, somatic practices, digital detox activities
+- Consider seasonal relevance and local cultural authenticity
+- Design for small, intimate groups that foster genuine connection
+- Focus on outcomes: stress relief, emotional regulation, social connection, creative expression
 
 Fill in the following JSON fields:
 {
-  "title": string,
-  "description": string,       // Must be tailored to the title, do not mention time
-  "isVirtual": boolean,
-  "totalSpots": number,
-  "sessionStartTime": string,  // ISO 8601 format, must be in the future
-  "sessionEndTime": string,    // ISO 8601 format, must be in the future
-  "date": string,              // ISO 8601 date, must be in the future
+  "title": string,    // Compelling, specific, 5-8 words. Use active language that conveys transformation
+  "description": string,  // 2-3 sentences. Focus on WHAT happens, WHO it's for, and WHAT they'll gain. Be sensory and evocative. Never mention time/schedule details
+  "isVirtual": boolean,  // Default to false unless explicitly mentioned as online/virtual/remote
+  "totalSpots": number, 
+  "sessionStartTime": string,  // ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ), must be future, consider appropriate time for activity type
+  "sessionEndTime": string,    // ISO 8601 format, logical duration based on activity (1-4 hours typical)
+  "date": string,              // ISO 8601 date format (YYYY-MM-DD), must be future
   "culturalTags": ["beach","music","dance","food","art","nature","festival","cultural"],
   "desiredOutcomes": ["happiness","calmness","relief","excitement","peace","inspiration","connection","relaxation"],
   "targetEmotions": ["happy","sad","angry","excited","calm","anxious","peaceful","inspired"],
-  "emotionalSummary": string,
-  "location": string (optional)
+  "emotionalSummary": string, // 1 sentence explaining who this is perfect for and what emotional shift they'll experience
+  "location": string // Specific venue/address if mentioned, otherwise attractive generic location matching the vibe (e.g., "Waterfront Studio" or "Urban Garden Space")
 }
-⚠️ Rules:
-1. Never include any mention of time in the description.
-2. If the input date or times are in the past, automatically adjust them to future dates/times.
-3. Make the description specific to the title, avoiding generic content.
-4. Return JSON only.
-Ensure sessionStartTime, sessionEndTime, and date are valid ISO strings.
+**CRITICAL RULES:**
+1. ❌ NEVER include time, duration, or schedule details in the description
+2. ✅ Adjust any past dates/times to logical future dates (suggest weekends for social activities, evenings for after-work events)
+3. ✅ Make descriptions sensory and outcome-focused: what will participants see, feel, create, or discover?
+4. ✅ Title should be unique and evocative, not generic (Bad: "Yoga Class" / Good: "Sunset Flow: Restorative Yoga by the Bay")
+5. ✅ Match activity intensity to appropriate duration and time of day
+6. ✅ Return ONLY valid JSON, no markdown, no explanations, no extra text
+7. ✅ Ensure all ISO 8601 timestamps are properly formatted with timezone
+
+**OUTPUT:** Return only the JSON object, nothing else
 `;
 
     const rawResponse = await this.geminiService.generateText(prompt);
