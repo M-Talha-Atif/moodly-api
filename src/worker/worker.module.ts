@@ -24,6 +24,7 @@ import { EmbeddingModule } from 'src/embedding/embedding.module';
 import { RecommendationWorker } from './recommendation.worker';
 import { RecommendationModule } from 'src/recommendation/recommendation.module';
 import { User } from 'src/users/entities/user.entity';
+import { Experience } from 'src/experience/entities/experience.entity';
 import { OnboardingWorker } from './onboarding.worker';
 import { UsersModule } from 'src/users/users.module';
 import { ExperienceModule } from '../experience/experience.module';
@@ -37,7 +38,7 @@ import { ExperienceWorker } from './experience.worker';
     DatabaseModule,
 
     // If worker needs access to certain entities
-    TypeOrmModule.forFeature([MoodLog]),
+    TypeOrmModule.forFeature([MoodLog, Experience]),
 
     // Mongo feature models
     MongooseModule.forFeature([

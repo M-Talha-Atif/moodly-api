@@ -52,6 +52,7 @@ import { RMQ_DOMAINS } from 'src/config/rmq.constants';
     AiExperienceService,
   ],
   exports: [
+    AiExperienceService,
     ExperienceService,
     ExperienceRecommendationService,
     ExperienceGateway,
