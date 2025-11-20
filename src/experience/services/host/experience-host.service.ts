@@ -23,7 +23,7 @@ export class ExperienceHostService {
     private readonly s3Service: S3Service, // S3 service for storage of images
     @Inject(RMQ_DOMAINS.EXPERIENCE.CLIENT)
     private readonly rmqClient: ClientProxy,
-  ) { }
+  ) {}
 
   // =========================================================
   // Create Experience
