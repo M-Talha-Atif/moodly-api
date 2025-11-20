@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Experience } from '../../entities/experience.entity';
@@ -11,6 +11,8 @@ import { formatDate } from 'src/common/utils/date.utils';
 import { formatTime } from 'src/common/utils/time.utils';
 import { HostExperienceFiltersDto } from 'src/experience/dto/host/experience-filters-host.dto';
 import { ExperienceSortBy } from '../../dto/host/experience-filters-host.dto';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class ExperienceHostService {
@@ -19,15 +21,19 @@ export class ExperienceHostService {
     private readonly experienceRepo: Repository<Experience>,
     private readonly experienceFilterService: ExperienceFilterService, // filter service
     private readonly s3Service: S3Service, // S3 service for storage of images
+    @Inject(RMQ_DOMAINS.EXPERIENCE.CLIENT)
+    private readonly rmqClient: ClientProxy,
   ) {}
 
   // =========================================================
-  // Create Experience + Store Embedding in Mongo
+  // Create Experience 
   // =========================================================
   async create(dto: CreateExperienceDto, host: User): Promise<Experience> {
     const experience = this.experienceRepo.create({ ...dto, host });
     const saved = await this.experienceRepo.save(experience);
-
+    this.rmqClient.emit(RMQ_DOMAINS.EXPERIENCE.ROUTING.GENERATE_AI, {
+      experienceId: saved.id,
+    });
     return saved;
   }
 
@@ -42,7 +48,7 @@ export class ExperienceHostService {
   }
 
   // =========================================================
-  // Update Experience + Update Embedding in Mongo
+  // Update Experience
   // =========================================================
   async update(
     id: string,
@@ -72,17 +78,6 @@ export class ExperienceHostService {
 
     // Merge DTO fields
     Object.assign(updated, dto);
-
-    // // Re-generate embedding
-    // const combinedText = `${updated.title} ${updated.description} ${updated.desiredOutcomes?.join(' ')} ${dto.targetEmotions?.join(' ')}`;
-    // const embedding =
-    //   await this.embeddingService.generateEmbedding(combinedText);
-
-    // await this.experienceEmbeddingModel.updateOne(
-    //   { experienceId: updated.id },
-    //   { $set: { embedding } },
-    //   { upsert: true },
-    // );
 
     return this.experienceRepo.save(updated);
   }

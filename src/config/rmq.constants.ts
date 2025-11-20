@@ -36,7 +36,13 @@ export const RMQ_DOMAINS = {
   },
 
   EXPERIENCE: {
-    /* same pattern */
+    CLIENT: 'EXP_RMQ_CLIENT',
+    EXCHANGE: process.env.RMQ_EXP_EXCHANGE || 'experience-exchange',
+    QUEUE: process.env.RMQ_EXP_QUEUE || 'experience-tasks',
+    ROUTING: {
+      GENERATE_AI: 'experience.generate_ai',
+    },
   },
+
   // add FEEDBACK, BOOKINGS, ONBOARDING... as needed
 };

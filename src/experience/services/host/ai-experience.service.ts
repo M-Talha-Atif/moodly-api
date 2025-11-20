@@ -3,6 +3,7 @@ import { ApiClientService } from 'src/common/services/api-client.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import { GeminiService } from 'src/common/services/gemini.service';
+import { Experience } from 'src/experience/entities/experience.entity';
 
 @Injectable()
 export class AiExperienceService {
@@ -11,7 +12,7 @@ export class AiExperienceService {
   constructor(
     private readonly apiClient: ApiClientService,
     private readonly geminiService: GeminiService,
-  ) {}
+  ) { }
 
   /**
    * Handles both voice file and text input.
@@ -105,10 +106,6 @@ Fill in the following JSON fields:
   "sessionStartTime": string,  // ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ), must be future, consider appropriate time for activity type
   "sessionEndTime": string,    // ISO 8601 format, logical duration based on activity (1-4 hours typical)
   "date": string,              // ISO 8601 date format (YYYY-MM-DD), must be future
-  "culturalTags": ["beach","music","dance","food","art","nature","festival","cultural"],
-  "desiredOutcomes": ["happiness","calmness","relief","excitement","peace","inspiration","connection","relaxation"],
-  "targetEmotions": ["happy","sad","angry","excited","calm","anxious","peaceful","inspired"],
-  "emotionalSummary": string, // 1 sentence explaining who this is perfect for and what emotional shift they'll experience
   "location": string // Specific venue/address if mentioned, otherwise attractive generic location matching the vibe (e.g., "Waterfront Studio" or "Urban Garden Space")
 }
 **CRITICAL RULES:**
@@ -136,4 +133,61 @@ Fill in the following JSON fields:
       return { raw: cleaned };
     }
   }
+
+
+  /**
+  * Calls Gemini to generate AI fields for an experience based on title & description.
+  * Generates only:
+  * - emotionalSummary (1 line, clear, easy English)
+  * - culturalTags (3-4 picked from fixed list)
+  * - desiredOutcomes (3-4 picked from fixed list)
+  * - targetEmotions (3-4 picked from fixed list)
+  */
+  async generateExperienceFields(experience: Experience) {
+    const prompt = `
+You are an expert experience curator for wellness events. Transform the following experience details into structured output.
+
+**INPUT EXPERIENCE DESCRIPTION:**
+Title: "${experience.title}"
+Description: "${experience.description}"
+
+**FIXED ARRAYS (do NOT change):**
+"culturalTags": ["beach","music","dance","food","art","nature","festival","cultural"],
+"desiredOutcomes": ["happiness","calmness","relief","excitement","peace","inspiration","connection","relaxation"],
+"targetEmotions": ["happy","sad","angry","excited","calm","anxious","peaceful","inspired"]
+
+**GENERATE ONLY:**
+1. emotionalSummary: 1 sentence explaining who this experience is perfect for and the emotional shift (easy English, clear, no jargon)
+2. culturalTags: pick 3-4 relevant tags from the fixed list
+3. desiredOutcomes: pick 3-4 relevant outcomes from the fixed list
+4. targetEmotions: pick 3-4 relevant emotions from the fixed list
+
+Return ONLY a JSON object with keys: emotionalSummary, culturalTags, desiredOutcomes, targetEmotions.
+No extra text, markdown, or explanations.
+`;
+
+    const rawResponse = await this.geminiService.generateText(prompt);
+    const cleaned = rawResponse.replace(/```json|```/g, '').trim();
+
+    try {
+      const aiData = JSON.parse(cleaned);
+
+      return {
+        emotionalSummary: aiData.emotionalSummary || '',
+        culturalTags: aiData.culturalTags || [],
+        desiredOutcomes: aiData.desiredOutcomes || [],
+        targetEmotions: aiData.targetEmotions || [],
+      };
+    } catch (err) {
+      this.logger.warn('Failed to parse Gemini JSON, returning defaults.', err);
+      return {
+        emotionalSummary: '',
+        culturalTags: [],
+        desiredOutcomes: [],
+        targetEmotions: [],
+      };
+    }
+  }
+
+
 }

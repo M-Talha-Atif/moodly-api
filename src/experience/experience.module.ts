@@ -19,6 +19,8 @@ import { ExperiencePublicController } from './controllers/experience.public.cont
 import { ExperienceUserController } from './controllers/experience.user.controller';
 import { ExperienceHostService } from '../experience/services/host/experience-host.service';
 import { AiExperienceService } from './services/host/ai-experience.service';
+import { RmqModule } from 'src/rmq/rmq.module';
+import { RMQ_DOMAINS } from 'src/config/rmq.constants';
 
 @Module({
   imports: [
@@ -29,6 +31,12 @@ import { AiExperienceService } from './services/host/ai-experience.service';
     ]),
     UsersModule,
     CommonModule,
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.EXPERIENCE.CLIENT,
+      exchange: RMQ_DOMAINS.EXPERIENCE.EXCHANGE,
+      queue: RMQ_DOMAINS.EXPERIENCE.QUEUE,
+    }),
+
   ],
   controllers: [
     ExperienceHostController,
@@ -50,4 +58,4 @@ import { AiExperienceService } from './services/host/ai-experience.service';
     ExperienceGateway,
   ],
 })
-export class ExperienceModule {}
+export class ExperienceModule { }
