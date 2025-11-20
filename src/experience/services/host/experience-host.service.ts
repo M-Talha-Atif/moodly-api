@@ -26,7 +26,7 @@ export class ExperienceHostService {
   ) {}
 
   // =========================================================
-  // Create Experience 
+  // Create Experience
   // =========================================================
   async create(dto: CreateExperienceDto, host: User): Promise<Experience> {
     const experience = this.experienceRepo.create({ ...dto, host });

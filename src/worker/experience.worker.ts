@@ -24,9 +24,13 @@ export class ExperienceWorker {
 
   @EventPattern(RMQ_DOMAINS.EXPERIENCE.ROUTING.GENERATE_AI)
   async handleGenerateAI(@Payload() payload: ExperienceAIPayload) {
-    this.logger.debug(`Generating AI fields for experience ${payload.experienceId}`);
+    this.logger.debug(
+      `Generating AI fields for experience ${payload.experienceId}`,
+    );
 
-    const experience = await this.repo.findOne({ where: { id: payload.experienceId } });
+    const experience = await this.repo.findOne({
+      where: { id: payload.experienceId },
+    });
     if (!experience) {
       this.logger.warn(`Experience ${payload.experienceId} not found`);
       return;
@@ -39,6 +43,8 @@ export class ExperienceWorker {
     Object.assign(experience, aiResult);
     await this.repo.save(experience);
 
-    this.logger.debug(`Experience ${payload.experienceId} updated with AI fields`);
+    this.logger.debug(
+      `Experience ${payload.experienceId} updated with AI fields`,
+    );
   }
 }

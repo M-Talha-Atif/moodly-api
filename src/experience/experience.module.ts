@@ -36,7 +36,6 @@ import { RMQ_DOMAINS } from 'src/config/rmq.constants';
       exchange: RMQ_DOMAINS.EXPERIENCE.EXCHANGE,
       queue: RMQ_DOMAINS.EXPERIENCE.QUEUE,
     }),
-
   ],
   controllers: [
     ExperienceHostController,
@@ -58,4 +57,4 @@ import { RMQ_DOMAINS } from 'src/config/rmq.constants';
     ExperienceGateway,
   ],
 })
-export class ExperienceModule { }
+export class ExperienceModule {}

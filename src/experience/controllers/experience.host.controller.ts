@@ -49,12 +49,9 @@ export class ExperienceHostController {
     const user = await this.userService.findById(req.user.sub);
     if (!user) return ResultDto.fail('User not found', 404);
 
-    const experience = await this.experienceHostService.create(dto, user);
-    return ResultDto.ok(
-      plainToInstance(ExperienceResponseDto, experience),
-      'Experience created successfully',
-      201,
-    );
+    await this.experienceHostService.create(dto, user);
+
+    return ResultDto.okWithMessage('Experience created successfully', 201);
   }
 
   @Post('generate')

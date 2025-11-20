@@ -12,7 +12,7 @@ export class AiExperienceService {
   constructor(
     private readonly apiClient: ApiClientService,
     private readonly geminiService: GeminiService,
-  ) { }
+  ) {}
 
   /**
    * Handles both voice file and text input.
@@ -134,15 +134,14 @@ Fill in the following JSON fields:
     }
   }
 
-
   /**
-  * Calls Gemini to generate AI fields for an experience based on title & description.
-  * Generates only:
-  * - emotionalSummary (1 line, clear, easy English)
-  * - culturalTags (3-4 picked from fixed list)
-  * - desiredOutcomes (3-4 picked from fixed list)
-  * - targetEmotions (3-4 picked from fixed list)
-  */
+   * Calls Gemini to generate AI fields for an experience based on title & description.
+   * Generates only:
+   * - emotionalSummary (1 line, clear, easy English)
+   * - culturalTags (3-4 picked from fixed list)
+   * - desiredOutcomes (3-4 picked from fixed list)
+   * - targetEmotions (3-4 picked from fixed list)
+   */
   async generateExperienceFields(experience: Experience) {
     const prompt = `
 You are an expert experience curator for wellness events. Transform the following experience details into structured output.
@@ -188,6 +187,4 @@ No extra text, markdown, or explanations.
       };
     }
   }
-
-
 }
