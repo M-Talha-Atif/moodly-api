@@ -71,7 +71,7 @@ import { ExperienceModule } from '../experience/experience.module';
       exchange: RMQ_DOMAINS.EXPERIENCE.EXCHANGE,
       queue: RMQ_DOMAINS.EXPERIENCE.QUEUE,
     }),
-    TypeOrmModule.forFeature([User]), 
+    TypeOrmModule.forFeature([User]),
 
     // Common Module
     CommonModule,
@@ -93,4 +93,4 @@ import { ExperienceModule } from '../experience/experience.module';
   ],
   providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
 })
-export class WorkerModule { }
+export class WorkerModule {}
