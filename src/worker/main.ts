@@ -107,7 +107,6 @@ async function bootstrap() {
       prefetchCount: 1,
     },
   });
-  
   // Onboarding
   app.connectMicroservice({
     transport: Transport.RMQ,
@@ -120,7 +119,6 @@ async function bootstrap() {
       prefetchCount: 1,
     },
   });
-  
   // Experience
   app.connectMicroservice({
     transport: Transport.RMQ,
@@ -133,7 +131,6 @@ async function bootstrap() {
       prefetchCount: 1,
     },
   });
-
 
   await app.startAllMicroservices();
 
