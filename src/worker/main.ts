@@ -143,6 +143,7 @@ async function bootstrap() {
   - ${process.env.RMQ_MOOD_QUEUE || 'mood-tasks'}
   - ${process.env.RMQ_COMM_QUEUE || 'community-tasks'}
   - ${process.env.RMQ_RECOMMENDATION_QUEUE || 'recommendation-tasks'}
+   - ${process.env.RMQ_EXPERIENCE_QUEUE || 'experience-tasks'}
 `);
 
   const port = 3001;
