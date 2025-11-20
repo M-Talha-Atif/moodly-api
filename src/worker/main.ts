@@ -107,7 +107,8 @@ async function bootstrap() {
       prefetchCount: 1,
     },
   });
-
+  
+  // Onboarding
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
@@ -119,6 +120,20 @@ async function bootstrap() {
       prefetchCount: 1,
     },
   });
+  
+  // Experience
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL!],
+      queue: process.env.RMQ_EXPERIENCE_QUEUE || 'experience-tasks',
+      queueOptions: { durable: true },
+      exchange: process.env.RMQ_ONBOARDING_EXCHANGE || 'experience-exchange',
+      exchangeType: 'direct',
+      prefetchCount: 1,
+    },
+  });
+
 
   await app.startAllMicroservices();
 
