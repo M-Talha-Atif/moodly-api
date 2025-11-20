@@ -26,6 +26,7 @@ import { RecommendationModule } from 'src/recommendation/recommendation.module';
 import { User } from 'src/users/entities/user.entity';
 import { OnboardingWorker } from './onboarding.worker';
 import { UsersModule } from 'src/users/users.module';
+import { ExperienceModule } from '../experience/experience.module';
 
 @Module({
   imports: [
@@ -65,8 +66,12 @@ import { UsersModule } from 'src/users/users.module';
       exchange: RMQ_DOMAINS.ONBOARDING.EXCHANGE,
       queue: RMQ_DOMAINS.ONBOARDING.QUEUE,
     }),
-
-    TypeOrmModule.forFeature([User]), // <- Postgres User table
+    RmqModule.register({
+      clientName: RMQ_DOMAINS.EXPERIENCE.CLIENT,
+      exchange: RMQ_DOMAINS.EXPERIENCE.EXCHANGE,
+      queue: RMQ_DOMAINS.EXPERIENCE.QUEUE,
+    }),
+    TypeOrmModule.forFeature([User]), 
 
     // Common Module
     CommonModule,
@@ -76,6 +81,8 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule,
 
     RecommendationModule,
+
+    ExperienceModule,
   ],
 
   controllers: [
@@ -86,4 +93,4 @@ import { UsersModule } from 'src/users/users.module';
   ],
   providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
 })
-export class WorkerModule {}
+export class WorkerModule { }
