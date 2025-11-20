@@ -1,5 +1,5 @@
-import { Controller, Logger, Inject } from '@nestjs/common';
-import { EventPattern, Payload, ClientProxy } from '@nestjs/microservices';
+import { Controller, Logger } from '@nestjs/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Experience } from '../experience/entities/experience.entity';
@@ -18,8 +18,6 @@ export class ExperienceWorker {
     @InjectRepository(Experience)
     private readonly repo: Repository<Experience>,
     private readonly aiService: AiExperienceService,
-    @Inject(RMQ_DOMAINS.EXPERIENCE.CLIENT)
-    private readonly rmqClient: ClientProxy,
   ) {}
 
   @EventPattern(RMQ_DOMAINS.EXPERIENCE.ROUTING.GENERATE_AI)

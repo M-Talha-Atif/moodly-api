@@ -27,6 +27,7 @@ import { User } from 'src/users/entities/user.entity';
 import { OnboardingWorker } from './onboarding.worker';
 import { UsersModule } from 'src/users/users.module';
 import { ExperienceModule } from '../experience/experience.module';
+import { ExperienceWorker } from './experience.worker';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { ExperienceModule } from '../experience/experience.module';
     EmbeddingWorker,
     RecommendationWorker,
     OnboardingWorker,
+    ExperienceWorker,
   ],
   providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
 })
