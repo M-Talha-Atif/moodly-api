@@ -156,7 +156,7 @@ Description: "${experience.description}"
 "targetEmotions": ["happy","sad","angry","excited","calm","anxious","peaceful","inspired"]
 
 **GENERATE ONLY:**
-1. emotionalSummary: 1 sentence explaining who this experience is perfect for and the emotional shift (easy English, clear, no jargon)
+1. experienceOutcomeSummary: 1 sentence explaining who this experience is perfect for and the emotional shift (easy English, clear, no jargon)
 2. culturalTags: pick 3-4 relevant tags from the fixed list
 3. desiredOutcomes: pick 3-4 relevant outcomes from the fixed list
 4. targetEmotions: pick 3-4 relevant emotions from the fixed list
@@ -172,7 +172,7 @@ No extra text, markdown, or explanations.
       const aiData = JSON.parse(cleaned);
 
       return {
-        emotionalSummary: aiData.emotionalSummary || '',
+        experienceOutcomeSummary: aiData.experienceOutcomeSummary || '',
         culturalTags: aiData.culturalTags || [],
         desiredOutcomes: aiData.desiredOutcomes || [],
         targetEmotions: aiData.targetEmotions || [],
@@ -180,7 +180,7 @@ No extra text, markdown, or explanations.
     } catch (err) {
       this.logger.warn('Failed to parse Gemini JSON, returning defaults.', err);
       return {
-        emotionalSummary: '',
+        experienceOutcomeSummary: '',
         culturalTags: [],
         desiredOutcomes: [],
         targetEmotions: [],
