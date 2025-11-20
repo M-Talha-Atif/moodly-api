@@ -16,8 +16,12 @@ import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
 import { JwtCookieGuard } from './guards/jwt-cookie.guard';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Auth')
+@Throttle({
+  auth: { limit: 5, ttl: 6000 },
+})
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -31,6 +35,7 @@ export class AuthController {
     return res.status(result.statusCode).json(result);
   }
 
+  @Throttle({ login: { limit: 5, ttl: 6000 } })
   @Post('login')
   @ApiOperation({ summary: 'Login user and issue JWT cookie' })
   @ApiResponse({ status: 200, description: 'User logged in successfully' })
@@ -61,17 +66,13 @@ export class AuthController {
     return this.authService.refreshTokens(body.refresh_token);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('logout')
-  @ApiOperation({ summary: 'Logout user and clear JWT cookie' })
-  async logout(
-    @Req() req: any,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    const userId = req.user?.sub; // if JwtGuard is active
-    const result = await this.authService.logout(userId);
-    response.clearCookie('jwt');
-    return response.status(result.statusCode).json(result);
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Logout user (no cookies dependency)' })
+  async logout(@Req() req: any) {
+    const userId = req.user?.sub;
+    await this.authService.logout(userId); // e.g. clear refresh token in DB
+    return { success: true, message: 'Logged out' };
   }
 
   // ----------------------------
