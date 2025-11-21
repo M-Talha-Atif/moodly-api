@@ -12,7 +12,7 @@ export class AiExperienceService {
   constructor(
     private readonly apiClient: ApiClientService,
     private readonly geminiService: GeminiService,
-  ) { }
+  ) {}
 
   /**
    * Handles both voice file and text input.
@@ -83,13 +83,7 @@ export class AiExperienceService {
    * Calls Gemini to generate structured experience data.
    */
   async generateExperienceDataFromVoice(voiceText: string) {
-  Great question! The issue is that your prompt is giving Gemini too much creative freedom to reinterpret the user's input. When the user explicitly provides details, you want to preserve them while only enhancing what's missing.Here's an improved version:
-    typescript/**
- * Calls Gemini to generate structured experience data from voice input.
- * Preserves user's explicit details while intelligently filling gaps.
- */
-async generateExperienceDataFromVoice(voiceText: string) {
-      const prompt = `
+    const prompt = `
 You are an AI assistant that converts voice descriptions into structured experience data.
 
 **CRITICAL INSTRUCTION:** Your PRIMARY goal is to PRESERVE the user's exact specifications. Only enhance or suggest alternatives when information is missing or unclear.
@@ -169,19 +163,19 @@ Return ONLY a valid JSON object with this exact structure:
 - Preserve user's specifications above all else
 `;
 
-      const rawResponse = await this.geminiService.generateText(prompt);
+    const rawResponse = await this.geminiService.generateText(prompt);
 
-      this.logger.log(` Cleaning Gemini response...`);
-      const cleaned = rawResponse.replace(/```json|```/g, '').trim();
+    this.logger.log(` Cleaning Gemini response...`);
+    const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
-      try {
-        return JSON.parse(cleaned);
-      } catch (e) {
-        console.log(e);
-        this.logger.warn('Failed to parse Gemini JSON, returning raw text.');
-        return { raw: cleaned };
-      }
+    try {
+      return JSON.parse(cleaned);
+    } catch (e) {
+      console.log(e);
+      this.logger.warn('Failed to parse Gemini JSON, returning raw text.');
+      return { raw: cleaned };
     }
+  }
 
   /**
    * Calls Gemini to generate AI fields for an experience based on title & description.
@@ -192,7 +186,7 @@ Return ONLY a valid JSON object with this exact structure:
    * - targetEmotions (3-4 picked from fixed list)
    */
   async generateExperienceFields(experience: Experience) {
-      const prompt = `
+    const prompt = `
 You are an expert experience curator for wellness events. Transform the following experience details into structured output.
 
 **INPUT EXPERIENCE DESCRIPTION:**
@@ -214,26 +208,26 @@ Return ONLY a JSON object with keys: experienceOutcomeSummary, culturalTags, des
 No extra text, markdown, or explanations.
 `;
 
-      const rawResponse = await this.geminiService.generateText(prompt);
-      const cleaned = rawResponse.replace(/```json|```/g, '').trim();
+    const rawResponse = await this.geminiService.generateText(prompt);
+    const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
-      try {
-        const aiData = JSON.parse(cleaned);
+    try {
+      const aiData = JSON.parse(cleaned);
 
-        return {
-          experienceOutcomeSummary: aiData.experienceOutcomeSummary || '',
-          culturalTags: aiData.culturalTags || [],
-          desiredOutcomes: aiData.desiredOutcomes || [],
-          targetEmotions: aiData.targetEmotions || [],
-        };
-      } catch (err) {
-        this.logger.warn('Failed to parse Gemini JSON, returning defaults.', err);
-        return {
-          experienceOutcomeSummary: '',
-          culturalTags: [],
-          desiredOutcomes: [],
-          targetEmotions: [],
-        };
-      }
+      return {
+        experienceOutcomeSummary: aiData.experienceOutcomeSummary || '',
+        culturalTags: aiData.culturalTags || [],
+        desiredOutcomes: aiData.desiredOutcomes || [],
+        targetEmotions: aiData.targetEmotions || [],
+      };
+    } catch (err) {
+      this.logger.warn('Failed to parse Gemini JSON, returning defaults.', err);
+      return {
+        experienceOutcomeSummary: '',
+        culturalTags: [],
+        desiredOutcomes: [],
+        targetEmotions: [],
+      };
     }
   }
+}
