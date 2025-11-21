@@ -28,8 +28,8 @@ import { WinstonModule } from 'nest-winston';
 import { buildWinstonOptions } from './logger/winston.config';
 import { InsightsModule } from './insights/insights.module';
 import { ProfileModule } from './users/profile/profile.module';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+// import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+// import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -40,23 +40,23 @@ import { APP_GUARD } from '@nestjs/core';
     DatabaseModule,
     UsersModule,
 
-    ThrottlerModule.forRoot([
-      {
-        name: 'default',
-        ttl: 60000, // 60 seconds in milliseconds
-        limit: 120, // max 60 requests per 60 seconds
-      },
-      {
-        name: 'auth',
-        ttl: 60000, // 60 seconds
-        limit: 15, // max 5 requests per 60 seconds
-      },
-      {
-        name: 'login',
-        ttl: 60000, // 60 seconds
-        limit: 5, // max 5 requests per 60 seconds
-      },
-    ]),
+    // ThrottlerModule.forRoot([
+    //   {
+    //     name: 'default',
+    //     ttl: 60000, // 60 seconds in milliseconds
+    //     limit: 120, // max 60 requests per 60 seconds
+    //   },
+    //   {
+    //     name: 'auth',
+    //     ttl: 60000, // 60 seconds
+    //     limit: 15, // max 5 requests per 60 seconds
+    //   },
+    //   {
+    //     name: 'login',
+    //     ttl: 60000, // 60 seconds
+    //     limit: 5, // max 5 requests per 60 seconds
+    //   },
+    // ]),
     // Scheduler for cron jobs
     ScheduleModule.forRoot(),
 
@@ -89,10 +89,10 @@ import { APP_GUARD } from '@nestjs/core';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ThrottlerGuard,
+    // },
   ],
 })
 export class AppModule {}
