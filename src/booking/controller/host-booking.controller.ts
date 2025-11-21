@@ -8,8 +8,10 @@ import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
 import { ResultDto } from '../../common/dto/result.dto';
 import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('Host Bookings')
+@SkipThrottle()
 @Controller('host/bookings')
 @UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)
 @Roles('host')

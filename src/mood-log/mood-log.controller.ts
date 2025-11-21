@@ -25,9 +25,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ResultDto } from 'src/common/dto/result.dto';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('Mood Log')
 @ApiBearerAuth()
+@SkipThrottle()
 @Controller('mood-log')
 export class MoodLogController {
   constructor(private readonly moodLogService: MoodLogService) {}

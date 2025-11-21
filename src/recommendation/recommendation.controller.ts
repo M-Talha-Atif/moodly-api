@@ -10,9 +10,11 @@ import {
 import { MoodLogService } from 'src/mood-log/services/mood-log.service';
 import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
 import { RolesGuard } from 'src/common/roles.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('recommendations') // Groups under "recommendations"
 @ApiBearerAuth() // shows JWT auth in Swagger UI
+@SkipThrottle()
 @Controller('recommendations')
 @UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)
 export class RecommendationController {
