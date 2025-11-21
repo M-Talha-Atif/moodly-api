@@ -12,7 +12,7 @@ export class AiExperienceService {
   constructor(
     private readonly apiClient: ApiClientService,
     private readonly geminiService: GeminiService,
-  ) {}
+  ) { }
 
   /**
    * Handles both voice file and text input.
@@ -83,56 +83,105 @@ export class AiExperienceService {
    * Calls Gemini to generate structured experience data.
    */
   async generateExperienceDataFromVoice(voiceText: string) {
-    const prompt = `
-You are an expert experience curator and wellness event designer specializing in mood-based therapeutic activities. Your role is to transform user ideas into compelling, bookable experiences that align with current wellness trends (2024-2025).
+  Great question! The issue is that your prompt is giving Gemini too much creative freedom to reinterpret the user's input. When the user explicitly provides details, you want to preserve them while only enhancing what's missing.Here's an improved version:
+    typescript/**
+ * Calls Gemini to generate structured experience data from voice input.
+ * Preserves user's explicit details while intelligently filling gaps.
+ */
+async generateExperienceDataFromVoice(voiceText: string) {
+      const prompt = `
+You are an AI assistant that converts voice descriptions into structured experience data.
 
-**INPUT TO ANALYZE:**
+**CRITICAL INSTRUCTION:** Your PRIMARY goal is to PRESERVE the user's exact specifications. Only enhance or suggest alternatives when information is missing or unclear.
+
+**USER'S VOICE INPUT:**
 "${voiceText}"
 
-**CONTEXT & TRENDS TO CONSIDER:**
-- Emphasize authentic, transformative experiences over passive entertainment
-- Incorporate elements of mindfulness, community connection, and personal growth
-- Reference current wellness movements: sound healing, forest bathing, creative expression therapy, somatic practices, digital detox activities
-- Consider seasonal relevance and local cultural authenticity
-- Design for small, intimate groups that foster genuine connection
-- Focus on outcomes: stress relief, emotional regulation, social connection, creative expression
+**YOUR TASK:**
+Extract and structure the following fields. Follow these rules STRICTLY:
 
-Fill in the following JSON fields:
+1. **title**: 
+   - IF user provided a title → USE IT EXACTLY as spoken (clean up only obvious speech-to-text errors)
+   - IF no title provided → Create a compelling 5-8 word title
+   - Example: User says "recording bites" → Use "Recording Bites" (preserve their words)
+
+2. **description**: 
+   - IF user provided description → USE THEIR WORDS as the foundation, enhance minimally (2-3 sentences max)
+   - IF user says "same like that" or similar → Create sensory, outcome-focused description based on the title/activity
+   - Focus on: what happens, who it's for, what they'll gain
+   - ❌ NEVER mention time, duration, or schedule in description
+   - Keep it authentic to user's original intent
+
+3. **sessionStartTime**: 
+   - IF user specified time → USE THAT EXACT TIME
+   - Convert to ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sss+05:00 (Pakistan timezone)
+   - Set to a logical FUTURE date (prefer next occurrence of appropriate day)
+   - Example: "6:00 p.m." → "2024-11-23T18:00:00.000+05:00" (use next Saturday if social activity)
+
+4. **sessionEndTime**: 
+   - IF user specified end time → USE THAT EXACT TIME
+   - IF not specified → Add logical duration (1-2 hours typical)
+   - Must be after sessionStartTime
+   - Example: "7:00 p.m." → "2024-11-23T19:00:00.000+05:00"
+
+5. **date**: 
+   - Extract from sessionStartTime
+   - Format: YYYY-MM-DD
+   - Must be FUTURE date
+
+6. **location**: 
+   - IF user specified location → USE IT EXACTLY (clean up speech-to-text errors)
+   - IF not specified → Suggest "To Be Determined" or generic attractive location
+   - Example: "Lahore shut up garden" → "Shalimar Garden, Lahore" (correct the speech error)
+
+7. **isVirtual**: 
+   - Default: false
+   - Set to true ONLY if explicitly mentioned: "online", "virtual", "zoom", "remote"
+
+8. **totalSpots**: 
+   - IF user specified → USE THAT NUMBER
+   - IF not specified → Suggest 10-15 for group activities, 5-8 for intimate experiences
+
+**SPEECH-TO-TEXT ERROR CORRECTION:**
+- "shut up garden" → "Shalimar Garden"
+- "and time" → "end time"
+- Fix obvious homophones and transcription errors
+- Preserve user's intent and terminology
+
+**OUTPUT FORMAT:**
+Return ONLY a valid JSON object with this exact structure:
 {
-  "title": string,    // Compelling, specific, 5-8 words. Use active language that conveys transformation
-  "description": string,  // 2-3 sentences. Focus on WHAT happens, WHO it's for, and WHAT they'll gain. Be sensory and evocative. Never mention time/schedule details
-  "isVirtual": boolean,  // Default to false unless explicitly mentioned as online/virtual/remote
-  "totalSpots": number, 
-  "sessionStartTime": string,  // ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ), must be future, consider appropriate time for activity type
-  "sessionEndTime": string,    // ISO 8601 format, logical duration based on activity (1-4 hours typical)
-  "date": string,              // ISO 8601 date format (YYYY-MM-DD), must be future
-  "location": string // Specific venue/address if mentioned, otherwise attractive generic location matching the vibe (e.g., "Waterfront Studio" or "Urban Garden Space")
+  "title": "exact or minimally enhanced user title",
+  "description": "2-3 sentences based on user's words or title",
+  "isVirtual": boolean,
+  "totalSpots": number,
+  "sessionStartTime": "ISO 8601 with +05:00 timezone",
+  "sessionEndTime": "ISO 8601 with +05:00 timezone",
+  "date": "YYYY-MM-DD",
+  "location": "user's location or cleaned version"
 }
-**CRITICAL RULES:**
-1. ❌ NEVER include time, duration, or schedule details in the description
-2. ✅ Adjust any past dates/times to logical future dates (suggest weekends for social activities, evenings for after-work events)
-3. ✅ Make descriptions sensory and outcome-focused: what will participants see, feel, create, or discover?
-4. ✅ Title should be unique and evocative, not generic (Bad: "Yoga Class" / Good: "Sunset Flow: Restorative Yoga by the Bay")
-5. ✅ Match activity intensity to appropriate duration and time of day
-6. ✅ Return ONLY valid JSON, no markdown, no explanations, no extra text
-7. ✅ Ensure all ISO 8601 timestamps are properly formatted with timezone
 
-**OUTPUT:** Return only the JSON object, nothing else
+**CRITICAL:** 
+- Return ONLY the JSON object
+- NO markdown code blocks
+- NO explanations
+- NO additional text
+- Preserve user's specifications above all else
 `;
 
-    const rawResponse = await this.geminiService.generateText(prompt);
+      const rawResponse = await this.geminiService.generateText(prompt);
 
-    this.logger.log(` Cleaning Gemini response...`);
-    const cleaned = rawResponse.replace(/```json|```/g, '').trim();
+      this.logger.log(` Cleaning Gemini response...`);
+      const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
-    try {
-      return JSON.parse(cleaned);
-    } catch (e) {
-      console.log(e);
-      this.logger.warn('Failed to parse Gemini JSON, returning raw text.');
-      return { raw: cleaned };
+      try {
+        return JSON.parse(cleaned);
+      } catch (e) {
+        console.log(e);
+        this.logger.warn('Failed to parse Gemini JSON, returning raw text.');
+        return { raw: cleaned };
+      }
     }
-  }
 
   /**
    * Calls Gemini to generate AI fields for an experience based on title & description.
@@ -143,7 +192,7 @@ Fill in the following JSON fields:
    * - targetEmotions (3-4 picked from fixed list)
    */
   async generateExperienceFields(experience: Experience) {
-    const prompt = `
+      const prompt = `
 You are an expert experience curator for wellness events. Transform the following experience details into structured output.
 
 **INPUT EXPERIENCE DESCRIPTION:**
@@ -165,26 +214,26 @@ Return ONLY a JSON object with keys: experienceOutcomeSummary, culturalTags, des
 No extra text, markdown, or explanations.
 `;
 
-    const rawResponse = await this.geminiService.generateText(prompt);
-    const cleaned = rawResponse.replace(/```json|```/g, '').trim();
+      const rawResponse = await this.geminiService.generateText(prompt);
+      const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
-    try {
-      const aiData = JSON.parse(cleaned);
+      try {
+        const aiData = JSON.parse(cleaned);
 
-      return {
-        experienceOutcomeSummary: aiData.experienceOutcomeSummary || '',
-        culturalTags: aiData.culturalTags || [],
-        desiredOutcomes: aiData.desiredOutcomes || [],
-        targetEmotions: aiData.targetEmotions || [],
-      };
-    } catch (err) {
-      this.logger.warn('Failed to parse Gemini JSON, returning defaults.', err);
-      return {
-        experienceOutcomeSummary: '',
-        culturalTags: [],
-        desiredOutcomes: [],
-        targetEmotions: [],
-      };
+        return {
+          experienceOutcomeSummary: aiData.experienceOutcomeSummary || '',
+          culturalTags: aiData.culturalTags || [],
+          desiredOutcomes: aiData.desiredOutcomes || [],
+          targetEmotions: aiData.targetEmotions || [],
+        };
+      } catch (err) {
+        this.logger.warn('Failed to parse Gemini JSON, returning defaults.', err);
+        return {
+          experienceOutcomeSummary: '',
+          culturalTags: [],
+          desiredOutcomes: [],
+          targetEmotions: [],
+        };
+      }
     }
   }
-}
