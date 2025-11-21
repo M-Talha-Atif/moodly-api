@@ -157,6 +157,7 @@ export class ExperienceService {
       outcomes: experience.desiredOutcomes,
       emotions: experience.targetEmotions,
       culturalTags: experience.culturalTags,
+      experienceOutcomeSummary: experience.experienceOutcomeSummary,
       sessionStartTime: formatTime(experience.sessionStartTime),
       sessionEndTime: formatTime(experience.sessionEndTime),
       totalSpots: experience.totalSpots,
