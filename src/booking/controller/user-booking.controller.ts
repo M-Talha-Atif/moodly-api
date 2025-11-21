@@ -21,7 +21,9 @@ import { ERROR_CODE_MAP } from '../../common/constants/error-code-map';
 import { ResultDto } from '../../common/dto/result.dto';
 import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
 import { RolesGuard } from '../../common/roles.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @ApiTags('User Bookings')
 @Controller('user/bookings')
 @UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)

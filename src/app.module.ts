@@ -44,7 +44,7 @@ import { APP_GUARD } from '@nestjs/core';
       {
         name: 'default',
         ttl: 60000, // 60 seconds in milliseconds
-        limit: 60, // max 60 requests per 60 seconds
+        limit: 120, // max 60 requests per 60 seconds
       },
       {
         name: 'auth',
