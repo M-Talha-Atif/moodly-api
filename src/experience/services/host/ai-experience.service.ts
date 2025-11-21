@@ -161,7 +161,7 @@ Description: "${experience.description}"
 3. desiredOutcomes: pick 3-4 relevant outcomes from the fixed list
 4. targetEmotions: pick 3-4 relevant emotions from the fixed list
 
-Return ONLY a JSON object with keys: emotionalSummary, culturalTags, desiredOutcomes, targetEmotions.
+Return ONLY a JSON object with keys: experienceOutcomeSummary, culturalTags, desiredOutcomes, targetEmotions.
 No extra text, markdown, or explanations.
 `;
 
