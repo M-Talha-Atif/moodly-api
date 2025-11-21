@@ -15,12 +15,8 @@ import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
 import { JwtCookieGuard } from './guards/jwt-cookie.guard';
-import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Auth')
-@Throttle({
-  auth: { limit: 5, ttl: 6000 },
-})
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -34,7 +30,6 @@ export class AuthController {
     return res.status(result.statusCode).json(result);
   }
 
-  @Throttle({ login: { limit: 5, ttl: 6000 } })
   @Post('login')
   @ApiOperation({ summary: 'Login user and issue JWT cookie' })
   @ApiResponse({ status: 200, description: 'User logged in successfully' })
