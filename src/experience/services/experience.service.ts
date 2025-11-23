@@ -27,7 +27,7 @@ export class ExperienceService {
     private readonly experienceEmbeddingModel: Model<ExperienceEmbedding>,
     private readonly experienceFilterService: ExperienceFilterService, // filter service
     private readonly s3Service: S3Service, // S3 service for storage of images
-  ) {}
+  ) { }
 
   // =========================================================
   // Create Experience + Store Embedding in Mongo
@@ -84,6 +84,7 @@ export class ExperienceService {
         { userId },
       )
       .where('booking.id IS NULL')
+      .andWhere('experience.sessionStartTime > NOW()')
       .select([
         'experience.id AS id',
         'experience.title AS title',
