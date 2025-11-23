@@ -60,7 +60,7 @@ export class MoodDetectionWorker {
     // Emit follow-up event
     this.rmqClient.emit(RMQ_DOMAINS.RECOMMENDATION.ROUTING.GENERATE, {
       userId: payload.userId,
-      finalMood,
+      userMood: finalMood,
     });
   }
 }
