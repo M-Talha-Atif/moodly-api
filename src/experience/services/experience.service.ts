@@ -84,7 +84,6 @@ export class ExperienceService {
         { userId },
       )
       .where('booking.id IS NULL')
-      .andWhere('experience.sessionStartTime > NOW()')
       .select([
         'experience.id AS id',
         'experience.title AS title',
