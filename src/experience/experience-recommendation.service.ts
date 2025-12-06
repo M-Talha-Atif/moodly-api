@@ -58,7 +58,7 @@ export class ExperienceRecommendationService {
         FROM unnest(exp."targetEmotions") AS emotion
         WHERE emotion = ANY(:targetEmotions)
       )`,
-        'matchScore',
+        'match_score', // Changed from "matchScore" to match_score
       )
       .where('exp."targetEmotions" && :targetEmotions', {
         targetEmotions,
@@ -78,12 +78,9 @@ export class ExperienceRecommendationService {
         .andWhere('userBooking.id IS NULL');
     }
 
-    // Order by:
-    // 1. Best emotion match (more matching emotions = better)
-    // 2. More availability
-    // 3. Newer experiences
+    // Order by - use the exact alias without quotes
     queryBuilder
-      .orderBy('matchScore', 'DESC')
+      .orderBy('match_score', 'DESC') // Changed to match the alias
       .addOrderBy('exp."totalSpots" - exp."spotsFilled"', 'DESC')
       .addOrderBy('exp."createdAt"', 'DESC')
       .limit(limit);
@@ -97,7 +94,7 @@ export class ExperienceRecommendationService {
       // Find the first matching emotion based on priority
       const bestMatchEmotion =
         targetEmotions.find((emotion) => allEmotions.includes(emotion)) ||
-        allEmotions[0]; // Fallback to first emotion
+        allEmotions[0];
 
       return plainToInstance(
         RecommendationResponseDto,
