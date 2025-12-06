@@ -39,10 +39,6 @@ export class ExperienceRecommendationService {
     const targetEmotions =
       EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
 
-    // const pgArray = `{${targetEmotions.join(',')}}`;
-
-    const targetEmotionsArray = targetEmotions;
-
     const queryBuilder = this.experienceRepo
       .createQueryBuilder('exp')
       .select([
@@ -50,18 +46,24 @@ export class ExperienceRecommendationService {
         'exp.title AS title',
         'exp.image AS image',
         'exp.price AS price',
-        '(exp.targetEmotions)[1] AS "targetEmotion"',
-        'exp.spotsFilled', // for filtering
-        'exp.totalSpots',
-        'exp.sessionStartTime',
-        'exp.createdAt',
+        'exp.targetEmotions AS "allTargetEmotions"', // Return all emotions
       ])
+      // Calculate match score: count of matching emotions
+      .addSelect(
+        `(
+        SELECT COUNT(*)
+        FROM unnest(exp.targetEmotions) AS emotion
+        WHERE emotion = ANY(:targetEmotions::text[])
+      )`,
+        'matchScore',
+      )
       .where('exp.targetEmotions && :targetEmotions::text[]', {
-        targetEmotions: targetEmotionsArray,
+        targetEmotions,
       })
       .andWhere('exp.spotsFilled < exp.totalSpots')
       .andWhere('exp.sessionStartTime > NOW()');
 
+    // Exclude user's existing bookings
     if (userId) {
       queryBuilder
         .leftJoin(
@@ -73,15 +75,39 @@ export class ExperienceRecommendationService {
         .andWhere('userBooking.id IS NULL');
     }
 
+    // Order by:
+    // 1. Best emotion match (more matching emotions = better)
+    // 2. More availability
+    // 3. Newer experiences
     queryBuilder
-      .orderBy('exp.spotsFilled', 'ASC')
+      .orderBy('matchScore', 'DESC')
+      .addOrderBy('(exp.totalSpots - exp.spotsFilled)', 'DESC')
       .addOrderBy('exp.createdAt', 'DESC')
       .take(limit);
 
     const rawResults = await queryBuilder.getRawMany();
 
-    return plainToInstance(RecommendationResponseDto, rawResults, {
-      excludeExtraneousValues: true,
+    // Transform results to include the best matching emotion
+    return rawResults.map((result) => {
+      const allEmotions = result.allTargetEmotions || [];
+
+      // Find the first matching emotion based on priority
+      const bestMatchEmotion =
+        targetEmotions.find((emotion) => allEmotions.includes(emotion)) ||
+        allEmotions[0]; // Fallback to first emotion
+
+      return plainToInstance(
+        RecommendationResponseDto,
+        {
+          id: result.id,
+          title: result.title,
+          image: result.image,
+          price: result.price,
+          targetEmotion: bestMatchEmotion,
+          matchScore: result.matchScore, // Optional: include in DTO for debugging
+        },
+        { excludeExtraneousValues: true },
+      );
     });
   }
 
