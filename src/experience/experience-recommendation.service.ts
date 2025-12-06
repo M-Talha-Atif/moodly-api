@@ -42,26 +42,29 @@ export class ExperienceRecommendationService {
     const queryBuilder = this.experienceRepo
       .createQueryBuilder('exp')
       .select([
-        'exp.id AS id',
-        'exp.title AS title',
-        'exp.image AS image',
-        'exp.price AS price',
-        'exp.targetEmotions AS "allTargetEmotions"', // Return all emotions
+        'exp.id',
+        'exp.title',
+        'exp.image',
+        'exp.price',
+        'exp.targetEmotions',
+        'exp.totalSpots',
+        'exp.spotsFilled',
+        'exp.createdAt',
       ])
       // Calculate match score: count of matching emotions
       .addSelect(
         `(
-        SELECT COUNT(*)
-        FROM unnest(exp.targetEmotions) AS emotion
-        WHERE emotion = ANY(:targetEmotions::text[])
+        SELECT COUNT(*)::integer
+        FROM unnest(exp."targetEmotions") AS emotion
+        WHERE emotion = ANY(:targetEmotions)
       )`,
         'matchScore',
       )
-      .where('exp.targetEmotions && :targetEmotions::text[]', {
+      .where('exp."targetEmotions" && :targetEmotions', {
         targetEmotions,
       })
-      .andWhere('exp.spotsFilled < exp.totalSpots')
-      .andWhere('exp.sessionStartTime > NOW()');
+      .andWhere('exp."spotsFilled" < exp."totalSpots"')
+      .andWhere('exp."sessionStartTime" > NOW()');
 
     // Exclude user's existing bookings
     if (userId) {
@@ -81,15 +84,15 @@ export class ExperienceRecommendationService {
     // 3. Newer experiences
     queryBuilder
       .orderBy('matchScore', 'DESC')
-      .addOrderBy('(exp.totalSpots - exp.spotsFilled)', 'DESC')
-      .addOrderBy('exp.createdAt', 'DESC')
-      .take(limit);
+      .addOrderBy('exp."totalSpots" - exp."spotsFilled"', 'DESC')
+      .addOrderBy('exp."createdAt"', 'DESC')
+      .limit(limit);
 
     const rawResults = await queryBuilder.getRawMany();
 
     // Transform results to include the best matching emotion
     return rawResults.map((result) => {
-      const allEmotions = result.allTargetEmotions || [];
+      const allEmotions = result.exp_targetEmotions || [];
 
       // Find the first matching emotion based on priority
       const bestMatchEmotion =
@@ -99,12 +102,11 @@ export class ExperienceRecommendationService {
       return plainToInstance(
         RecommendationResponseDto,
         {
-          id: result.id,
-          title: result.title,
-          image: result.image,
-          price: result.price,
+          id: result.exp_id,
+          title: result.exp_title,
+          image: result.exp_image,
+          price: result.exp_price,
           targetEmotion: bestMatchEmotion,
-          matchScore: result.matchScore, // Optional: include in DTO for debugging
         },
         { excludeExtraneousValues: true },
       );
