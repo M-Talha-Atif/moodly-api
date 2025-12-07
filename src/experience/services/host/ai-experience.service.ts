@@ -184,7 +184,8 @@ Return ONLY a valid JSON object with this exact structure:
   "sessionStartTime": "ISO 8601 with +05:00 timezone",
   "sessionEndTime": "ISO 8601 with +05:00 timezone",
   "date": "YYYY-MM-DD",
-  "location": "user's location or cleaned version"
+  "location": "user's location or cleaned version",
+  "category": string
 }
 
 **CRITICAL:** 
