@@ -9,6 +9,27 @@ import { Experience } from 'src/experience/entities/experience.entity';
 export class AiExperienceService {
   private readonly logger = new Logger(AiExperienceService.name);
 
+  private readonly BASE_IMAGE_URL = process.env.EXPERIENCE_IMAGES_CDN_URL || '';
+
+  private readonly EXPERIENCE_IMAGE_MAP: Record<string, string[]> = {
+    Adventures: [
+      `${this.BASE_IMAGE_URL}/Adventures/Adventures_001.jpg`,
+      `${this.BASE_IMAGE_URL}/Adventures/Adventures_002.jpg`,
+    ],
+    Art: [`${this.BASE_IMAGE_URL}/Art/Art_001.jpg`],
+    Cooking: [`${this.BASE_IMAGE_URL}/Cooking/Cooking_001.jpg`],
+    Fitness: [`${this.BASE_IMAGE_URL}/Fitness/Fitness_001.jpg`],
+    Meditation: [`${this.BASE_IMAGE_URL}/Meditation/Meditation_001.jpg`],
+    Music: [`${this.BASE_IMAGE_URL}/Music/Music_001.jpg`],
+    Poetry: [`${this.BASE_IMAGE_URL}/Poetry/Poetry_001.jpg`],
+    Sports: [`${this.BASE_IMAGE_URL}/Sports/Sports_001.jpg`],
+    Therapy: [
+      `${this.BASE_IMAGE_URL}/Therapy/Therapy_001.jpg`,
+      `${this.BASE_IMAGE_URL}/Therapy/Therapy_002.jpg`,
+    ],
+    General: [`${this.BASE_IMAGE_URL}/General/General_001.jpg`],
+  };
+
   constructor(
     private readonly apiClient: ApiClientService,
     private readonly geminiService: GeminiService,
@@ -65,8 +86,17 @@ export class AiExperienceService {
       this.logger.log(' Generating experience data from text...');
       const aiResponse = await this.generateExperienceDataFromVoice(textInput);
 
+      // --- Add category & image ---
+      const category = aiResponse.category || 'General';
+      const image = this.pickImageForCategory(category);
+
+      this.logger.log(`Category : ${category}`);
+
       this.logger.log('AI generation successful.');
-      return aiResponse;
+      return {
+        ...aiResponse,
+        image,
+      };
     } catch (error: any) {
       this.logger.error(
         ' AI experience generation failed:',
@@ -135,6 +165,8 @@ Extract and structure the following fields. Follow these rules STRICTLY:
 8. **totalSpots**: 
    - IF user specified → USE THAT NUMBER
    - IF not specified → Suggest 10-15 for group activities, 5-8 for intimate experiences
+
+9. **category**: (choose one from: Adventures, Art, Cooking, Fitness, Meditation, Music, Poetry, Sports, Therapy, General)
 
 **SPEECH-TO-TEXT ERROR CORRECTION:**
 - "shut up garden" → "Shalimar Garden"
@@ -229,5 +261,15 @@ No extra text, markdown, or explanations.
         targetEmotions: [],
       };
     }
+  }
+
+  /**
+   * Pick a random image for the given category. Defaults to General.
+   */
+  private pickImageForCategory(category: string): string {
+    const images =
+      this.EXPERIENCE_IMAGE_MAP[category] ||
+      this.EXPERIENCE_IMAGE_MAP['General'];
+    return images[Math.floor(Math.random() * images.length)];
   }
 }
