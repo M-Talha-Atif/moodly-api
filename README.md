@@ -1,6 +1,6 @@
 # Moodly Backend
 
-Wellness and social experience platform powered by **two independent backend services** — a NestJS application server and a FastAPI AI inference service — connected through RabbitMQ for asynchronous mood-to-recommendation flow.
+Wellness and social experience platform powered by **two independent backend services** - a NestJS application server and a FastAPI AI inference service - connected through RabbitMQ for asynchronous mood-to-recommendation flow.
 
 ---
 
@@ -78,7 +78,7 @@ Inference latency (HuBERT voice analysis, DeepFace image processing) should not 
 This means:
 - The frontend gets an immediate response on media upload
 - The recommendation surfaces later asynchronously
-- Each service scales independently — add more FastAPI replicas for inference load, more NestJS replicas for booking load
+- Each service scales independently - add more FastAPI replicas for inference load, more NestJS replicas for booking load
 
 ---
 
@@ -174,10 +174,10 @@ Content-Type: application/json
 All models load **once at application startup**, not per request:
 
 ```python
-# Text embedding — loaded at startup
+# Text embedding - loaded at startup
 text_model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# Voice emotion — loaded at startup
+# Voice emotion - loaded at startup
 voice_model_id = "superb/hubert-large-superb-er"
 voice_processor = Wav2Vec2FeatureExtractor.from_pretrained(voice_model_id)
 voice_model = AutoModelForAudioClassification.from_pretrained(voice_model_id)
@@ -334,7 +334,7 @@ fastapi, uvicorn, pydantic, sentence-transformers, deepface, torchaudio, torch, 
 
 The system enables:
 
-1. Users record their emotional state through voice, photo, or text — with AI-powered emotion detection running on a dedicated inference service
+1. Users record their emotional state through voice, photo, or text - with AI-powered emotion detection running on a dedicated inference service
 2. Mood detection results flow asynchronously through RabbitMQ into the recommendation engine without blocking the upload response
 3. The recommendation engine matches user mood to relevant wellness experiences
 4. Users discover, book, and attend experiences with QR check-in and real-time availability
@@ -343,7 +343,7 @@ The system enables:
 7. Post-experience feedback is collected automatically with cron-driven reminders
 8. In-app and email notifications keep users informed throughout the lifecycle
 9. Cultural personalization tailors experiences and community discovery to user preferences
-10. The two services scale independently — FastAPI handles AI inference load, NestJS handles business logic load
+10. The two services scale independently - FastAPI handles AI inference load, NestJS handles business logic load
 
 ---
 
