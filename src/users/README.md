@@ -19,7 +19,7 @@ users/
 
 ## Entity notes
 
-`User` (`users` table) carries: email, `passwordHash`, name, `refreshTokenHash`, `onboardingCompleted`, `provider` (`local`/`google`), `avatarUrl`, `culturalBackground` (jsonb), `languagePreferences` (array), `communicationStyle`, `role` (`user`/`host`/`admin`), `accountStatus`, plus relations to bookings, experiences, feedback, and community entities.
+`User` (`users` table) carries: email, `passwordHash`, name, `refreshTokenHash`, `onboardingCompleted`, `provider` (`local`/`google`), `avatarUrl`, `culturalBackground` (jsonb), `languagePreferences` (array), `communicationStyle`, `role` (`user`/`host`/`admin`), `accountStatus`, plus relations to bookings, experiences, feedback, and community entities. Password hashing (both here, for OAuth-only accounts that still need a placeholder hash, and in [profile](profile/README.md)) reuses `PASSWORD_HASH_SALT_ROUNDS` from `src/auth/auth.constants.ts` rather than a separate constant, since it's the same concept.
 
 `PrivacySetting` (`privacy_settings` table, 1:1 with `User`): `dataSharingLevel`, `communityVisibility`, `trackingConsent`.
 
