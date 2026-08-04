@@ -14,6 +14,13 @@ import { ResultDto } from 'src/common/dto/result.dto';
 import { StorageService } from './storage.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
+import {
+  DEFAULT_MOOD_LOG_HISTORY_LIMIT,
+  DEFAULT_MOOD_LOG_HISTORY_PAGE,
+  MORNING_START_HOUR,
+  AFTERNOON_START_HOUR,
+  NIGHT_START_HOUR,
+} from '../mood-log.constants';
 
 @Injectable()
 export class MoodLogService {
@@ -34,36 +41,6 @@ export class MoodLogService {
     files?: { photo?: Express.Multer.File; voice?: Express.Multer.File },
   ) {
     try {
-      console.log(dto);
-
-      console.log('🛠️ SERVICE - Parameters received:', {
-        userId,
-        dto: {
-          moodLabel: dto.moodLabel,
-          note: dto.note,
-          textSentiment: dto.textSentiment,
-        },
-        files: {
-          hasPhoto: !!files?.photo,
-          hasVoice: !!files?.voice,
-          photo: files?.photo
-            ? {
-                originalname: files.photo.originalname,
-                mimetype: files.photo.mimetype,
-                size: files.photo.size,
-              }
-            : 'NO PHOTO IN SERVICE',
-          voice: files?.voice
-            ? {
-                originalname: files.voice.originalname,
-                mimetype: files.voice.mimetype,
-                size: files.voice.size,
-              }
-            : 'NO VOICE IN SERVICE',
-        },
-      });
-
-      // Validate inputs
       const inputValidation = this.validationService.validateInputs(dto, files);
       if (!inputValidation.success) return inputValidation;
 
@@ -171,7 +148,11 @@ export class MoodLogService {
     );
   }
 
-  async getHistoryForUser(userId: string, limit = 30, page = 1) {
+  async getHistoryForUser(
+    userId: string,
+    limit = DEFAULT_MOOD_LOG_HISTORY_LIMIT,
+    page = DEFAULT_MOOD_LOG_HISTORY_PAGE,
+  ) {
     try {
       const [logs, total] = await this.moodLogRepo.findAndCount({
         where: { userId },
@@ -323,8 +304,10 @@ export class MoodLogService {
     for (const log of todayLogs) {
       const hour = new Date(log.createdAt).getHours();
 
-      if (hour >= 5 && hour < 12) summary.morning.push(log);
-      else if (hour >= 12 && hour < 18) summary.afternoon.push(log);
+      if (hour >= MORNING_START_HOUR && hour < AFTERNOON_START_HOUR)
+        summary.morning.push(log);
+      else if (hour >= AFTERNOON_START_HOUR && hour < NIGHT_START_HOUR)
+        summary.afternoon.push(log);
       else summary.night.push(log);
     }
 

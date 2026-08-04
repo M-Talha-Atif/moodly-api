@@ -7,6 +7,10 @@ import { BookingCreationService } from './booking-creation.service';
 import { BookingCancellationService } from './booking-cancellation.service';
 import { BookingQueryService } from './booking-query.service';
 import { BookingDetailDto } from 'src/booking/dto/booking-detail.dto';
+import {
+  DEFAULT_BOOKINGS_PAGE,
+  DEFAULT_BOOKINGS_PAGE_SIZE,
+} from 'src/booking/booking.constants';
 
 @Injectable()
 export class BookingService {
@@ -83,8 +87,8 @@ export class BookingService {
   }
 
   async findAllBookings(
-    page = 1,
-    limit = 10,
+    page = DEFAULT_BOOKINGS_PAGE,
+    limit = DEFAULT_BOOKINGS_PAGE_SIZE,
     userId?: string,
     status?: 'confirmed' | 'cancelled' | 'waitlisted',
     timeFilter?: 'today' | 'tomorrow' | 'weekend' | 'next-week',
