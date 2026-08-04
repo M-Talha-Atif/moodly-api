@@ -5,6 +5,7 @@ import { MoodLog } from 'src/mood-log/entities/mood-log.entity';
 import { Booking } from 'src/booking/entities/booking.entity';
 import { CommunityMember } from 'src/community/entities/community/community-member.entity'; // adjust path
 import { startOfDay, endOfDay, subDays } from 'date-fns';
+import { DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS } from '../insights.constants';
 
 @Injectable()
 export class InsightsService {
@@ -57,7 +58,7 @@ export class InsightsService {
   // ---- Mood average over last `days` (default 30) ----
   async getMoodAverage(
     userId: string,
-    days = 30,
+    days = DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS,
   ): Promise<{ average: number | null; count: number; days }> {
     const end = new Date();
     const start = subDays(end, days);
@@ -139,7 +140,7 @@ export class InsightsService {
         streak++;
         last = current;
       } else if (diffDays === 0) {
-        // same day duplicate — skip
+        // same day duplicate, skip
         continue;
       } else {
         break;
@@ -151,7 +152,7 @@ export class InsightsService {
 
   // ---- Aggregate insights payload ----
   async getUserInsights(userId: string, options?: { moodDays?: number }) {
-    const moodDays = options?.moodDays ?? 30;
+    const moodDays = options?.moodDays ?? DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS;
 
     const [streakObj, experiencesCount, communitiesCount, moodAvgObj] =
       await Promise.all([
