@@ -22,7 +22,6 @@ export class RecommendationGateway
     const userId = client.handshake.query.userId as string;
     if (userId) {
       this.userSockets.set(userId, client.id);
-      console.log(`🔌 User ${userId} connected via socket`);
     }
   }
 
@@ -32,7 +31,6 @@ export class RecommendationGateway
     )?.[0];
     if (userId) {
       this.userSockets.delete(userId);
-      console.log(`❌ User ${userId} disconnected`);
     }
   }
 
@@ -40,7 +38,6 @@ export class RecommendationGateway
     const socketId = this.userSockets.get(userId);
     if (socketId) {
       this.server.to(socketId).emit('recommendations', recommendations);
-      console.log(`📡 Sent recommendations to user ${userId}`);
     }
   }
 }

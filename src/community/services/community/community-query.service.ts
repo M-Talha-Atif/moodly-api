@@ -7,6 +7,10 @@ import { CommunityResponseDto } from '../../dto/community-response.dto';
 import { CommunityMapper } from '../../mapper/community/community.mapper';
 import { CommunityQueryDto } from '../../dto/community-query.dto';
 import { CommunityMember } from '../../entities/community/community-member.entity';
+import {
+  DEFAULT_COMMUNITY_PAGE,
+  DEFAULT_COMMUNITY_LIST_PAGE_SIZE,
+} from '../../community.constants';
 
 @Injectable()
 export class CommunityQueryService {
@@ -30,8 +34,8 @@ export class CommunityQueryService {
     limit: number;
   }> {
     const {
-      page = 1,
-      limit = 10,
+      page = DEFAULT_COMMUNITY_PAGE,
+      limit = DEFAULT_COMMUNITY_LIST_PAGE_SIZE,
       category,
       isPrivate,
       tags,
@@ -103,8 +107,8 @@ export class CommunityQueryService {
     limit: number;
   }> {
     const {
-      page = 1,
-      limit = 10,
+      page = DEFAULT_COMMUNITY_PAGE,
+      limit = DEFAULT_COMMUNITY_LIST_PAGE_SIZE,
       category,
       isPrivate,
       tags,

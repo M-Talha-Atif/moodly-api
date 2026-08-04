@@ -7,6 +7,7 @@
 ```
 community/
 ├── community.module.ts
+├── community.constants.ts    # pagination defaults, one per listing type (members/posts/comments/list)
 ├── community.controller.ts   # @Controller('communities'): every route below
 ├── services/
 │   ├── community/

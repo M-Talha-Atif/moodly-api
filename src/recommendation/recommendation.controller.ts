@@ -51,12 +51,6 @@ export class RecommendationController {
       moodResult?.data?.moodLabel || // Fallback to moodLabel if finalMood doesn't exist
       'neutral';
 
-    console.log(
-      'Fetching recommendations for user with mood:',
-      req.user.sub,
-      userMood,
-    );
-
     return this.recommendationService.generateForUserByMood(
       req.user.sub,
       userMood.toLowerCase(),
