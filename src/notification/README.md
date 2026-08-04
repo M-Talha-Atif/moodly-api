@@ -7,6 +7,7 @@
 ```
 notification/
 ├── notification.module.ts
+├── notification.constants.ts     # SMTP port defaults
 ├── notification.controller.ts   # @Controller('notification')
 ├── notification.service.ts
 ├── notification.gateway.ts       # Socket.IO: sendToUser(userId, notification) → room `userId`

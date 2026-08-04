@@ -203,8 +203,7 @@ Return ONLY a valid JSON object with this exact structure:
 
     try {
       return JSON.parse(cleaned);
-    } catch (e) {
-      console.log(e);
+    } catch {
       this.logger.warn('Failed to parse Gemini JSON, returning raw text.');
       return { raw: cleaned };
     }

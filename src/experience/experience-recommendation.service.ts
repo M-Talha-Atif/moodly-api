@@ -7,6 +7,10 @@ import { Model } from 'mongoose';
 import { ExperienceEmbedding } from 'src/embedding/schemas/experience-embedding.schema';
 import { RecommendationResponseDto } from './dto/recommendation-response.dto';
 import { plainToInstance } from 'class-transformer';
+import {
+  DEFAULT_EXPERIENCE_RECOMMENDATION_LIMIT,
+  VECTOR_SEARCH_CANDIDATE_POOL,
+} from './experience.constants';
 
 // Pre-defined emotion mapping (production-optimized)
 const EMOTION_EXPERIENCE_MAP = {
@@ -34,7 +38,7 @@ export class ExperienceRecommendationService {
   async recommendByEmotion(
     userMood: string,
     userId?: string,
-    limit = 10,
+    limit = DEFAULT_EXPERIENCE_RECOMMENDATION_LIMIT,
   ): Promise<RecommendationResponseDto[]> {
     const targetEmotions =
       EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
@@ -110,52 +114,9 @@ export class ExperienceRecommendationService {
     });
   }
 
-  // async recommendByEmotion(
-  //   userMood: string,
-  //   userId?: string,
-  //   limit = 10,
-  // ): Promise<Experience[]> {
-  //   const targetEmotions =
-  //     EMOTION_EXPERIENCE_MAP[userMood] || EMOTION_EXPERIENCE_MAP.neutral;
-
-  //   // Convert JS array -> Postgres array literal: "{happy,calm}"
-  //   const pgArray = `{${targetEmotions.join(',')}}`;
-
-  //   const queryBuilder = this.experienceRepo
-  //     .createQueryBuilder('exp')
-  //     .leftJoinAndSelect('exp.host', 'host')
-  //     .where('exp.targetEmotions && :targetEmotions::text[]', {
-  //       targetEmotions: pgArray,
-  //     })
-  //     .andWhere('exp.spotsFilled < exp.totalSpots')
-  //     .andWhere('exp.sessionStartTime > NOW()');
-
-  //   if (userId) {
-  //     queryBuilder
-  //       .leftJoin(
-  //         'exp.bookings',
-  //         'userBooking',
-  //         'userBooking.userId = :userId AND userBooking.status != :cancelledStatus',
-  //         {
-  //           userId,
-  //           cancelledStatus: 'cancelled',
-  //         },
-  //       )
-  //       .andWhere('userBooking.id IS NULL');
-  //   }
-
-  //   queryBuilder
-  //     .orderBy('exp.spotsFilled', 'ASC')
-  //     .addOrderBy('exp.createdAt', 'DESC')
-  //     .take(limit);
-
-  //   return await queryBuilder.getMany();
-  // }
-
-  // === APPROACH 2: Existing Embedding-Based Recommendation ===
   async recommendByEmbedding(
     userEmbedding: number[],
-    limit = 10,
+    limit = DEFAULT_EXPERIENCE_RECOMMENDATION_LIMIT,
   ): Promise<Experience[]> {
     if (!userEmbedding || userEmbedding.length === 0) return [];
 
@@ -164,7 +125,7 @@ export class ExperienceRecommendationService {
         $vectorSearch: {
           queryVector: userEmbedding,
           path: 'embedding',
-          numCandidates: 100,
+          numCandidates: VECTOR_SEARCH_CANDIDATE_POOL,
           limit,
           index: 'experience_index',
           metric: 'cosine',
