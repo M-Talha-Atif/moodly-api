@@ -21,7 +21,7 @@ database/
 
 - **Postgres**: `type: 'postgres'`, driven entirely by `POSTGRES_HOST/PORT/USER/PASSWORD/DB`. `synchronize: NODE_ENV !== 'production'`: entity changes auto-apply to the schema outside production; production must go through a generated migration (`npx typeorm migration:generate`). In production, SSL is enabled using the bundled `certs/rds-ca.pem`.
 - **Mongo**: `MONGO_URI` + `MONGO_DB`, no further options set.
-- **No explicit pool sizing** is configured for either driver (`extra.max`, `poolSize`, etc. are all absent): see [root README > Scale](../../README.md#scale-current-capacity--where-overflow-goes) for what the resulting defaults (`pg` pool `max: 10`, Mongoose `maxPoolSize: 100`) mean for concurrency in practice, and how many connections the API + worker processes together open against Postgres.
+- **No explicit pool sizing** is configured for either driver (`extra.max`, `poolSize`, etc. are all absent): see [root README > Scale](../../README.md#scale-current-capacity-and-where-overflow-goes) for what the resulting defaults (`pg` pool `max: 10`, Mongoose `maxPoolSize: 100`) mean for concurrency in practice, and how many connections the API + worker processes together open against Postgres.
 
 ## `init.sql`
 
