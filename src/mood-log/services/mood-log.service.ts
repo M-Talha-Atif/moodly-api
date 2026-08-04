@@ -13,7 +13,7 @@ import { ValidationService } from './validation.service';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { StorageService } from './storage.service';
 import { ClientProxy } from '@nestjs/microservices';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 
 @Injectable()
 export class MoodLogService {

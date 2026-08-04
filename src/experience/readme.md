@@ -1,13 +1,13 @@
 # Experience Module
 
-`src/experience` — the bookable "experience" domain (wellness events hosts create and users discover/book). Endpoints are split by audience (host / user / public) rather than one controller branching internally on role.
+`src/experience`: the bookable "experience" domain (wellness events hosts create and users discover/book). Endpoints are split by audience (host / user / public) rather than one controller branching internally on role.
 
 ## Structure
 
 ```
 experience/
 ├── experience.module.ts
-├── experience.controller.ts              # legacy combined controller — still registered
+├── experience.controller.ts              # legacy combined controller: still registered
 ├── experience.gateway.ts                 # Socket.IO: live spot-count updates
 ├── experience-recommendation.service.ts  # emotion-based experience matching (used by recommendation module)
 ├── controllers/
@@ -29,11 +29,11 @@ experience/
 
 ## Entity notes
 
-`Experience`: title, description, date, location, image, `isVirtual`, `sessionStart/EndTime`, price, timezone, `totalSpots`/`spotsFilled`, meetingLink, cancellationPolicy, `aiPrep`/`testimonials`/`preparation` (jsonb), `targetEmotions`/`desiredOutcomes`/`culturalTags` (arrays — see `Emotions.md` at repo root for the taxonomy), `growthDimensions`, `experienceOutcomeSummary`, `idealParticipantTraits`, `engagementStats` (jsonb), `host` (ManyToOne `User`).
+`Experience`: title, description, date, location, image, `isVirtual`, `sessionStart/EndTime`, price, timezone, `totalSpots`/`spotsFilled`, meetingLink, cancellationPolicy, `aiPrep`/`testimonials`/`preparation` (jsonb), `targetEmotions`/`desiredOutcomes`/`culturalTags` (arrays: see `Emotions.md` at repo root for the taxonomy), `growthDimensions`, `experienceOutcomeSummary`, `idealParticipantTraits`, `engagementStats` (jsonb), `host` (ManyToOne `User`).
 
 ## AI generation
 
-`POST /host/experiences/generate` accepts a voice recording or free text and runs it through Gemini (`AiExperienceService`, `src/common/services/gemini.service.ts`) to produce structured experience fields synchronously. The same generation logic also runs **asynchronously** via the `experience.generate_ai` RabbitMQ event, consumed by `ExperienceWorker` (`src/worker/experience.worker.ts`) — see [root README](../../README.md#event-driven-architecture-rabbitmq).
+`POST /host/experiences/generate` accepts a voice recording or free text and runs it through Gemini (`AiExperienceService`, `src/common/services/gemini.service.ts`) to produce structured experience fields synchronously. The same generation logic also runs **asynchronously** via the `experience.generate_ai` RabbitMQ event, consumed by `ExperienceWorker` (`src/worker/experience.worker.ts`): see [root README](../../README.md#event-driven-architecture-rabbitmq).
 
 ## Real-time spots
 
@@ -41,7 +41,7 @@ experience/
 
 ## Endpoints
 
-### Host — `@Controller('host/experiences')`, `JwtCookieGuard, JwtBearerGuard, RolesGuard` (role `host`)
+### Host: `@Controller('host/experiences')`, `JwtCookieGuard, JwtBearerGuard, RolesGuard` (role `host`)
 
 | Method | Route | Description |
 |---|---|---|
@@ -54,20 +54,20 @@ experience/
 | GET | `/host/experiences/:id` | Get a single experience (host-owned) |
 | GET | `/host/experiences/:id/bookings` | List bookings for this experience |
 
-### Public — `@Controller('public/experiences')`, no guard
+### Public: `@Controller('public/experiences')`, no guard
 
 | Method | Route | Description |
 |---|---|---|
 | GET | `/public/experiences` | Public filtered/paginated listing |
 
-### User — `@Controller('user/experiences')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard` (role `user`)
+### User: `@Controller('user/experiences')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard` (role `user`)
 
 | Method | Route | Description |
 |---|---|---|
 | GET | `/user/experiences` | Listing with booking-aware filters |
 | GET | `/user/experiences/:id` | Single experience, including the caller's booking status |
 
-### Legacy combined — `@Controller('experiences')`
+### Legacy combined: `@Controller('experiences')`
 
 | Method | Route | Role | Description |
 |---|---|---|---|

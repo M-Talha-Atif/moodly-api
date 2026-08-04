@@ -1,6 +1,6 @@
 # Booking Module
 
-`src/booking` — booking lifecycle: create, cancel, list, detail, stats, host dashboards. See [root README > Sample Request Flow](../../README.md#sample-request-flow--creating-a-booking) for a full trace of `POST /user/bookings`, and [Engineering Challenges](../../README.md#engineering-challenges-handled) for how double-booking races are prevented.
+`src/booking`: booking lifecycle: create, cancel, list, detail, stats, host dashboards. See [root README > Sample Request Flow](../../README.md#sample-request-flow--creating-a-booking) for a full trace of `POST /user/bookings`, and [Engineering Challenges](../../README.md#engineering-challenges-handled) for how double-booking races are prevented.
 
 ## Structure
 
@@ -34,15 +34,15 @@ booking/
 
 ## Entity notes
 
-`Booking`: `experience` + `user` FKs (unique composite index — one active booking per user per experience), `attendance` (1:1), `status` (`confirmed`/`cancelled`/`waitlisted`), `cancelledAt`.
+`Booking`: `experience` + `user` FKs (unique composite index: one active booking per user per experience), `attendance` (1:1), `status` (`confirmed`/`cancelled`/`waitlisted`), `cancelledAt`.
 
 ## Concurrency
 
-Booking creation and cancellation both go through `TransactionService.withTransaction` (`src/common/services/transaction.service.ts`), which opens a dedicated `QueryRunner` and runs at `READ COMMITTED` isolation. Creation specifically uses one raw-SQL CTE that `SELECT ... FOR UPDATE`s the target experience row, checks for an existing (possibly cancelled) booking, and atomically inserts/restores + increments `spotsFilled` — see [root README](../../README.md#engineering-challenges-handled) for the full statement and reasoning.
+Booking creation and cancellation both go through `TransactionService.withTransaction` (`src/common/services/transaction.service.ts`), which opens a dedicated `QueryRunner` and runs at `READ COMMITTED` isolation. Creation specifically uses one raw-SQL CTE that `SELECT ... FOR UPDATE`s the target experience row, checks for an existing (possibly cancelled) booking, and atomically inserts/restores + increments `spotsFilled`: see [root README](../../README.md#engineering-challenges-handled) for the full statement and reasoning.
 
 ## Endpoints
 
-### User — `@Controller('user/bookings')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard`, `@SkipThrottle()`
+### User: `@Controller('user/bookings')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard`, `@SkipThrottle()`
 
 | Method | Route | Description |
 |---|---|---|
@@ -52,7 +52,7 @@ Booking creation and cancellation both go through `TransactionService.withTransa
 | GET | `/user/bookings/stats` | `{ total, upcoming, completed }` for the current user |
 | GET | `/user/bookings/:id` | Booking detail |
 
-### Host — `@Controller('host/bookings')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard` (role `host`), `@SkipThrottle()`
+### Host: `@Controller('host/bookings')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard` (role `host`), `@SkipThrottle()`
 
 | Method | Route | Description |
 |---|---|---|
@@ -67,6 +67,6 @@ Booking creation and cancellation both go through `TransactionService.withTransa
 ## Side effects after a successful booking
 
 Fired after the DB transaction commits, not awaited by the HTTP response (`BookingSideEffectsService`):
-1. `AttendanceService.createAttendance(...)` — creates the linked `Attendance` row (see [attendance module](../attendance/README.md)).
-2. `NotificationService.createAndSend(...)` — persists a `Notification` row, pushes it over Socket.IO, and queues a confirmation email onto the BullMQ `notification-queue` (see [notification module](../notification/README.md)).
-3. `ExperienceGateway.emitSpotsUpdate(...)` — broadcasts the updated spot count to anyone subscribed to that experience's Socket.IO room.
+1. `AttendanceService.createAttendance(...)`: creates the linked `Attendance` row (see [attendance module](../attendance/README.md)).
+2. `NotificationService.createAndSend(...)`: persists a `Notification` row, pushes it over Socket.IO, and queues a confirmation email onto the BullMQ `notification-queue` (see [notification module](../notification/README.md)).
+3. `ExperienceGateway.emitSpotsUpdate(...)`: broadcasts the updated spot count to anyone subscribed to that experience's Socket.IO room.

@@ -1,6 +1,6 @@
 # Diagram Module
 
-`src/diagram` — a developer/introspection tool, not a domain module. Renders a live Mermaid dependency graph of the running application using [`nestjs-spelunker`](https://www.npmjs.com/package/nestjs-spelunker).
+`src/diagram`: a developer/introspection tool, not a domain module. Renders a live Mermaid dependency graph of the running application using [`nestjs-spelunker`](https://www.npmjs.com/package/nestjs-spelunker).
 
 ## Structure
 
@@ -15,7 +15,7 @@ diagram/
 
 ## Endpoints
 
-`@Controller('diagram')` — no guard.
+`@Controller('diagram')`: no guard.
 
 | Method | Route | Description |
 |---|---|---|

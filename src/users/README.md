@@ -1,6 +1,6 @@
 # Users Module
 
-`src/users` — user persistence and admin-style CRUD. See also [profile](profile/README.md) for the self-service, authenticated user-facing endpoints.
+`src/users`: user persistence and admin-style CRUD. See also [profile](profile/README.md) for the self-service, authenticated user-facing endpoints.
 
 ## Structure
 
@@ -25,7 +25,7 @@ users/
 
 ## Endpoints
 
-`@Controller('users')` — **no guards applied** on this controller; it is effectively unauthenticated admin-style CRUD today. Treat as internal/admin-only until guards are added, or drive user-facing reads/writes through [`/profile`](profile/README.md) instead.
+`@Controller('users')`: **no guards applied** on this controller; it is effectively unauthenticated admin-style CRUD today. Treat as internal/admin-only until guards are added, or drive user-facing reads/writes through [`/profile`](profile/README.md) instead.
 
 | Method | Route | Description |
 |---|---|---|

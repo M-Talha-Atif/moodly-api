@@ -11,7 +11,7 @@ import { CreateCommunityDto } from '../../dto/create-community.dto';
 import { UpdateCommunityDto } from '../../dto/update-community.dto';
 import { CommunityMapper } from '../../mapper/community/community.mapper';
 import { ClientProxy } from '@nestjs/microservices';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 
 @Injectable()
 export class CommunityService {

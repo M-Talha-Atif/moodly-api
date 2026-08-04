@@ -1,6 +1,6 @@
 # Profile Module
 
-`src/users/profile` — authenticated self-service profile endpoints (as opposed to the admin-style CRUD in [`src/users`](../README.md)).
+`src/users/profile`: authenticated self-service profile endpoints (as opposed to the admin-style CRUD in [`src/users`](../README.md)).
 
 ## Structure
 
@@ -25,4 +25,4 @@ profile/
 | PATCH | `/profile` | Update profile fields (multipart request; avatar file optional) |
 | PATCH | `/profile/password` | Change password |
 
-Avatar uploads go through the shared `S3Service` (`src/common/services/s3.service.ts`) — see [src/common/README.md](../../common/README.md).
+Avatar uploads go through the shared `S3Service` (`src/common/services/s3.service.ts`): see [src/common/README.md](../../common/README.md).

@@ -21,7 +21,7 @@ import { BookingErrorHandler } from './services/user/booking-error-handler.servi
 // Common services
 import { TransactionService } from 'src/common/services/transaction.service';
 // infra
-import { RmqModule } from 'src/rmq/rmq.module';
+import { RmqModule } from 'src/infra/rmq/rmq.module';
 import { BookingStatsService } from './services/user/booking.stats.service';
 import { HostBookingQueryService } from './services/host/host-booking-query.service';
 import { HostBookingStatsService } from './services/host/host-booking-stats.service';

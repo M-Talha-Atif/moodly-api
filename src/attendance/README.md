@@ -1,6 +1,6 @@
 # Attendance Module
 
-`src/attendance` — QR/join-code check-in, one record per `Booking`.
+`src/attendance`: QR/join-code check-in, one record per `Booking`.
 
 ## Structure
 
@@ -21,11 +21,11 @@ attendance/
 
 ## How check-in works
 
-An `Attendance` row is created automatically as a side effect of a successful booking (see [booking module](../booking/README.md#side-effects-after-a-successful-booking)), carrying a signed token built from `ATTENDANCE_JWT_SECRET`/`ATTENDANCE_JWT_EXPIRATION` — separate from the login JWT — and a QR code encoding it. `POST /attendance/check-in` validates that token (rather than relying on a route guard) and flips the attendance status.
+An `Attendance` row is created automatically as a side effect of a successful booking (see [booking module](../booking/README.md#side-effects-after-a-successful-booking)), carrying a signed token built from `ATTENDANCE_JWT_SECRET`/`ATTENDANCE_JWT_EXPIRATION`: separate from the login JWT: and a QR code encoding it. `POST /attendance/check-in` validates that token (rather than relying on a route guard) and flips the attendance status.
 
 ## Endpoints
 
-`@Controller('attendance')` — no route guard; the token itself is the credential, validated inside the service.
+`@Controller('attendance')`: no route guard; the token itself is the credential, validated inside the service.
 
 | Method | Route | Description |
 |---|---|---|

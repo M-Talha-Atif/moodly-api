@@ -16,8 +16,8 @@ import { CommunityReaction } from './entities/posts/reactions/community-reaction
 import { CommunityReactionService } from './services/posts/reactions/community-reaction.service';
 import { CommunityCommentService } from './services/comments/community-comment.service';
 import { CommunityComment } from './entities/posts/comments/community-comment.entity';
-import { RmqModule } from 'src/rmq/rmq.module';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RmqModule } from 'src/infra/rmq/rmq.module';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 
 @Module({
   imports: [
