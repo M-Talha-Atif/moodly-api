@@ -1,54 +1,40 @@
-import { Injectable } from '@nestjs/common';
-import Redis, { RedisOptions } from 'ioredis';
+import { Injectable, Logger } from '@nestjs/common';
+import Redis from 'ioredis';
+import {
+  REDIS_RETRY_BASE_DELAY_MS,
+  REDIS_RETRY_MAX_DELAY_MS,
+  REDIS_MAX_RETRIES_PER_REQUEST,
+} from './redis.constants';
 
 @Injectable()
 export class RedisService {
+  private readonly logger = new Logger(RedisService.name);
   private readonly redisClient: Redis;
 
   constructor() {
     this.redisClient = new Redis(
       process.env.REDIS_URL || 'redis://localhost:6379',
       {
-        retryStrategy: (times) => {
-          const delay = Math.min(times * 50, 2000);
-          return delay;
-        },
-        maxRetriesPerRequest: 3,
+        retryStrategy: (times) =>
+          Math.min(times * REDIS_RETRY_BASE_DELAY_MS, REDIS_RETRY_MAX_DELAY_MS),
+        maxRetriesPerRequest: REDIS_MAX_RETRIES_PER_REQUEST,
       },
     );
 
     this.redisClient.on('error', (err) => {
-      console.error('Redis error:', err);
+      this.logger.error('Redis error', err);
     });
 
     this.redisClient.on('connect', () => {
-      console.log('Connected to Redis');
+      this.logger.log('Connected to Redis');
     });
   }
 
   async onModuleInit() {
     try {
       await this.redisClient.ping();
-      console.log('Redis connection established');
     } catch (err) {
-      console.error('Failed to connect to Redis:', err);
-    }
-  }
-  private parseRedisUrl(url: string): Partial<RedisOptions> {
-    try {
-      const parsed = new URL(url);
-      return {
-        host: parsed.hostname,
-        port: parseInt(parsed.port, 10),
-        username: parsed.username || undefined,
-        password: parsed.password || undefined,
-        tls: parsed.protocol === 'rediss:' ? {} : undefined,
-        db: parsed.pathname
-          ? parseInt(parsed.pathname.slice(1), 10)
-          : undefined,
-      };
-    } catch (e) {
-      throw new Error(`Invalid REDIS_URL: ${url} ${e}`);
+      this.logger.error('Failed to connect to Redis', err);
     }
   }
 

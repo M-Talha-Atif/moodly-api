@@ -1,6 +1,6 @@
 # Mood Log Module
 
-`src/mood-log`: multi-modal mood logging (text label + optional photo + optional voice), the entry point into the mood-detection → recommendation event chain. See [root README > Sample Event Flow](../../README.md#sample-event-flow--mood-log-to-recommendation) for the full async trace.
+`src/mood-log`: multi-modal mood logging (text label + optional photo + optional voice), the entry point into the mood-detection → recommendation event chain. See [root README > Sample Event Flow](../../README.md#sample-event-flow-mood-log-to-recommendation) for the full async trace.
 
 ## Structure
 

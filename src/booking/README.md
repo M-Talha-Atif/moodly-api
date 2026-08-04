@@ -1,6 +1,6 @@
 # Booking Module
 
-`src/booking`: booking lifecycle: create, cancel, list, detail, stats, host dashboards. See [root README > Sample Request Flow](../../README.md#sample-request-flow--creating-a-booking) for a full trace of `POST /user/bookings`, and [Engineering Challenges](../../README.md#engineering-challenges-handled) for how double-booking races are prevented.
+`src/booking`: booking lifecycle: create, cancel, list, detail, stats, host dashboards. See [root README > Sample Request Flow](../../README.md#sample-request-flow-creating-a-booking) for a full trace of `POST /user/bookings`, and [Engineering Challenges](../../README.md#engineering-challenges-handled) for how double-booking races are prevented.
 
 ## Structure
 
