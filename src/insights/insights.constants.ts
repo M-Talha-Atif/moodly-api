@@ -1,0 +1,1 @@
+export const DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS = 30;

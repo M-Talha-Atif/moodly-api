@@ -7,6 +7,7 @@
 ```
 insights/
 ├── insights.module.ts
+├── insights.constants.ts        # DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS
 ├── controller/
 │   └── insights.controller.ts   # @Controller('insights')
 └── services/
@@ -19,4 +20,4 @@ insights/
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/insights` | User insight overview. Optional `?moodDays=N` controls the mood-trend window size |
+| GET | `/insights` | User insight overview. Optional `?moodDays=N` controls the mood-trend window size (defaults to `DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS`, 30) |
