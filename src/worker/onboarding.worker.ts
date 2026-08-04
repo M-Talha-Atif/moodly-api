@@ -1,7 +1,7 @@
 // src/worker/onboarding.worker.ts
 import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 import { UsersService } from 'src/users/users.service';
 
 @Controller()

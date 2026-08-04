@@ -17,8 +17,8 @@ import {
 } from '../embedding/schemas/community-embedding.schema';
 import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RmqModule } from 'src/rmq/rmq.module';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RmqModule } from 'src/infra/rmq/rmq.module';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 import { CommonModule } from 'src/common/common.module';
 import { EmbeddingModule } from 'src/embedding/embedding.module';
 import { RecommendationWorker } from './recommendation.worker';

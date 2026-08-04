@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common';
 import { RecommendationService } from './services/recommendation.service';
 import { ExperienceModule } from 'src/experience/experience.module';
-import { RedisModule } from 'src/redis/redis.module';
+import { RedisModule } from 'src/infra/redis/redis.module';
 import { RecommendationController } from './recommendation.controller';
 import { EmbeddingModule } from 'src/embedding/embedding.module';
 import { RecommendationGateway } from './recommendation.gateway';
