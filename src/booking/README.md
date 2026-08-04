@@ -7,6 +7,7 @@
 ```
 booking/
 ├── booking.module.ts
+├── booking.constants.ts   # pagination defaults, trend window, refund cutoff window
 ├── controller/
 │   ├── user-booking.controller.ts   # @Controller('user/bookings')
 │   └── host-booking.controller.ts   # @Controller('host/bookings')
@@ -70,3 +71,7 @@ Fired after the DB transaction commits, not awaited by the HTTP response (`Booki
 1. `AttendanceService.createAttendance(...)`: creates the linked `Attendance` row (see [attendance module](../attendance/README.md)).
 2. `NotificationService.createAndSend(...)`: persists a `Notification` row, pushes it over Socket.IO, and queues a confirmation email onto the BullMQ `notification-queue` (see [notification module](../notification/README.md)).
 3. `ExperienceGateway.emitSpotsUpdate(...)`: broadcasts the updated spot count to anyone subscribed to that experience's Socket.IO room.
+
+## Cancellation refund window
+
+`BookingCancellationService.isRefundEligible` checks the cancellation against `CANCELLATION_REFUND_WINDOW_HOURS` (48 hours, in `booking.constants.ts`) before the experience's start time. This only computes eligibility, there is no actual refund/payment integration wired up yet.

@@ -7,6 +7,7 @@
 ```
 mood-log/
 ├── mood-log.module.ts
+├── mood-log.constants.ts        # pagination defaults, daily-summary hour buckets
 ├── mood-log.controller.ts       # @Controller('mood-log')
 ├── services/
 │   ├── mood-log.service.ts       # CRUD + history/streak/heatmap, emits mood.detect
@@ -36,7 +37,7 @@ mood-log/
 | GET | `/mood-log/today` | Most recent log created today |
 | GET | `/mood-log/recent` | Most recent log overall |
 | GET | `/mood-log/history` | Paginated history (`limit` default 30, `page` default 1) |
-| GET | `/mood-log/daily-summary` | Today's logs grouped into morning / afternoon / night, with a dominant mood per group |
+| GET | `/mood-log/daily-summary` | Today's logs grouped into morning / afternoon / night (hour boundaries in `mood-log.constants.ts`, server local time), with a dominant mood per group |
 | GET | `/mood-log/range` | Logs between `start` and `end` query dates |
 | GET | `/mood-log/streak` | `{ streak, totalDaysLogged }` |
 | GET | `/mood-log/heatmap` | `{ [date]: finalMood }` map for calendar visualization |

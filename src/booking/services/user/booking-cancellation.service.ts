@@ -10,6 +10,7 @@ import { BookingValidationService } from 'src/booking/services/user/booking-vali
 import { BookingSideEffectsService } from 'src/booking/services/user/booking-side-effects.service';
 import { AttendanceService } from 'src/attendance/attendance.service';
 import { ExperienceGateway } from 'src/experience/experience.gateway';
+import { CANCELLATION_REFUND_WINDOW_HOURS } from 'src/booking/booking.constants';
 
 @Injectable()
 export class BookingCancellationService {
@@ -110,7 +111,9 @@ export class BookingCancellationService {
 
   private isRefundEligible(experienceDate: Date): boolean {
     const refundDeadline = new Date(experienceDate);
-    refundDeadline.setHours(refundDeadline.getHours() - 48);
+    refundDeadline.setHours(
+      refundDeadline.getHours() - CANCELLATION_REFUND_WINDOW_HOURS,
+    );
     return new Date() < refundDeadline;
   }
 }
