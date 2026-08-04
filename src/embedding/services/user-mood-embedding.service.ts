@@ -49,8 +49,6 @@ ${preferencesText}
 Context: ${timeOfDay}, ${dayOfWeek}.
     `.trim();
 
-    console.log('🔎 [UserMoodEmbeddingService] Combined text:\n', combinedText);
-
     return combinedText;
   }
 }
