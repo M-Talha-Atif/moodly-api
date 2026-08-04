@@ -1,6 +1,6 @@
 # Worker Module (separate process)
 
-`src/worker`: **not** part of the API process. This is a standalone Nest application, bootstrapped by its own `main.ts`, that does nothing but consume RabbitMQ events. Run it alongside the API with `npm run start:worker` (API: `npm run start`). See [root README > Event-Driven Architecture](../../README.md#event-driven-architecture-rabbitmq) and the [sample event flow](../../README.md#sample-event-flow--mood-log-to-recommendation) for the full picture.
+`src/worker`: **not** part of the API process. This is a standalone Nest application, bootstrapped by its own `main.ts`, that does nothing but consume RabbitMQ events. Run it alongside the API with `npm run start:worker` (API: `npm run start`). See [root README > Event-Driven Architecture](../../README.md#event-driven-architecture-rabbitmq) and the [sample event flow](../../README.md#sample-event-flow-mood-log-to-recommendation) for the full picture.
 
 ## Structure
 
@@ -8,6 +8,7 @@
 worker/
 ├── worker.module.ts             # imports DatabaseModule, RmqModule x5, EmbeddingModule,
 │                                 # UsersModule, RecommendationModule, ExperienceModule, CommonModule
+├── worker.constants.ts          # WORKER_HTTP_PORT, WORKER_PREFETCH_COUNT
 ├── main.ts                       # bootstraps WorkerModule, opens 5 RMQ microservice connections,
 │                                 # also listens on HTTP port 3001 (health-check only: no real controllers besides the event handlers below)
 ├── mood-detection.worker.ts      # @EventPattern('mood.detect')
@@ -23,7 +24,9 @@ Emotion analysis and embedding generation both call the external FastAPI inferen
 
 ## Connections
 
-Each of the 5 RabbitMQ connections is opened with `prefetchCount: 1`, meaning the worker processes at most one message per domain at a time before acknowledging and pulling the next: so across all 5 domains, at most 5 events are ever "in flight" concurrently in a single worker instance. This process also opens its **own** Postgres and Mongo connection pools (it imports the same `DatabaseModule` as the API, but as a separate OS process it does not share the API's pool): see [root README > Scale](../../README.md#scale-current-capacity--where-overflow-goes).
+Each of the 5 RabbitMQ connections is opened with `prefetchCount: WORKER_PREFETCH_COUNT` (1), meaning the worker processes at most one message per domain at a time before acknowledging and pulling the next: so across all 5 domains, at most 5 events are ever "in flight" concurrently in a single worker instance. This process also opens its **own** Postgres and Mongo connection pools (it imports the same `DatabaseModule` as the API, but as a separate OS process it does not share the API's pool): see [root README > Scale](../../README.md#scale-current-capacity-and-where-overflow-goes).
+
+> The Experience RMQ connection's `exchange` reads `RMQ_ONBOARDING_EXCHANGE` instead of an experience-specific variable, likely a copy-paste slip. Harmless as long as both fall back to their own distinct hardcoded defaults, but would misroute if `RMQ_ONBOARDING_EXCHANGE` is ever set to a custom value in `.env`. Flagged in `main.ts`, not fixed, since correcting it changes runtime routing behavior.
 
 ## Event handlers
 

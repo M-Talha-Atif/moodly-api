@@ -8,6 +8,7 @@ import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import * as fs from 'fs';
 import * as path from 'path';
+import { WORKER_HTTP_PORT, WORKER_PREFETCH_COUNT } from './worker.constants';
 
 /**
  * --------------------------------
@@ -78,7 +79,7 @@ async function bootstrap() {
       queueOptions: { durable: true },
       exchange: process.env.RMQ_MOOD_EXCHANGE || 'mood-exchange',
       exchangeType: 'direct',
-      prefetchCount: 1,
+      prefetchCount: WORKER_PREFETCH_COUNT,
     },
   });
 
@@ -91,7 +92,7 @@ async function bootstrap() {
       queueOptions: { durable: true },
       exchange: process.env.RMQ_COMM_EXCHANGE || 'community-exchange',
       exchangeType: 'direct',
-      prefetchCount: 1,
+      prefetchCount: WORKER_PREFETCH_COUNT,
     },
   });
 
@@ -104,7 +105,7 @@ async function bootstrap() {
       queueOptions: { durable: true },
       exchange: process.env.RMQ_REC_EXCHANGE || 'recommendation-exchange',
       exchangeType: 'direct',
-      prefetchCount: 1,
+      prefetchCount: WORKER_PREFETCH_COUNT,
     },
   });
   // Onboarding
@@ -116,7 +117,7 @@ async function bootstrap() {
       queueOptions: { durable: true },
       exchange: process.env.RMQ_ONBOARDING_EXCHANGE || 'onboarding-exchange',
       exchangeType: 'direct',
-      prefetchCount: 1,
+      prefetchCount: WORKER_PREFETCH_COUNT,
     },
   });
   // Experience
@@ -126,9 +127,12 @@ async function bootstrap() {
       urls: [process.env.RABBITMQ_URL!],
       queue: process.env.RMQ_EXPERIENCE_QUEUE || 'experience-tasks',
       queueOptions: { durable: true },
+      // Reads RMQ_ONBOARDING_EXCHANGE, not an experience-specific var, likely a copy-paste
+      // slip from the block above. Harmless while both fall back to their own distinct
+      // defaults, but would misroute if RMQ_ONBOARDING_EXCHANGE is ever overridden in .env.
       exchange: process.env.RMQ_ONBOARDING_EXCHANGE || 'experience-exchange',
       exchangeType: 'direct',
-      prefetchCount: 1,
+      prefetchCount: WORKER_PREFETCH_COUNT,
     },
   });
 
@@ -146,9 +150,7 @@ async function bootstrap() {
    - ${process.env.RMQ_EXPERIENCE_QUEUE || 'experience-tasks'}
 `);
 
-  const port = 3001;
-  // await app.listen(port);
-  await app.listen(port); // public access
+  await app.listen(WORKER_HTTP_PORT);
 }
 
 bootstrap();
