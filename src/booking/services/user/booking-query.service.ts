@@ -6,6 +6,10 @@ import { BookingMapperService } from './booking-mapper.service';
 import { BookingFilterService } from './booking-filter.service';
 import { formatDate } from 'src/common/utils/date.utils';
 import { formatTime } from 'src/common/utils/time.utils';
+import {
+  DEFAULT_BOOKINGS_PAGE,
+  DEFAULT_BOOKINGS_PAGE_SIZE,
+} from 'src/booking/booking.constants';
 @Injectable()
 export class BookingQueryService {
   constructor(
@@ -16,8 +20,8 @@ export class BookingQueryService {
   ) {}
 
   async findAllBookings(
-    page = 1,
-    limit = 10,
+    page = DEFAULT_BOOKINGS_PAGE,
+    limit = DEFAULT_BOOKINGS_PAGE_SIZE,
     userId?: string,
     status?: 'confirmed' | 'cancelled' | 'waitlisted',
     timeFilter?: 'today' | 'tomorrow' | 'weekend' | 'next-week',

@@ -15,6 +15,7 @@ import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
 import { JwtCookieGuard } from './guards/jwt-cookie.guard';
+import { AUTH_COOKIE_MAX_AGE_MS } from './auth.constants';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -45,7 +46,7 @@ export class AuthController {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        maxAge: AUTH_COOKIE_MAX_AGE_MS,
       });
     }
 
@@ -99,7 +100,7 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: AUTH_COOKIE_MAX_AGE_MS,
     });
 
     // Redirect frontend → React Router handle karega

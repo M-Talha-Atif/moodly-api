@@ -4,6 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from '../../entities/booking.entity';
 import { formatDate } from 'src/common/utils/date.utils';
+import {
+  DEFAULT_RECENT_BOOKINGS_LIMIT,
+  BOOKING_TREND_WINDOW_DAYS,
+} from 'src/booking/booking.constants';
 
 @Injectable()
 export class HostBookingQueryService {
@@ -51,7 +55,10 @@ export class HostBookingQueryService {
    */
   // src/booking/services/host/host-booking-query.service.ts
 
-  async findRecentForHost(hostId: string, limit = 5) {
+  async findRecentForHost(
+    hostId: string,
+    limit = DEFAULT_RECENT_BOOKINGS_LIMIT,
+  ) {
     const bookings = await this.bookingRepo
       .createQueryBuilder('booking')
       .innerJoin('booking.experience', 'experience')
@@ -88,7 +95,7 @@ export class HostBookingQueryService {
   /**
    * Get booking trend for the host's experiences (grouped by date)
    */
-  async getBookingTrend(hostId: string, days = 90) {
+  async getBookingTrend(hostId: string, days = BOOKING_TREND_WINDOW_DAYS) {
     const sinceDate = new Date();
     sinceDate.setDate(sinceDate.getDate() - days);
 

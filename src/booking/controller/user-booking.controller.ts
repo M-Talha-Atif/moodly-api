@@ -22,6 +22,10 @@ import { ResultDto } from '../../common/dto/result.dto';
 import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
 import { RolesGuard } from '../../common/roles.guard';
 import { SkipThrottle } from '@nestjs/throttler';
+import {
+  DEFAULT_BOOKINGS_PAGE,
+  DEFAULT_BOOKINGS_PAGE_SIZE,
+} from '../booking.constants';
 
 @SkipThrottle()
 @ApiTags('User Bookings')
@@ -142,8 +146,8 @@ export class UserBookingController {
   })
   async findAllBookings(
     @Req() req: any,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @Query('page') page = DEFAULT_BOOKINGS_PAGE,
+    @Query('limit') limit = DEFAULT_BOOKINGS_PAGE_SIZE,
     @Query('status') status?: 'confirmed' | 'cancelled' | 'waitlisted',
     @Query('timeFilter')
     timeFilter?: 'today' | 'tomorrow' | 'weekend' | 'next-week',

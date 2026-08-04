@@ -5,6 +5,7 @@ import type { Queue } from 'bull';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan } from 'typeorm';
 import { Experience } from 'src/experience/entities/experience.entity';
+import { FEEDBACK_REMINDER_CRON_EXPRESSION } from '../feedback.constants';
 
 @Injectable()
 export class FeedbackCron {
@@ -14,7 +15,7 @@ export class FeedbackCron {
     @InjectQueue('feedback-request') private readonly queue: Queue,
   ) {}
 
-  @Cron('0 */19999 * * * *') // every 5 min
+  @Cron(FEEDBACK_REMINDER_CRON_EXPRESSION)
   async enqueueEndedExperiences() {
     const now = new Date(); // fetch current time
 

@@ -13,13 +13,8 @@ export class ValidationService {
     dto: CreateMoodLogDto,
     files?: { photo?: Express.Multer.File; voice?: Express.Multer.File },
   ): ResultDto<void> {
-    console.log(files?.photo);
-    console.log(dto.photoPath);
-    console.log(dto.voicePath);
     const hasPhoto = !!files?.photo || !!dto.photoPath;
     const hasVoice = !!files?.voice || !!dto.voicePath;
-    console.log(hasPhoto);
-    console.log(hasVoice);
 
     if (!hasPhoto && !hasVoice) {
       return ResultDto.fail(
@@ -37,12 +32,6 @@ export class ValidationService {
    */
   validateVoiceFile(file: Express.Multer.File): ResultDto<void> {
     if (!file) return ResultDto.okEmpty();
-
-    console.log('Voice file validation:', {
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      size: file.size,
-    });
 
     // Comprehensive list of audio MIME types
     const allowedMimeTypes = [
@@ -83,13 +72,6 @@ export class ValidationService {
     const isExtensionValid = allowedExtensions.includes(ext);
 
     if (!isMimeTypeValid || !isExtensionValid) {
-      console.log('Unsupported audio format:', {
-        mimetype: file.mimetype,
-        extension: ext,
-        allowedMimeTypes,
-        allowedExtensions,
-      });
-
       return ResultDto.fail(
         `Unsupported audio format. Supported: ${allowedExtensions.join(', ')}`,
         400,
@@ -97,7 +79,6 @@ export class ValidationService {
       );
     }
 
-    console.log(' Voice file validation passed');
     return ResultDto.okEmpty();
   }
 
@@ -123,8 +104,7 @@ export class ValidationService {
       }
 
       return ResultDto.okEmpty();
-    } catch (error) {
-      console.log(error);
+    } catch {
       return ResultDto.fail(
         'Error validating voice file',
         500,
