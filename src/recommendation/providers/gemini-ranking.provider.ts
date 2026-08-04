@@ -34,42 +34,24 @@ Always include ALL candidate IDs in the output, even if they seem irrelevant.
 Respond ONLY with a JSON array of IDs in ranked order.
   `.trim();
 
-    this.logger.log(`📩 Gemini prompt: ${prompt}`);
-
     const model = this.gemini.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const result = await model.generateContent(prompt);
-
-    // 👉 full Gemini SDK response for debugging
-    this.logger.log(
-      `🛠️ Gemini full response: ${JSON.stringify(result, null, 2)}`,
-    );
-
     const raw = result.response.text().trim();
 
-    this.logger.log(`📩 Gemini raw output (before clean): ${raw}`);
-
     try {
-      // 🧹 Clean markdown fences if present
       const cleaned = raw.replace(/```json|```/g, '').trim();
-      this.logger.log(`🧹 Gemini cleaned output: ${cleaned}`);
-
       const ids = JSON.parse(cleaned);
-      this.logger.log(`✅ Parsed IDs from Gemini: ${JSON.stringify(ids)}`);
 
       if (Array.isArray(ids) && ids.length > 0) {
-        this.logger.log(
-          `🎯 Gemini successfully returned ranking: ${JSON.stringify(ids)}`,
-        );
         return ids;
       }
 
       this.logger.warn(
-        '⚠️ Gemini returned empty or invalid ranking, falling back to original order',
+        'Gemini returned empty or invalid ranking, falling back to original order',
       );
       return candidates.map((c) => c.id);
     } catch (err) {
-      this.logger.error(`❌ Failed to parse Gemini output`);
-      this.logger.error(`Message: ${err.message}`);
+      this.logger.error(`Failed to parse Gemini output: ${err.message}`);
       return candidates.map((c) => c.id);
     }
   }

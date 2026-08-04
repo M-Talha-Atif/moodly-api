@@ -7,6 +7,10 @@ import { Community } from '../../entities/community/community.entity';
 import { CommunityMemberMapper } from '../../mapper/community/community-member.mapper';
 import { CommunityMemberDto } from '../../dto/community-member.dto';
 import { TransactionService } from 'src/common/services/transaction.service';
+import {
+  DEFAULT_COMMUNITY_PAGE,
+  DEFAULT_COMMUNITY_MEMBERS_PAGE_SIZE,
+} from '../../community.constants';
 
 @Injectable()
 export class CommunityMemberService {
@@ -115,8 +119,8 @@ export class CommunityMemberService {
    */
   async listMembers(
     communityId: string,
-    page = 1,
-    limit = 50, // default page size
+    page = DEFAULT_COMMUNITY_PAGE,
+    limit = DEFAULT_COMMUNITY_MEMBERS_PAGE_SIZE,
   ): Promise<CommunityMemberDto[]> {
     this.logger.log(
       `Listing members for community ${communityId}, page=${page}, limit=${limit}`,
