@@ -515,6 +515,7 @@ No Dockerfile/docker-compose/CI workflow exists in this repository, deployment t
 | Item | Notes |
 |---|---|
 | Rate limiting disabled | `ThrottlerModule` is fully configured but commented out in `src/app.module.ts`, see [Scale](#scale-current-capacity-and-where-overflow-goes) |
+| Inconsistent bcrypt cost factors | Password hashing uses cost 12, refresh-token hashing uses cost 10 (`src/auth/auth.constants.ts`), not a documented design choice, worth deciding whether to unify |
 | No `test` / `test:e2e` / `start:dev` npm scripts | Jest, ts-jest, and supertest are installed but `package.json` has no script to run them; `test/jest-e2e.json` exists with no `*.e2e-spec.ts` files behind it yet |
 | Legacy duplicate experience controller | `src/experience/experience.controller.ts` overlaps with the newer `controllers/experience.host/public/user.controller.ts` split, both are currently registered |
 | `POST /notification` role check is inert | `@Roles('host')` is set on the handler but `RolesGuard` isn't in that route's `@UseGuards(...)`, so the role restriction doesn't actually run, see [src/notification/README.md](src/notification/README.md) |
