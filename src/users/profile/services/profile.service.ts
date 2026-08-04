@@ -5,6 +5,7 @@ import { UpdatePasswordDto } from '../dto/update-password.dto';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { S3Service } from 'src/common/services/s3.service';
 import * as bcrypt from 'bcrypt';
+import { PASSWORD_HASH_SALT_ROUNDS } from 'src/auth/auth.constants';
 
 @Injectable()
 export class ProfileService {
@@ -83,7 +84,10 @@ export class ProfileService {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(dto.newPassword, 12);
+    const hashedPassword = await bcrypt.hash(
+      dto.newPassword,
+      PASSWORD_HASH_SALT_ROUNDS,
+    );
     await this.usersService.update(userId, { passwordHash: hashedPassword });
 
     return ResultDto.okWithMessage('Password updated successfully');

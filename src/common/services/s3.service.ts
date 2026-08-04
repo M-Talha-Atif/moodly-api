@@ -8,6 +8,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
+import { DEFAULT_PRESIGNED_URL_EXPIRY_SECONDS } from '../common.constants';
 
 @Injectable()
 export class S3Service {
@@ -55,7 +56,7 @@ export class S3Service {
   async getPresignedUploadUrl(
     originalName: string,
     mimetype: string,
-    expiresInSeconds = 300,
+    expiresInSeconds = DEFAULT_PRESIGNED_URL_EXPIRY_SECONDS,
   ): Promise<{ url: string; key: string }> {
     const ext = originalName?.split('.').pop() || mimetype.split('/').pop();
     const key = `experiences/${uuidv4()}.${ext}`;

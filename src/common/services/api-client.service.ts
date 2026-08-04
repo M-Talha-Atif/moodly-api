@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import axios, { AxiosError } from 'axios';
 import FormData from 'form-data';
 import * as fs from 'fs';
+import { FASTAPI_REQUEST_TIMEOUT_MS } from '../common.constants';
 
 @Injectable()
 export class ApiClientService {
@@ -28,7 +29,7 @@ export class ApiClientService {
           Authorization: `Bearer ${this.hfToken}`,
           'Content-Type': 'application/json',
         },
-        timeout: 35000,
+        timeout: FASTAPI_REQUEST_TIMEOUT_MS,
       });
       return res.data;
     } catch (err) {
@@ -63,7 +64,7 @@ export class ApiClientService {
           ...formData.getHeaders(),
           Authorization: `Bearer ${this.hfToken}`,
         },
-        timeout: 35000,
+        timeout: FASTAPI_REQUEST_TIMEOUT_MS,
       });
 
       return res.data;
