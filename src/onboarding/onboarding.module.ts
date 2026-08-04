@@ -9,9 +9,9 @@ import {
   UserOnboarding,
   UserOnboardingSchema,
 } from './schemas/user-onboarding.schema';
-import { RmqModule } from 'src/rmq/rmq.module';
+import { RmqModule } from 'src/infra/rmq/rmq.module';
 import { AuthModule } from 'src/auth/auth.module';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 @Module({
   imports: [
     MongooseModule.forFeature([

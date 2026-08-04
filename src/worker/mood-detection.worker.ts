@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { EmotionAnalysisService } from '../mood-log/services/emotion-analysis.service';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 // import { UserMoodEmbeddingService } from 'src/embedding/services/user-mood-embedding.service';
 
 type MoodDetectPayload = {
