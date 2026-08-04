@@ -7,6 +7,7 @@
 ```
 common/
 ├── common.module.ts        # provides + exports the four services below
+├── common.constants.ts     # presigned URL expiry, FastAPI request timeout
 ├── services/
 │   ├── transaction.service.ts     # withTransaction / withSerializableTransaction (TypeORM QueryRunner wrapper)
 │   ├── api-client.service.ts      # ApiClientService: HTTP client for the external FastAPI inference service
@@ -28,8 +29,8 @@ common/
 
 - **`ResultDto`**: the standard response shape across the API: `ResultDto.ok(data, message, statusCode)` / `ResultDto.fail(reason, statusCode, errorType)` / `ResultDto.okEmpty()`. Combined with `ERROR_CODE_MAP`, this gives a consistent `{ success, statusCode, data, message }` / `{ success: false, statusCode, reason, errorType }` shape everywhere.
 - **`TransactionService`**: wraps a TypeORM `QueryRunner` in `try/commit/catch-rollback/finally-release`. `withTransaction` runs at `READ COMMITTED`; `withSerializableTransaction` is available for operations that need stronger isolation. Used by booking creation/cancellation: see [booking module](../booking/README.md).
-- **`ApiClientService`**: the only place in this repo that calls the external FastAPI inference service (`FASTAPI_URL`, bearer `HF_TOKEN`). Exposes `postFile(...)` for multipart uploads (emotion analysis) and a JSON POST for `/embed`.
+- **`ApiClientService`**: the only place in this repo that calls the external FastAPI inference service (`FASTAPI_URL`, bearer `HF_TOKEN`). Exposes `postFile(...)` for multipart uploads (emotion analysis) and a JSON POST for `/embed`. Every call uses `FASTAPI_REQUEST_TIMEOUT_MS` (35s, in `common.constants.ts`).
 - **`GeminiService`**: wraps `@google/generative-ai` (model `gemini-2.5-flash`), `generateText(prompt)`, strips markdown code fences from JSON responses. Used by AI experience generation ([experience module](../experience/README.md)) and as one of two recommendation reranking providers ([recommendation module](../recommendation/README.md)).
-- **`S3Service`**: uploads (avatars, experience images) to AWS S3 and generates presigned URLs, via `@aws-sdk/client-s3` / `@aws-sdk/s3-request-presigner`.
+- **`S3Service`**: uploads (avatars, experience images) to AWS S3 and generates presigned URLs (default expiry `DEFAULT_PRESIGNED_URL_EXPIRY_SECONDS`, 5 minutes, in `common.constants.ts`), via `@aws-sdk/client-s3` / `@aws-sdk/s3-request-presigner`.
 - **`FileDownloadService`**: downloads a file from an S3 URL to a local temp path, used when re-submitting previously-uploaded media to FastAPI for analysis, with cleanup after use.
 - **`RolesGuard` / `@Roles(...)`**: role-based access control building block, used across almost every protected controller alongside `JwtCookieGuard`/`JwtBearerGuard` (see [auth module](../auth/README.md)).

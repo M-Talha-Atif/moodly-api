@@ -10,6 +10,7 @@ import { AuthProvider } from 'src/common/enums/user.enums';
 import { UserRole } from 'src/common/enums/user.enums';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { PASSWORD_HASH_SALT_ROUNDS } from 'src/auth/auth.constants';
 
 @Injectable()
 export class UsersService {
@@ -26,7 +27,10 @@ export class UsersService {
       email: createUserDto.email,
       passwordHash:
         createUserDto.passwordHash ??
-        (await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 12)),
+        (await bcrypt.hash(
+          crypto.randomBytes(16).toString('hex'),
+          PASSWORD_HASH_SALT_ROUNDS,
+        )),
       name: createUserDto.name,
       avatarUrl: createUserDto.avatarUrl,
       culturalBackground: createUserDto.culturalBackground,
