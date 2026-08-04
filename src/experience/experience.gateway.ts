@@ -1,8 +1,6 @@
 import {
   WebSocketGateway,
   WebSocketServer,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
   SubscribeMessage,
   MessageBody,
   ConnectedSocket,
@@ -15,15 +13,9 @@ import { Server, Socket } from 'socket.io';
     credentials: true,
   },
 })
-export class ExperienceGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+export class ExperienceGateway {
   @WebSocketServer()
   server: Server;
-
-  handleConnection(client: Socket) {}
-
-  handleDisconnect(client: Socket) {}
 
   // Room name convention: `experience_<experienceId>`, joined by clients viewing that
   // experience's detail page so emitSpotsUpdate can target only them.
