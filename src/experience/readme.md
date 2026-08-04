@@ -1,232 +1,80 @@
-ok so im using domain feature based frontend,
-hosts will create experiences and also they can create communities , also they can signup and login
+# Experience Module
 
-currently my web supports users i mean user who can book experiences and join different communitiies and do posting there
+`src/experience` — the bookable "experience" domain (wellness events hosts create and users discover/book). Endpoints are split by audience (host / user / public) rather than one controller branching internally on role.
 
-my entity has
-import {
-Entity,
-PrimaryGeneratedColumn,
-Column,
-ManyToOne,
-OneToMany,
-CreateDateColumn,
-UpdateDateColumn,
-} from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { Booking } from '../../booking/entities/booking.entity';
-import { Feedback } from '../../feedback/entities/feedback.entity';
+## Structure
 
-@Entity()
-export class Experience {
-@PrimaryGeneratedColumn('uuid')
-id: string;
+```
+experience/
+├── experience.module.ts
+├── experience.controller.ts              # legacy combined controller — still registered
+├── experience.gateway.ts                 # Socket.IO: live spot-count updates
+├── experience-recommendation.service.ts  # emotion-based experience matching (used by recommendation module)
+├── controllers/
+│   ├── experience.host.controller.ts     # @Controller('host/experiences')
+│   ├── experience.public.controller.ts   # @Controller('public/experiences')
+│   └── experience.user.controller.ts     # @Controller('user/experiences')
+├── services/
+│   ├── experience.service.ts
+│   ├── experience-filter.service.ts
+│   └── host/
+│       ├── experience-host.service.ts
+│       └── ai-experience.service.ts      # Gemini: voice/text → structured experience fields
+├── dto/host/
+└── entities/
+    └── experience.entity.ts
+```
 
-@Column()
-title: string;
+> `experience.controller.ts` (legacy, combined) and the `controllers/experience.*.controller.ts` split are **both currently registered** in `experience.module.ts`, producing some overlapping routes under `/experiences/*` alongside `/host|user|public/experiences/*`. Prefer the split controllers below for new integrations.
 
-@Column('text')
-description: string;
+## Entity notes
 
-@Column({ type: 'timestamp' })
-date: Date;
+`Experience`: title, description, date, location, image, `isVirtual`, `sessionStart/EndTime`, price, timezone, `totalSpots`/`spotsFilled`, meetingLink, cancellationPolicy, `aiPrep`/`testimonials`/`preparation` (jsonb), `targetEmotions`/`desiredOutcomes`/`culturalTags` (arrays — see `Emotions.md` at repo root for the taxonomy), `growthDimensions`, `experienceOutcomeSummary`, `idealParticipantTraits`, `engagementStats` (jsonb), `host` (ManyToOne `User`).
 
-@Column()
-location: string;
+## AI generation
 
-@Column()
-image: string;
+`POST /host/experiences/generate` accepts a voice recording or free text and runs it through Gemini (`AiExperienceService`, `src/common/services/gemini.service.ts`) to produce structured experience fields synchronously. The same generation logic also runs **asynchronously** via the `experience.generate_ai` RabbitMQ event, consumed by `ExperienceWorker` (`src/worker/experience.worker.ts`) — see [root README](../../README.md#event-driven-architecture-rabbitmq).
 
-@Column()
-isVirtual: boolean;
+## Real-time spots
 
-@Column({ type: 'timestamp' })
-sessionStartTime: Date;
+`ExperienceGateway` maintains a Socket.IO room per experience (`experience_<id>`). Clients emit `join-experience` to subscribe; the server emits `spots-update` whenever a booking or cancellation changes `spotsFilled` (see [booking module](../booking/README.md)).
 
-@Column({ type: 'timestamp' })
-sessionEndTime: Date;
+## Endpoints
 
-@Column()
-price: number;
+### Host — `@Controller('host/experiences')`, `JwtCookieGuard, JwtBearerGuard, RolesGuard` (role `host`)
 
-@Column()
-timezone: string;
+| Method | Route | Description |
+|---|---|---|
+| POST | `/host/experiences` | Create an experience |
+| POST | `/host/experiences/generate` | AI-generate experience fields from voice or text (Gemini) |
+| POST | `/host/experiences/:id/image` | Upload experience image to S3 |
+| PUT | `/host/experiences/:id` | Update (owner-only) |
+| DELETE | `/host/experiences/:id` | Delete (owner-only) |
+| GET | `/host/experiences` | List the host's experiences (filtered/paginated) |
+| GET | `/host/experiences/:id` | Get a single experience (host-owned) |
+| GET | `/host/experiences/:id/bookings` | List bookings for this experience |
 
-@Column()
-totalSpots: number;
+### Public — `@Controller('public/experiences')`, no guard
 
-@Column({ default: 0 })
-spotsFilled: number;
+| Method | Route | Description |
+|---|---|---|
+| GET | `/public/experiences` | Public filtered/paginated listing |
 
-@Column({ nullable: true })
-meetingLink: string;
+### User — `@Controller('user/experiences')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard` (role `user`)
 
-@Column({ nullable: true })
-cancellationPolicy: string;
+| Method | Route | Description |
+|---|---|---|
+| GET | `/user/experiences` | Listing with booking-aware filters |
+| GET | `/user/experiences/:id` | Single experience, including the caller's booking status |
 
-@Column('jsonb', { nullable: true })
-aiPrep: any;
+### Legacy combined — `@Controller('experiences')`
 
-@Column('jsonb', { nullable: true })
-testimonials: any;
-
-@Column('jsonb', { nullable: true })
-preparation: any;
-
-// 🔥 Emotional Matching Fields
-@Column('simple-array', { nullable: true })
-targetEmotions: string[];
-
-@Column('simple-array', { nullable: true })
-desiredOutcomes: string[];
-
-// 🌍 Cultural Context
-@Column({ nullable: true })
-language: string;
-
-@Column('text', { array: true, nullable: true })
-culturalTags: string[];
-
-// 📈 Growth & Outcomes
-@Column('jsonb', { nullable: true })
-growthDimensions: any;
-
-@Column({ type: 'text', nullable: true })
-experienceOutcomeSummary: string;
-
-// 👥 Community / Matchmaking
-@Column('simple-array', { nullable: true })
-idealParticipantTraits: string[];
-
-// 📊 AI Engagement Stats
-@Column('jsonb', { nullable: true })
-engagementStats: any;
-
-// 👤 Host (Relation)
-@ManyToOne(() => User, (user) => user.experiences, { eager: false })
-host: User;
-
-@OneToMany(() => Booking, (booking) => booking.experience)
-bookings: Booking[];
-
-@OneToMany(() => Feedback, (feedback) => feedback.experience)
-feedbacks: Feedback[];
-
-@CreateDateColumn()
-createdAt: Date;
-
-@UpdateDateColumn()
-updatedAt: Date;
-}
-
-create one
-import {
-IsString,
-IsDateString,
-IsBoolean,
-IsNumber,
-IsArray,
-IsOptional,
-IsObject,
-} from 'class-validator';
-
-export class CreateExperienceDto {
-@IsString()
-title: string;
-
-@IsString()
-description: string;
-
-@IsDateString()
-date: string;
-
-@IsString()
-location: string;
-
-@IsString()
-image: string;
-
-@IsBoolean()
-isVirtual: boolean;
-
-@IsDateString()
-sessionStartTime: string;
-
-@IsDateString()
-sessionEndTime: string;
-
-@IsNumber()
-price: number;
-
-@IsString()
-timezone: string;
-
-@IsNumber()
-totalSpots: number;
-
-@IsOptional()
-@IsNumber()
-spotsFilled?: number;
-
-@IsOptional()
-@IsString()
-meetingLink?: string;
-
-@IsOptional()
-@IsString()
-cancellationPolicy?: string;
-
-@IsOptional()
-@IsObject()
-aiPrep?: any;
-
-@IsOptional()
-@IsObject()
-testimonials?: any;
-
-@IsOptional()
-@IsObject()
-preparation?: any;
-
-@IsOptional()
-@IsArray()
-targetEmotions?: string[];
-
-@IsOptional()
-@IsArray()
-desiredOutcomes?: string[];
-
-@IsOptional()
-@IsString()
-language?: string;
-
-@IsOptional()
-@IsArray()
-@IsString({ each: true })
-culturalTags?: string[];
-
-@IsOptional()
-@IsObject()
-growthDimensions?: any;
-
-@IsOptional()
-@IsString()
-experienceOutcomeSummary?: string;
-
-@IsOptional()
-@IsArray()
-idealParticipantTraits?: string[];
-
-@IsOptional()
-@IsObject()
-engagementStats?: any;
-}
-
----
-
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateExperienceDto } from './create-experience.dto';
-
-export class UpdateExperienceDto extends PartialType(CreateExperienceDto) {}
-
-so first want to store
+| Method | Route | Role | Description |
+|---|---|---|---|
+| POST | `/experiences` | host | Create experience |
+| POST | `/experiences/:id/upload-image` | host | Upload image (multipart → S3) |
+| PUT | `/experiences/:id` | host | Update (owner-only) |
+| DELETE | `/experiences/:id` | host | Delete (owner-only) |
+| GET | `/experiences/public` | – | Public listing w/ filters |
+| GET | `/experiences/user` | user | User-scoped listing |
+| GET | `/experiences/:id` | user | Single experience + booking status |
