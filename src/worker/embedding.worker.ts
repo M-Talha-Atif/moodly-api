@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MoodLogEmbedding } from '../embedding/schemas/moodlog-embedding.schema';
 import { CommunityEmbedding } from '../embedding/schemas/community-embedding.schema';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 
 type MoodAnalyzedPayload = {
   moodLogId: string;

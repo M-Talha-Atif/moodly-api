@@ -7,7 +7,7 @@ import {
   SetGoalsDto,
   SetActivitiesDto,
 } from 'src/onboarding/dto/onboarding.dto';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()

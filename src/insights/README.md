@@ -1,6 +1,6 @@
 # Insights Module
 
-`src/insights` — aggregated analytics overview for a single user (mood trends and related derived stats).
+`src/insights`: aggregated analytics overview for a single user (mood trends and related derived stats).
 
 ## Structure
 
