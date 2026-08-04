@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RedisService } from 'src/redis/redis.service';
+import { RedisService } from 'src/infra/redis/redis.service';
 import { getRecommendationCacheKey } from '../utils/cache-key.util';
 import { ExperienceRecommendationService } from 'src/experience/experience-recommendation.service';
 import { LLMRankingService } from './llm-ranking.service';

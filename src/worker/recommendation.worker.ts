@@ -2,7 +2,7 @@ import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { RecommendationService } from '../recommendation/services/recommendation.service';
 import { RecommendationGateway } from '../recommendation/recommendation.gateway';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 
 // type RecommendationPayload = {
 //   userId: string;

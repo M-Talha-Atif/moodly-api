@@ -1,6 +1,6 @@
 # Mood Log Module
 
-`src/mood-log` — multi-modal mood logging (text label + optional photo + optional voice), the entry point into the mood-detection → recommendation event chain. See [root README > Sample Event Flow](../../README.md#sample-event-flow--mood-log-to-recommendation) for the full async trace.
+`src/mood-log`: multi-modal mood logging (text label + optional photo + optional voice), the entry point into the mood-detection → recommendation event chain. See [root README > Sample Event Flow](../../README.md#sample-event-flow--mood-log-to-recommendation) for the full async trace.
 
 ## Structure
 
@@ -22,9 +22,9 @@ mood-log/
 
 ## How it works
 
-`POST /mood-log` persists the log immediately with `finalMood` provisionally set to the client-supplied `moodLabel`, returns `201`, and emits a `mood.detect` RabbitMQ event containing the mood log id and any uploaded file paths. The **worker process** (`src/worker/mood-detection.worker.ts`, a different module — see [worker README](../worker/README.md)) picks that event up, calls the external FastAPI inference service for photo/voice emotion analysis, and updates the row's `finalMood`, `photoEmotion`, `voiceSentiment` — then chains a `recommendation.generate` event. This module never talks to FastAPI or RabbitMQ consumers directly on the request path; it only produces the initial event.
+`POST /mood-log` persists the log immediately with `finalMood` provisionally set to the client-supplied `moodLabel`, returns `201`, and emits a `mood.detect` RabbitMQ event containing the mood log id and any uploaded file paths. The **worker process** (`src/worker/mood-detection.worker.ts`, a different module: see [worker README](../worker/README.md)) picks that event up, calls the external FastAPI inference service for photo/voice emotion analysis, and updates the row's `finalMood`, `photoEmotion`, `voiceSentiment`: then chains a `recommendation.generate` event. This module never talks to FastAPI or RabbitMQ consumers directly on the request path; it only produces the initial event.
 
-`EmotionAnalysisService` (used by the worker, defined here since it shares the mood-log domain) handles both local file paths and S3 URLs — S3 URLs are downloaded to a temp file via `FileDownloadService` before being re-uploaded to FastAPI, then cleaned up.
+`EmotionAnalysisService` (used by the worker, defined here since it shares the mood-log domain) handles both local file paths and S3 URLs: S3 URLs are downloaded to a temp file via `FileDownloadService` before being re-uploaded to FastAPI, then cleaned up.
 
 ## Endpoints
 

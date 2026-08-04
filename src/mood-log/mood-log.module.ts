@@ -14,8 +14,8 @@ import {
 } from 'src/embedding/schemas/moodlog-embedding.schema';
 import { MulterModule } from '@nestjs/platform-express';
 import { ValidationService } from './services/validation.service';
-import { RmqModule } from 'src/rmq/rmq.module'; //  Import RMQ module
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RmqModule } from 'src/infra/rmq/rmq.module'; //  Import RMQ module
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 import { CommonModule } from 'src/common/common.module';
 import { memoryStorage } from 'multer';
 @Module({

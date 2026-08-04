@@ -1,6 +1,6 @@
 # Recommendation Module
 
-`src/recommendation` — matches users to experiences based on detected mood (active path) or embedding similarity with optional LLM reranking (implemented, not yet wired to a controller).
+`src/recommendation`: matches users to experiences based on detected mood (active path) or embedding similarity with optional LLM reranking (implemented, not yet wired to a controller).
 
 ## Structure
 
@@ -23,8 +23,8 @@ recommendation/
 
 ## Two matching paths
 
-1. **`generateForUserByMood(userId, mood, limit)`** — the active path. Used both by `GET /recommendations` and by `RecommendationWorker` after a mood log finishes analysis. Delegates to `ExperienceRecommendationService.recommendByEmotion` (in [experience module](../experience/README.md)) for direct emotion-tag matching. No LLM call. Redis caching code exists in this path but is currently commented out.
-2. **`generateForUser(userId, embedding, context)`** — embedding/ANN-based matching (`recommendByEmbedding`, MongoDB `$vectorSearch`) with optional LLM reranking via `LlmRankingService` (provider chosen by `RANKING_PROVIDER` env var) and Redis caching until midnight. Fully implemented but **not currently called from any controller or worker** — a secondary path available for future use (e.g. the planned Hybrid Recommendation Engine, see root README).
+1. **`generateForUserByMood(userId, mood, limit)`**: the active path. Used both by `GET /recommendations` and by `RecommendationWorker` after a mood log finishes analysis. Delegates to `ExperienceRecommendationService.recommendByEmotion` (in [experience module](../experience/README.md)) for direct emotion-tag matching. No LLM call. Redis caching code exists in this path but is currently commented out.
+2. **`generateForUser(userId, embedding, context)`**: embedding/ANN-based matching (`recommendByEmbedding`, MongoDB `$vectorSearch`) with optional LLM reranking via `LlmRankingService` (provider chosen by `RANKING_PROVIDER` env var) and Redis caching until midnight. Fully implemented but **not currently called from any controller or worker**: a secondary path available for future use (e.g. the planned Hybrid Recommendation Engine, see root README).
 
 ## Endpoints
 

@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import cookieParser from 'cookie-parser';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { setupBullBoard } from './bull-board/bull-board';
+import { setupBullBoard } from './infra/bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
 import { ValidationPipe } from '@nestjs/common';

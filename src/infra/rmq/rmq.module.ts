@@ -1,4 +1,4 @@
-// src/rmq/rmq.module.ts
+// src/infra/rmq/rmq.module.ts
 import { DynamicModule, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 

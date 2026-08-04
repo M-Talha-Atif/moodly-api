@@ -19,8 +19,8 @@ import { ExperiencePublicController } from './controllers/experience.public.cont
 import { ExperienceUserController } from './controllers/experience.user.controller';
 import { ExperienceHostService } from '../experience/services/host/experience-host.service';
 import { AiExperienceService } from './services/host/ai-experience.service';
-import { RmqModule } from 'src/rmq/rmq.module';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RmqModule } from 'src/infra/rmq/rmq.module';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 
 @Module({
   imports: [
