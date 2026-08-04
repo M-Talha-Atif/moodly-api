@@ -1,4 +1,4 @@
-// src/config/rmq.constants.ts
+// src/infra/config/rmq.constants.ts
 export const RMQ_DOMAINS = {
   MOOD: {
     CLIENT: 'MOOD_RMQ_CLIENT',

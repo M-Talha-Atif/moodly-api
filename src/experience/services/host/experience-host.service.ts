@@ -11,7 +11,7 @@ import { formatDate } from 'src/common/utils/date.utils';
 import { formatTime } from 'src/common/utils/time.utils';
 import { HostExperienceFiltersDto } from 'src/experience/dto/host/experience-filters-host.dto';
 import { ExperienceSortBy } from '../../dto/host/experience-filters-host.dto';
-import { RMQ_DOMAINS } from 'src/config/rmq.constants';
+import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
