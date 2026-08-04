@@ -7,31 +7,18 @@ import { AuthController } from './auth.controller';
 import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtCookieGuard } from './guards/jwt-cookie.guard';
-/**
- * AuthModule
- *
- * Provides authentication functionality including:
- * - User signup & login
- * - JWT-based authentication
- * - Logout with cookie management
- *
- * Imports:
- * - UsersModule: for user management and persistence
- * - JwtModule: for JWT token creation/verification
- *
- * Exports:
- * - JwtModule: so other modules (e.g. guards) can use it globally
- */
+import { DEFAULT_JWT_SIGN_EXPIRY } from './auth.constants';
+
 @Module({
   imports: [
     UsersModule,
     JwtModule.registerAsync({
-      global: true, //  makes JwtService injectable everywhere
+      global: true,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         global: true,
-        secret: config.get<string>('JWT_SECRET'), // now available
-        signOptions: { expiresIn: '1d' },
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: DEFAULT_JWT_SIGN_EXPIRY },
       }),
     }),
   ],

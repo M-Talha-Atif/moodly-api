@@ -7,6 +7,7 @@
 ```
 feedback/
 ├── feedback.module.ts
+├── feedback.constants.ts         # FEEDBACK_REMINDER_CRON_EXPRESSION, see note below
 ├── feedback.controller.ts        # @Controller('feedback')
 ├── feedback.service.ts
 ├── pending-feedback.service.ts
@@ -27,7 +28,7 @@ feedback/
 
 ## Automated reminders
 
-`feedback.cron.ts` runs on a schedule (`@nestjs/schedule`), finds experiences whose `sessionEndTime` has passed with confirmed bookings, and adds one `feedback-request` Bull job per attendee. The processor then creates a `PendingFeedback` row so the client can surface a "rate your experience" prompt. See [root README > Background Jobs](../../README.md#background-jobs-bullmq--bull): the cron expression currently in the code (`0 */19999 * * * *`) doesn't match its "every 5 minutes" comment and is worth verifying before relying on it in production.
+`feedback.cron.ts` runs on a schedule (`@nestjs/schedule`), finds experiences whose `sessionEndTime` has passed with confirmed bookings, and adds one `feedback-request` Bull job per attendee. The processor then creates a `PendingFeedback` row so the client can surface a "rate your experience" prompt. The schedule itself is `FEEDBACK_REMINDER_CRON_EXPRESSION` in `feedback.constants.ts` (`'0 */19999 * * * *'`), which does not mean "every 5 minutes" despite the value's origin: the minute field is out of Cron's valid 0-59 range and collapses to matching only minute 0, so this currently fires once per hour on the hour. Left unchanged pending a deliberate decision on the intended interval, see [root README > Known Gaps](../../README.md#known-gaps--next-planned-work).
 
 ## Endpoints
 
