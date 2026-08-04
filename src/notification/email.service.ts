@@ -4,6 +4,7 @@ import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as QRCode from 'qrcode';
 import { Attachment } from 'nodemailer/lib/mailer';
+import { DEFAULT_SMTP_PORT, SMTP_SECURE_PORT } from './notification.constants';
 
 @Injectable()
 export class EmailService {
@@ -12,14 +13,14 @@ export class EmailService {
 
   constructor() {
     const smtpHost = process.env.SMTP_HOST ?? '';
-    const smtpPort = Number(process.env.SMTP_PORT) || 587;
+    const smtpPort = Number(process.env.SMTP_PORT) || DEFAULT_SMTP_PORT;
     const smtpUser = process.env.SMTP_USER ?? '';
     const smtpPass = process.env.SMTP_PASS ?? '';
 
     this.transporter = nodemailer.createTransport({
       host: smtpHost,
       port: smtpPort,
-      secure: smtpPort === 465,
+      secure: smtpPort === SMTP_SECURE_PORT,
       auth: {
         user: smtpUser,
         pass: smtpPass,

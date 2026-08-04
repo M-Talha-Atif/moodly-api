@@ -7,6 +7,7 @@ import { User } from 'src/users/entities/user.entity';
 import { TransactionService } from 'src/common/services/transaction.service';
 import { CommunityCommentDto } from 'src/community/dto/posts/comments/community-comment.dto';
 import { CommunityCommentMapper } from 'src/community/mapper/posts/comments/community-comment.mapper';
+import { DEFAULT_COMMUNITY_COMMENTS_LIMIT } from 'src/community/community.constants';
 
 @Injectable()
 export class CommunityCommentService {
@@ -64,7 +65,7 @@ export class CommunityCommentService {
   async listComments(
     postId: string,
     cursor?: string,
-    limit = 10,
+    limit = DEFAULT_COMMUNITY_COMMENTS_LIMIT,
   ): Promise<{ data: CommunityCommentDto[]; nextCursor: string | null }> {
     const qb = this.commentRepo
       .createQueryBuilder('comment')

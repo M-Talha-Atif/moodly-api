@@ -8,6 +8,10 @@ import { User } from 'src/users/entities/user.entity';
 import { TransactionService } from 'src/common/services/transaction.service';
 import { CommunityPostDto } from '../../dto/posts/community-post.dto';
 import { CommunityPostMapper } from '../../mapper/posts/community-post.mapper';
+import {
+  DEFAULT_COMMUNITY_PAGE,
+  DEFAULT_COMMUNITY_POSTS_PAGE_SIZE,
+} from '../../community.constants';
 
 @Injectable()
 export class CommunityPostService {
@@ -67,8 +71,8 @@ export class CommunityPostService {
    */
   async listPosts(
     communityId: string,
-    page = 1,
-    limit = 20,
+    page = DEFAULT_COMMUNITY_PAGE,
+    limit = DEFAULT_COMMUNITY_POSTS_PAGE_SIZE,
     currentUserId?: string,
   ): Promise<CommunityPostDto[]> {
     this.logger.log(

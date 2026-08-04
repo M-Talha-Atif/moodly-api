@@ -6,6 +6,7 @@ import {
   RankingProvider,
   Candidate,
 } from '../interfaces/ranking-provider.interface';
+import { RANKING_TEMPERATURE } from '../recommendation.constants';
 
 @Injectable()
 export class OpenAIRankingProvider implements RankingProvider {
@@ -37,11 +38,10 @@ Respond ONLY with a JSON array of IDs in ranked order.
     const response = await this.openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0,
+      temperature: RANKING_TEMPERATURE,
     });
 
     const raw = response.choices[0].message?.content?.trim() ?? '[]';
-    this.logger.log(`📩 OpenAI raw output: ${raw}`);
 
     try {
       const ids = JSON.parse(raw);

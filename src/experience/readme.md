@@ -7,6 +7,7 @@
 ```
 experience/
 ├── experience.module.ts
+├── experience.constants.ts               # recommendation limits, vector search candidate pool
 ├── experience.controller.ts              # legacy combined controller: still registered
 ├── experience.gateway.ts                 # Socket.IO: live spot-count updates
 ├── experience-recommendation.service.ts  # emotion-based experience matching (used by recommendation module)
