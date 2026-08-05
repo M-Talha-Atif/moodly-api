@@ -31,13 +31,13 @@ When a user finishes onboarding, an `onboarding.completed` RabbitMQ event is emi
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/onboarding/start` | Start (or resume) the onboarding flow |
-| POST | `/onboarding/answer` | Submit an answer to the current question |
-| POST | `/onboarding/goals` | Set selected goals |
-| POST | `/onboarding/activities` | Set selected activities |
-| POST | `/onboarding/complete` | Mark onboarding complete → emits `onboarding.completed` |
-| GET | `/onboarding/status` | Get current step / completion status |
+| POST | `/v1/onboarding/start` | Start (or resume) the onboarding flow |
+| POST | `/v1/onboarding/answer` | Submit an answer to the current question |
+| POST | `/v1/onboarding/goals` | Set selected goals |
+| POST | `/v1/onboarding/activities` | Set selected activities |
+| POST | `/v1/onboarding/complete` | Mark onboarding complete → emits `onboarding.completed` |
+| GET | `/v1/onboarding/status` | Get current step / completion status |
 
 ### Host onboarding: `@Controller('host/onboarding')`, `JwtCookieGuard`
 
-Identical shape, host-scoped: `POST /host/onboarding/start`, `/answer`, `/goals`, `/activities`, `/complete`, and `GET /host/onboarding/status`.
+Identical shape, host-scoped: `POST /v1/host/onboarding/start`, `/v1/host/onboarding/answer`, `/v1/host/onboarding/goals`, `/v1/host/onboarding/activities`, `/v1/host/onboarding/complete`, and `GET /v1/host/onboarding/status`.

@@ -1,6 +1,6 @@
 # Booking Module
 
-`src/booking`: booking lifecycle: create, cancel, list, detail, stats, host dashboards. See [root README > Sample Request Flow](../../README.md#sample-request-flow-creating-a-booking) for a full trace of `POST /user/bookings`, and [Engineering Challenges](../../README.md#engineering-challenges-handled) for how double-booking races are prevented.
+`src/booking`: booking lifecycle: create, cancel, list, detail, stats, host dashboards. See [root README > Sample Request Flow](../../README.md#sample-request-flow-creating-a-booking) for a full trace of `POST /v1/user/bookings`, and [Engineering Challenges](../../README.md#engineering-challenges-handled) for how double-booking races are prevented.
 
 ## Structure
 
@@ -47,23 +47,23 @@ Booking creation and cancellation both go through `TransactionService.withTransa
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/user/bookings` | Create a booking `{ experienceId }` |
-| DELETE | `/user/bookings/:id` | Cancel a booking |
-| GET | `/user/bookings` | List bookings, paginated (`page`, `limit`), filterable by `status` (`confirmed`/`cancelled`/`waitlisted`) and `timeFilter` (`today`/`tomorrow`/`weekend`/`next-week`) |
-| GET | `/user/bookings/stats` | `{ total, upcoming, completed }` for the current user |
-| GET | `/user/bookings/:id` | Booking detail |
+| POST | `/v1/user/bookings` | Create a booking `{ experienceId }` |
+| DELETE | `/v1/user/bookings/:id` | Cancel a booking |
+| GET | `/v1/user/bookings` | List bookings, paginated (`page`, `limit`), filterable by `status` (`confirmed`/`cancelled`/`waitlisted`) and `timeFilter` (`today`/`tomorrow`/`weekend`/`next-week`) |
+| GET | `/v1/user/bookings/stats` | `{ total, upcoming, completed }` for the current user |
+| GET | `/v1/user/bookings/:id` | Booking detail |
 
 ### Host: `@Controller('host/bookings')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard` (role `host`), `@SkipThrottle()`
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/host/bookings` | All bookings across the host's experiences |
-| GET | `/host/bookings/recent` | 5 most recent bookings |
-| GET | `/host/bookings/stats` | `{ total, revenue, experiences, avgRating }` |
-| GET | `/host/bookings/trend` | 90-day booking trend (chart data) |
-| GET | `/host/bookings/emotional-outcomes` | Emotional-outcome breakdown |
-| GET | `/host/bookings/funnel` | Booking funnel stats |
-| GET | `/host/bookings/:id` | Booking detail, host-scoped |
+| GET | `/v1/host/bookings` | All bookings across the host's experiences |
+| GET | `/v1/host/bookings/recent` | 5 most recent bookings |
+| GET | `/v1/host/bookings/stats` | `{ total, revenue, experiences, avgRating }` |
+| GET | `/v1/host/bookings/trend` | 90-day booking trend (chart data) |
+| GET | `/v1/host/bookings/emotional-outcomes` | Emotional-outcome breakdown |
+| GET | `/v1/host/bookings/funnel` | Booking funnel stats |
+| GET | `/v1/host/bookings/:id` | Booking detail, host-scoped |
 
 ## Side effects after a successful booking
 
