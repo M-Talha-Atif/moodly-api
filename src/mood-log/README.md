@@ -23,7 +23,7 @@ mood-log/
 
 ## How it works
 
-`POST /mood-log` persists the log immediately with `finalMood` provisionally set to the client-supplied `moodLabel`, returns `201`, and emits a `mood.detect` RabbitMQ event containing the mood log id and any uploaded file paths. The **worker process** (`src/worker/mood-detection.worker.ts`, a different module: see [worker README](../worker/README.md)) picks that event up, calls the external FastAPI inference service for photo/voice emotion analysis, and updates the row's `finalMood`, `photoEmotion`, `voiceSentiment`: then chains a `recommendation.generate` event. This module never talks to FastAPI or RabbitMQ consumers directly on the request path; it only produces the initial event.
+`POST /v1/mood-log` persists the log immediately with `finalMood` provisionally set to the client-supplied `moodLabel`, returns `201`, and emits a `mood.detect` RabbitMQ event containing the mood log id and any uploaded file paths. The **worker process** (`src/worker/mood-detection.worker.ts`, a different module: see [worker README](../worker/README.md)) picks that event up, calls the external FastAPI inference service for photo/voice emotion analysis, and updates the row's `finalMood`, `photoEmotion`, `voiceSentiment`: then chains a `recommendation.generate` event. This module never talks to FastAPI or RabbitMQ consumers directly on the request path; it only produces the initial event.
 
 `EmotionAnalysisService` (used by the worker, defined here since it shares the mood-log domain) handles both local file paths and S3 URLs: S3 URLs are downloaded to a temp file via `FileDownloadService` before being re-uploaded to FastAPI, then cleaned up.
 
@@ -33,11 +33,11 @@ mood-log/
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/mood-log` | Create a mood log. Multipart form: `moodLabel`, `note`, optional `photo` file, optional `voice` file |
-| GET | `/mood-log/today` | Most recent log created today |
-| GET | `/mood-log/recent` | Most recent log overall |
-| GET | `/mood-log/history` | Paginated history (`limit` default 30, `page` default 1) |
-| GET | `/mood-log/daily-summary` | Today's logs grouped into morning / afternoon / night (hour boundaries in `mood-log.constants.ts`, server local time), with a dominant mood per group |
-| GET | `/mood-log/range` | Logs between `start` and `end` query dates |
-| GET | `/mood-log/streak` | `{ streak, totalDaysLogged }` |
-| GET | `/mood-log/heatmap` | `{ [date]: finalMood }` map for calendar visualization |
+| POST | `/v1/mood-log` | Create a mood log. Multipart form: `moodLabel`, `note`, optional `photo` file, optional `voice` file |
+| GET | `/v1/mood-log/today` | Most recent log created today |
+| GET | `/v1/mood-log/recent` | Most recent log overall |
+| GET | `/v1/mood-log/history` | Paginated history (`limit` default 30, `page` default 1) |
+| GET | `/v1/mood-log/daily-summary` | Today's logs grouped into morning / afternoon / night (hour boundaries in `mood-log.constants.ts`, server local time), with a dominant mood per group |
+| GET | `/v1/mood-log/range` | Logs between `start` and `end` query dates |
+| GET | `/v1/mood-log/streak` | `{ streak, totalDaysLogged }` |
+| GET | `/v1/mood-log/heatmap` | `{ [date]: finalMood }` map for calendar visualization |

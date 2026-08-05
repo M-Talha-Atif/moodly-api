@@ -19,4 +19,4 @@ diagram/
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/diagram` | Returns an HTML page rendering three Mermaid graphs (Core Infrastructure, Business Modules, Queue/Worker Modules) of the live module dependency graph |
+| GET | `/v1/diagram` | Returns an HTML page rendering three Mermaid graphs (Core Infrastructure, Business Modules, Queue/Worker Modules) of the live module dependency graph |

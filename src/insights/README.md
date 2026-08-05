@@ -20,4 +20,4 @@ insights/
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/insights` | User insight overview. Optional `?moodDays=N` controls the mood-trend window size (defaults to `DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS`, 30) |
+| GET | `/v1/insights` | User insight overview. Optional `?moodDays=N` controls the mood-trend window size (defaults to `DEFAULT_INSIGHTS_MOOD_WINDOW_DAYS`, 30) |

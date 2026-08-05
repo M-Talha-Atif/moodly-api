@@ -1,7 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+// Root route stays unversioned (VERSION_NEUTRAL) by convention: load balancer health
+// checks and uptime monitors shouldn't need to know the current API version to hit it.
+@Controller({ version: VERSION_NEUTRAL })
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

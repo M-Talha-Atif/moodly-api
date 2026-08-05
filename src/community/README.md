@@ -44,51 +44,51 @@ All under `@Controller('communities')`; guards are applied per-route (this contr
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/communities` | Create a community |
-| PATCH | `/communities/:id` | Update (owner-only check) |
-| DELETE | `/communities/:id` | Delete (owner-only check) |
+| POST | `/v1/communities` | Create a community |
+| PATCH | `/v1/communities/:id` | Update (owner-only check) |
+| DELETE | `/v1/communities/:id` | Delete (owner-only check) |
 
 ### Public: no guard
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/communities/public` | List communities, filterable by `page`, `limit`, `category`, `isPrivate`, `tags`, `search` |
-| GET | `/communities/:id` | Get a single community |
-| GET | `/communities/public/categories` | List all distinct categories |
+| GET | `/v1/communities/public` | List communities, filterable by `page`, `limit`, `category`, `isPrivate`, `tags`, `search` |
+| GET | `/v1/communities/:id` | Get a single community |
+| GET | `/v1/communities/public/categories` | List all distinct categories |
 
 ### Membership: `JwtCookieGuard`
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/communities/:id/join` | Join a community |
-| POST | `/communities/:id/leave` | Leave a community |
-| GET | `/communities/:id/members` | List members (no guard) |
-| GET | `/communities` | Authenticated listing, each result annotated with `isJoined` |
-| GET | `/communities/joined/count` | Count of communities the caller has joined |
+| POST | `/v1/communities/:id/join` | Join a community |
+| POST | `/v1/communities/:id/leave` | Leave a community |
+| GET | `/v1/communities/:id/members` | List members (no guard) |
+| GET | `/v1/communities` | Authenticated listing, each result annotated with `isJoined` |
+| GET | `/v1/communities/joined/count` | Count of communities the caller has joined |
 
 ### Posts: `JwtCookieGuard`
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/communities/:id/posts` | Create a post `{ content, mediaUrl? }` |
-| GET | `/communities/:id/posts` | List posts, paginated (`page`, `limit`) |
-| GET | `/communities/posts/:id` | Get a single post |
-| DELETE | `/communities/posts/:id` | Delete a post (author only) |
+| POST | `/v1/communities/:id/posts` | Create a post `{ content, mediaUrl? }` |
+| GET | `/v1/communities/:id/posts` | List posts, paginated (`page`, `limit`) |
+| GET | `/v1/communities/posts/:id` | Get a single post |
+| DELETE | `/v1/communities/posts/:id` | Delete a post (author only) |
 
 ### Reactions: `JwtCookieGuard`
 
 | Method | Route | Description |
 |---|---|---|
-| PUT | `/communities/posts/:id/reaction` | Upsert the caller's reaction on a post (idempotent: `{ type }`) |
-| DELETE | `/communities/posts/:id/reaction` | Remove the caller's reaction |
-| GET | `/communities/posts/:id/reactions` | Aggregated reaction counts + the caller's own reaction |
+| PUT | `/v1/communities/posts/:id/reaction` | Upsert the caller's reaction on a post (idempotent: `{ type }`) |
+| DELETE | `/v1/communities/posts/:id/reaction` | Remove the caller's reaction |
+| GET | `/v1/communities/posts/:id/reactions` | Aggregated reaction counts + the caller's own reaction |
 
 ### Comments: mixed guards
 
 | Method | Route | Guard | Description |
 |---|---|---|---|
-| POST | `/communities/posts/:id/comments` | `JwtCookieGuard` | Add a comment `{ content }` |
-| GET | `/communities/posts/:id/comments` | – | List comments, cursor-paginated (`cursor`, `limit`) |
-| DELETE | `/communities/posts/comments/:commentId` | `JwtCookieGuard` | Delete a comment (author only) |
+| POST | `/v1/communities/posts/:id/comments` | `JwtCookieGuard` | Add a comment `{ content }` |
+| GET | `/v1/communities/posts/:id/comments` | – | List comments, cursor-paginated (`cursor`, `limit`) |
+| DELETE | `/v1/communities/posts/comments/:commentId` | `JwtCookieGuard` | Delete a comment (author only) |
 
-> Route ordering note: `GET /communities/:id` (public, param route) is registered before the more specific `GET /communities/public/categories` and `GET /communities/posts/:id` handlers in the controller class, but Nest matches literal path segments before wildcard `:id` params regardless of declaration order for `@Get()` handlers within a controller: still, if you add new literal sub-paths under `/communities/`, register them so they aren't shadowed by an earlier `:id` capture.
+> Route ordering note: `GET /v1/communities/:id` (public, param route) is registered before the more specific `GET /v1/communities/public/categories` and `GET /v1/communities/posts/:id` handlers in the controller class, but Nest matches literal path segments before wildcard `:id` params regardless of declaration order for `@Get()` handlers within a controller: still, if you add new literal sub-paths under `/communities/`, register them so they aren't shadowed by an earlier `:id` capture.

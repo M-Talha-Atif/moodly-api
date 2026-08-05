@@ -36,7 +36,7 @@ feedback/
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/feedback/:experienceId` | Submit feedback (rating + comment) for an experience |
-| GET | `/feedback/experience/:experienceId` | List all feedback for an experience |
-| GET | `/feedback/pending` | List pending feedback prompts for the current user |
-| DELETE | `/feedback/pending/:id` | Dismiss a pending feedback item |
+| POST | `/v1/feedback/:experienceId` | Submit feedback (rating + comment) for an experience |
+| GET | `/v1/feedback/experience/:experienceId` | List all feedback for an experience |
+| GET | `/v1/feedback/pending` | List pending feedback prompts for the current user |
+| DELETE | `/v1/feedback/pending/:id` | Dismiss a pending feedback item |

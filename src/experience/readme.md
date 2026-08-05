@@ -34,7 +34,7 @@ experience/
 
 ## AI generation
 
-`POST /host/experiences/generate` accepts a voice recording or free text and runs it through Gemini (`AiExperienceService`, `src/common/services/gemini.service.ts`) to produce structured experience fields synchronously. The same generation logic also runs **asynchronously** via the `experience.generate_ai` RabbitMQ event, consumed by `ExperienceWorker` (`src/worker/experience.worker.ts`): see [root README](../../README.md#event-driven-architecture-rabbitmq).
+`POST /v1/host/experiences/generate` accepts a voice recording or free text and runs it through Gemini (`AiExperienceService`, `src/common/services/gemini.service.ts`) to produce structured experience fields synchronously. The same generation logic also runs **asynchronously** via the `experience.generate_ai` RabbitMQ event, consumed by `ExperienceWorker` (`src/worker/experience.worker.ts`): see [root README](../../README.md#event-driven-architecture-rabbitmq).
 
 ## Real-time spots
 
@@ -46,36 +46,36 @@ experience/
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/host/experiences` | Create an experience |
-| POST | `/host/experiences/generate` | AI-generate experience fields from voice or text (Gemini) |
-| POST | `/host/experiences/:id/image` | Upload experience image to S3 |
-| PUT | `/host/experiences/:id` | Update (owner-only) |
-| DELETE | `/host/experiences/:id` | Delete (owner-only) |
-| GET | `/host/experiences` | List the host's experiences (filtered/paginated) |
-| GET | `/host/experiences/:id` | Get a single experience (host-owned) |
-| GET | `/host/experiences/:id/bookings` | List bookings for this experience |
+| POST | `/v1/host/experiences` | Create an experience |
+| POST | `/v1/host/experiences/generate` | AI-generate experience fields from voice or text (Gemini) |
+| POST | `/v1/host/experiences/:id/image` | Upload experience image to S3 |
+| PUT | `/v1/host/experiences/:id` | Update (owner-only) |
+| DELETE | `/v1/host/experiences/:id` | Delete (owner-only) |
+| GET | `/v1/host/experiences` | List the host's experiences (filtered/paginated) |
+| GET | `/v1/host/experiences/:id` | Get a single experience (host-owned) |
+| GET | `/v1/host/experiences/:id/bookings` | List bookings for this experience |
 
 ### Public: `@Controller('public/experiences')`, no guard
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/public/experiences` | Public filtered/paginated listing |
+| GET | `/v1/public/experiences` | Public filtered/paginated listing |
 
 ### User: `@Controller('user/experiences')`, `JwtBearerGuard, JwtCookieGuard, RolesGuard` (role `user`)
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/user/experiences` | Listing with booking-aware filters |
-| GET | `/user/experiences/:id` | Single experience, including the caller's booking status |
+| GET | `/v1/user/experiences` | Listing with booking-aware filters |
+| GET | `/v1/user/experiences/:id` | Single experience, including the caller's booking status |
 
 ### Legacy combined: `@Controller('experiences')`
 
 | Method | Route | Role | Description |
 |---|---|---|---|
-| POST | `/experiences` | host | Create experience |
-| POST | `/experiences/:id/upload-image` | host | Upload image (multipart → S3) |
-| PUT | `/experiences/:id` | host | Update (owner-only) |
-| DELETE | `/experiences/:id` | host | Delete (owner-only) |
-| GET | `/experiences/public` | – | Public listing w/ filters |
-| GET | `/experiences/user` | user | User-scoped listing |
-| GET | `/experiences/:id` | user | Single experience + booking status |
+| POST | `/v1/experiences` | host | Create experience |
+| POST | `/v1/experiences/:id/upload-image` | host | Upload image (multipart → S3) |
+| PUT | `/v1/experiences/:id` | host | Update (owner-only) |
+| DELETE | `/v1/experiences/:id` | host | Delete (owner-only) |
+| GET | `/v1/experiences/public` | – | Public listing w/ filters |
+| GET | `/v1/experiences/user` | user | User-scoped listing |
+| GET | `/v1/experiences/:id` | user | Single experience + booking status |

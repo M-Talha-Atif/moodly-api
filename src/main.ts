@@ -12,7 +12,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { setupBullBoard } from './infra/bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 /**
  * --------------------------------
@@ -83,6 +83,16 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(cookieParser());
+
+  // -----------------------------
+  // API versioning: every route becomes /v1/... unless it opts out with
+  // VERSION_NEUTRAL (see AppController). Must run before Swagger document
+  // generation below so the generated spec reflects the versioned paths.
+  // -----------------------------
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
 
   // -----------------------------
   // Morgan HTTP logging
