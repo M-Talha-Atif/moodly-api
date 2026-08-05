@@ -55,6 +55,6 @@ Infrastructure code (Redis, RabbitMQ client, static config, Bull Board) lives un
 ## Known rough edges (don't be surprised by these, see README > Known Gaps for the full list)
 
 - Rate limiting (`ThrottlerModule`) is installed but commented out in `src/app.module.ts`.
-- `POST /notification` carries `@Roles('host')` but the route is missing `RolesGuard`, so that restriction currently does nothing.
+- `POST /v1/notification` carries `@Roles('host')` but the route is missing `RolesGuard`, so that restriction currently does nothing.
 - The feedback reminder cron expression doesn't match its comment, verify before relying on it.
 - `src/experience/experience.controller.ts` (legacy) overlaps with the newer host/user/public split controllers in the same module.

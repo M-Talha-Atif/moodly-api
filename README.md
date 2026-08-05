@@ -16,6 +16,7 @@ If you're joining this project, the fastest way to get oriented is: read this pa
 - [Project Structure](#project-structure)
 - [Module Index](#module-index)
 - [Backend Base Structure (how a module is wired)](#backend-base-structure-how-a-module-is-wired)
+- [API Versioning](#api-versioning)
 - [Features](#features)
 - [Engineering Challenges Handled](#engineering-challenges-handled)
 - [Event-Driven Architecture (RabbitMQ)](#event-driven-architecture-rabbitmq)
@@ -89,7 +90,7 @@ ai-moodler-backend/
 │   ├── notification/               # in-app, email, and Socket.IO notifications
 │   ├── community/                  # groups, posts, reactions, comments
 │   ├── insights/                   # aggregated user analytics
-│   ├── diagram/                    # GET /diagram, live Mermaid module graph
+│   ├── diagram/                    # GET /v1/diagram, live Mermaid module graph
 │   │
 │   ├── common/                     # cross-cutting: S3, Gemini, FastAPI client, ResultDto, roles guard
 │   ├── logger/                     # Winston config, AsyncLocalStorage request id
@@ -175,6 +176,22 @@ Conventions used across the codebase:
 
 ---
 
+## API Versioning
+
+Every HTTP route in this API is served under `/v1/...` via NestJS's built-in URI versioning (`app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' })` in `src/main.ts`). `POST /auth/login` from an older version of this README (or any client hardcoded before this change) is now `POST /v1/auth/login`, and so on for every route documented in this file and every module README.
+
+This exists to protect anyone building against this API (a mobile app, a future webhook consumer, an internal admin tool) from breaking changes: a future incompatible change to, say, the booking response shape can ship as a new `/v2/user/bookings` route on a specific controller (`@Controller({ path: 'user/bookings', version: '2' })`) while every existing `/v1/...` integration keeps working unmodified, no big-bang cutover required.
+
+**Two routes are deliberately excluded** (`version: VERSION_NEUTRAL`) rather than versioned, following the same convention most production APIs use:
+- `GET /` (`AppController`), a bare root route intended for load balancer health checks and uptime monitors that shouldn't need to know the current API version to hit it.
+- Swagger UI (`/api-docs`) and Bull Board (`/admin/queues`) aren't affected either way, they're mounted directly rather than through a versioned Nest controller, so they were never prefixed and still aren't.
+
+Everything else, including the dev-only `/v1/diagram` introspection route, gets the default `/v1/` prefix automatically, nothing had to change per-controller. Socket.IO gateways are untouched by this: `enableVersioning` only applies to HTTP routes, not WebSocket connections.
+
+Regression-tested in `test/versioning.e2e-spec.ts` (an isolated check against throwaway controllers, not the full `AppModule`, since that needs a reachable Postgres/Mongo/Redis/RabbitMQ that a fast unit-style e2e test shouldn't depend on): confirms a route with no explicit version is served at `/v1/`, is not reachable without the prefix, and that a controller opting into `version: '2'` is served at `/v2/` instead.
+
+---
+
 ## Features
 
 ### Authentication & Users
@@ -232,7 +249,7 @@ Conventions used across the codebase:
 |---|---|
 | API Documentation | Swagger UI at `/api-docs` |
 | Job Monitoring | Bull Board dashboard at `/admin/queues` |
-| Live Module Graph | `GET /diagram` renders a Mermaid dependency graph of the running app via `nestjs-spelunker` |
+| Live Module Graph | `GET /v1/diagram` renders a Mermaid dependency graph of the running app via `nestjs-spelunker` |
 | Structured Logging | Winston, daily-rotating file transport, per-request id via `AsyncLocalStorage` |
 | Input Validation | Global `ValidationPipe` + `class-validator` on every DTO |
 
@@ -259,7 +276,7 @@ The `FOR UPDATE` lock serializes concurrent bookings for the *same experience* a
 > Note: `RedisService` also exposes `acquireLock`/`releaseLock` (Lua-script-based `SET NX` plus compare-and-delete), but it is not currently called anywhere in the codebase, booking concurrency is handled entirely at the Postgres layer today.
 
 **2. Decoupling slow AI inference from the request/response cycle.**
-Emotion analysis (HuBERT, DeepFace) and embedding generation take real time and call an external service. Rather than making `POST /mood-log` wait on that, the endpoint persists the raw log and returns `201` immediately, then emits a `mood.detect` event onto RabbitMQ. The separate worker process consumes it, calls FastAPI, writes the result back, and chains a follow-up event to regenerate recommendations, see [Sample Event Flow](#sample-event-flow-mood-log-to-recommendation).
+Emotion analysis (HuBERT, DeepFace) and embedding generation take real time and call an external service. Rather than making `POST /v1/mood-log` wait on that, the endpoint persists the raw log and returns `201` immediately, then emits a `mood.detect` event onto RabbitMQ. The separate worker process consumes it, calls FastAPI, writes the result back, and chains a follow-up event to regenerate recommendations, see [Sample Event Flow](#sample-event-flow-mood-log-to-recommendation).
 
 **3. Two data stores for two shapes of data.** Relational, highly-related domain data (users, bookings, experiences, community) lives in PostgreSQL via TypeORM, where foreign keys and transactions matter. Loosely-structured, evolving documents (onboarding answers, embedding vectors) live in MongoDB via Mongoose, where schema flexibility matters more than joins.
 
@@ -315,7 +332,7 @@ All three queues are also visible (jobs, retries, failures) in Bull Board at `GE
 
 ## Sample Request Flow: Creating a Booking
 
-`POST /user/bookings` end-to-end, tracing real files:
+`POST /v1/user/bookings` end-to-end, tracing real files:
 
 ```mermaid
 sequenceDiagram
@@ -328,7 +345,7 @@ sequenceDiagram
     participant Side as BookingSideEffectsService
     participant WS as ExperienceGateway
 
-    C->>G: POST /user/bookings with experienceId
+    C->>G: POST /v1/user/bookings with experienceId
     G->>G: Verify JWT and role
     G->>Ctrl: Forward validated request
     Ctrl->>Svc: createBooking(userId, dto)
@@ -355,7 +372,7 @@ Key points this illustrates:
 
 ## Sample Event Flow: Mood Log to Recommendation
 
-`POST /mood-log` with a voice/photo upload, through both processes:
+`POST /v1/mood-log` with a voice/photo upload, through both processes:
 
 ```mermaid
 sequenceDiagram
@@ -368,7 +385,7 @@ sequenceDiagram
     participant W2 as RecommendationWorker
     participant WS as RecommendationGateway
 
-    C->>API: POST /mood-log, multipart photo/voice plus moodLabel
+    C->>API: POST /v1/mood-log, multipart photo/voice plus moodLabel
     API->>DB: Insert MoodLog, finalMood set to moodLabel for now
     API-->>C: 201 Mood log created, analysis queued
     API->>Q: Emit mood.detect
@@ -522,7 +539,7 @@ No Dockerfile/docker-compose/CI workflow exists in this repository, deployment t
 | No `start:dev` npm script | `@nestjs/cli` is a dependency but there's no watch-mode script; run `npx nest start --watch` directly for now |
 | No end-to-end tests yet | `npm run test:e2e` is wired to `test/jest-e2e.json` and passes trivially (`--passWithNoTests`), but no `*.e2e-spec.ts` files exist yet, only unit tests (`npm test`) currently exercise real behavior |
 | Legacy duplicate experience controller | `src/experience/experience.controller.ts` overlaps with the newer `controllers/experience.host/public/user.controller.ts` split, both are currently registered |
-| `POST /notification` role check is inert | `@Roles('host')` is set on the handler but `RolesGuard` isn't in that route's `@UseGuards(...)`, so the role restriction doesn't actually run, see [src/notification/README.md](src/notification/README.md) |
+| `POST /v1/notification` role check is inert | `@Roles('host')` is set on the handler but `RolesGuard` isn't in that route's `@UseGuards(...)`, so the role restriction doesn't actually run, see [src/notification/README.md](src/notification/README.md) |
 | Feedback reminder cron expression | `@Cron('0 */19999 * * * *')` in `src/feedback/jobs/feedback.cron.ts` doesn't match its "every 5 min" comment, worth re-checking before relying on it |
 | Embedding-based recommendation path unused | `RecommendationService.generateForUser()` (embedding + LLM rerank) exists and works but nothing currently calls it, only the mood-based path is wired to a controller/worker |
 | Hybrid Recommendation Engine | Planned: merge emotion-based and embedding-based results with scored deduplication |

@@ -33,7 +33,7 @@ notification/
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/notification` | Create + send a notification. **Note:** the handler carries `@Roles('host')` but `RolesGuard` is not included in this route's `@UseGuards(...)`, so the host-only restriction does not actually run today: any authenticated user can currently call this endpoint. Worth fixing before relying on it as host-only. |
-| GET | `/notification` | List notifications for the logged-in user, filterable by `type` and `read` |
-| PATCH | `/notification/:id/read` | Mark one notification as read |
-| PATCH | `/notification/read-all` | Mark all of the user's notifications as read |
+| POST | `/v1/notification` | Create + send a notification. **Note:** the handler carries `@Roles('host')` but `RolesGuard` is not included in this route's `@UseGuards(...)`, so the host-only restriction does not actually run today: any authenticated user can currently call this endpoint. Worth fixing before relying on it as host-only. |
+| GET | `/v1/notification` | List notifications for the logged-in user, filterable by `type` and `read` |
+| PATCH | `/v1/notification/:id/read` | Mark one notification as read |
+| PATCH | `/v1/notification/read-all` | Mark all of the user's notifications as read |

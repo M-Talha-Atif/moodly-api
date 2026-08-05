@@ -29,8 +29,8 @@ users/
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/users` | Create a user |
-| GET | `/users` | List all users |
-| GET | `/users/:id` | Get a user by id |
-| PATCH | `/users/:id` | Update a user |
-| DELETE | `/users/:id` | Delete a user |
+| POST | `/v1/users` | Create a user |
+| GET | `/v1/users` | List all users |
+| GET | `/v1/users/:id` | Get a user by id |
+| PATCH | `/v1/users/:id` | Update a user |
+| DELETE | `/v1/users/:id` | Delete a user |

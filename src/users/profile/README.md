@@ -20,9 +20,9 @@ profile/
 
 | Method | Route | Description |
 |---|---|---|
-| GET | `/profile` | Fetch the current user's profile |
-| GET | `/profile/image` | Fetch the current user's profile image |
-| PATCH | `/profile` | Update profile fields (multipart request; avatar file optional) |
-| PATCH | `/profile/password` | Change password |
+| GET | `/v1/profile` | Fetch the current user's profile |
+| GET | `/v1/profile/image` | Fetch the current user's profile image |
+| PATCH | `/v1/profile` | Update profile fields (multipart request; avatar file optional) |
+| PATCH | `/v1/profile/password` | Change password |
 
 Avatar uploads go through the shared `S3Service` (`src/common/services/s3.service.ts`): see [src/common/README.md](../../common/README.md).
