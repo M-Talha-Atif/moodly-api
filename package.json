@@ -10,6 +10,11 @@
     "start": "node dist/main",
     "start:prod": "node dist/main",
     "start:worker": "node dist/worker/main.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json --passWithNoTests",
     "migration:run:prod": "node ./node_modules/typeorm/cli.js migration:run -d dist/database/data-source.js",
     "migration:revert:prod": "node ./node_modules/typeorm/cli.js migration:revert -d dist/database/data-source.js"
   },
@@ -113,5 +118,20 @@
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "jest": {
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "rootDir": ".",
+    "roots": ["<rootDir>/src"],
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/src/$1"
+    },
+    "collectCoverageFrom": ["src/**/*.(t|j)s"],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node"
   }
 }

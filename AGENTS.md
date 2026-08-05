@@ -22,7 +22,7 @@ npm run start:worker    # worker process, run alongside the API for async featur
 
 Needs a reachable PostgreSQL, MongoDB, Redis, and RabbitMQ. Copy [`.env.example`](.env.example) to `.env` and fill in real values, `.env` is gitignored and must never be committed.
 
-There is currently **no `npm test` script** even though Jest/ts-jest/supertest are installed (see Known Gaps in the README). If you add tests, add the corresponding script to `package.json` rather than assuming one exists.
+`npm test` runs the unit suite (Jest + ts-jest, config in `package.json`'s `"jest"` block), `npm run test:e2e` runs `test/jest-e2e.json` (no `*.e2e-spec.ts` files exist yet, so it currently passes trivially via `--passWithNoTests`). Run `npm test` before considering a change done, same as `npm run build`.
 
 ## Project layout
 
