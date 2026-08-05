@@ -38,6 +38,13 @@ export class RedisService {
     }
   }
 
+  // Lets Nest's shutdown hooks close the socket cleanly (e.g. on `app.close()` in tests,
+  // or SIGTERM in production) instead of leaving a dangling connection with pending
+  // reconnect timers.
+  onModuleDestroy() {
+    this.redisClient.disconnect();
+  }
+
   // Sets a value in Redis with an optional TTL
   async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
     const data = JSON.stringify(value);
