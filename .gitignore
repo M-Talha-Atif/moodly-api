@@ -3,6 +3,11 @@
 /node_modules
 /build
 
+# local file uploads (multer disk fallback, S3 temp downloads, speech-to-text scratch files)
+# these are runtime data, not source, and 97 of them (11MB, including test photos) had been
+# committed by accident before this was added
+/uploads
+
 # Logs
 logs
 *.log
