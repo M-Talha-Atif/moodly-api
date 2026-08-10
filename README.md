@@ -29,6 +29,8 @@ If you're joining this project, the fastest way to get oriented is: read this pa
 - [FastAPI Inference Service (external repo)](#fastapi-inference-service-external-repo)
 - [Environment Variables](#environment-variables)
 - [Project Setup](#project-setup)
+- [Deployment](#deployment)
+- [Observability](#observability)
 - [Known Gaps / Next Planned Work](#known-gaps--next-planned-work)
 
 ---
@@ -488,6 +490,7 @@ See [`.env.example`](.env.example) for the full list of keys this repo reads (no
 | Storage | `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`, `S3_BASE_URL`, `EXPERIENCE_IMAGES_CDN_URL`, `UPLOADS_DIR` |
 | Email | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` |
 | Logging | `LOG_LEVEL`, `LOG_DIR` |
+| Observability | `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_HEADERS`, `OTEL_SERVICE_NAME`, `LOKI_URL`, `LOKI_USER`, `LOKI_API_KEY`, see [Observability](#observability) |
 
 > Double-check `RMQ_REC_QUEUE`/`RMQ_REC_EXCHANGE` against your deployment's `.env`, `src/infra/config/rmq.constants.ts` reads those exact names, while some `.env` files in the wild use `RMQ_RECOMMENDATION_QUEUE` instead, which the code will silently ignore in favor of the hardcoded default.
 
@@ -519,14 +522,32 @@ npx typeorm migration:generate -n MigrationName
 npm run migration:run:prod
 ```
 
-Requires a reachable PostgreSQL instance, MongoDB instance, Redis instance, and RabbitMQ broker, see [`.env.example`](.env.example) for every variable that needs a value. Locally, the quickest way to get RabbitMQ/Redis running is:
+Requires a reachable PostgreSQL instance, MongoDB instance, Redis instance, and RabbitMQ broker, see [`.env.example`](.env.example) for every variable that needs a value. The quickest way to get the whole stack running locally, including Postgres/Mongo/Redis/RabbitMQ, is `docker compose up --build`, see [Deployment](#deployment) below.
+
+---
+
+## Deployment
+
+Both processes build from a single [`Dockerfile`](Dockerfile) (multi-stage: compiles once with `nest build`, then a slim runtime image; `CMD` runs the API, the worker overrides `command:` to run `dist/worker/main.js` instead), since they share the same `src/` tree and `nest build` compiles the whole thing regardless of entrypoint.
+
+**Local, full stack**: [`docker-compose.yml`](docker-compose.yml) runs Postgres, MongoDB, Redis, RabbitMQ (with its management UI on `:15672`), plus the `api` and `worker` services, wired with health checks so the app waits for its dependencies to actually be ready. It loads your `.env` for app-level secrets, then overrides the 4 infra connection vars to point at the containers on the compose network instead of whatever's in `.env`, and forces `NODE_ENV=development` so `synchronize` creates tables automatically against the throwaway local Postgres volume.
 
 ```bash
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
-docker run -d --name redis -p 6379:6379 redis
+docker compose up --build
 ```
 
-No Dockerfile/docker-compose/CI workflow exists in this repository, deployment tooling for this service lives outside this repo today.
+**Cloud deploy**: the same image is deploy-ready for Fly.io, a plain VPS, or ECS. The 4 infra dependencies (Postgres, MongoDB, Redis, RabbitMQ) need to be reachable over the public internet from wherever compute runs, free options that work well here: [Neon](https://neon.tech) (Postgres), [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) M0, [Upstash](https://upstash.com) (Redis, use the TCP/`rediss://` connection string, not the REST API URL), and [CloudAMQP](https://www.cloudamqp.com) (RabbitMQ). Set `NODE_ENV=production` so TypeORM SSL and `synchronize: false` kick in, then run `npm run migration:run:prod` once against the target database before the app's first boot.
+
+---
+
+## Observability
+
+Logging already goes through `nest-winston`/`winston` (console + local `DailyRotateFile`, see `src/main.ts`/`src/worker/main.ts`). On top of that:
+
+- **Traces + metrics**: [`src/tracing.ts`](src/tracing.ts) sets up the OpenTelemetry Node SDK with auto-instrumentation (HTTP, `pg`, `mongoose`, `ioredis`, `amqplib`), exporting over OTLP. It's preloaded via `node -r ./dist/tracing.js dist/main.js` (see the `start`/`start:worker` scripts, the `Dockerfile` `CMD`, and `docker-compose.yml`), not imported normally, so instrumentation patches modules before the app itself first requires them. Entirely opt-in: with `OTEL_EXPORTER_OTLP_ENDPOINT` unset it logs a line and skips setup, nothing else changes.
+- **Logs shipping**: a `winston-loki` transport is added alongside the existing console/file transports when `LOKI_URL` is set, labeled per-process (`OTEL_SERVICE_NAME`, e.g. `moodly-api` / `moodly-worker`) so both processes' logs are distinguishable in one place.
+- **Destination**: [Grafana Cloud](https://grafana.com/products/cloud) free tier (Loki for logs, Mimir for metrics, Tempo for traces, one account, one set of credentials). See `.env.example` for the exact 6 variables needed.
+- **Alerting**: not wired into app code, Grafana Cloud's Alerting has native Slack and Discord contact points (webhook-based, no OAuth app needed for either), configured directly in its UI once logs/metrics are flowing. Not yet set up for this project.
 
 ---
 
@@ -542,6 +563,7 @@ No Dockerfile/docker-compose/CI workflow exists in this repository, deployment t
 | `POST /v1/notification` role check is inert | `@Roles('host')` is set on the handler but `RolesGuard` isn't in that route's `@UseGuards(...)`, so the role restriction doesn't actually run, see [src/notification/README.md](src/notification/README.md) |
 | Feedback reminder cron expression | `@Cron('0 */19999 * * * *')` in `src/feedback/jobs/feedback.cron.ts` doesn't match its "every 5 min" comment, worth re-checking before relying on it |
 | Embedding-based recommendation path unused | `RecommendationService.generateForUser()` (embedding + LLM rerank) exists and works but nothing currently calls it, only the mood-based path is wired to a controller/worker |
+| Grafana alerting not configured | OTel/Loki wiring exists (see [Observability](#observability)) and Grafana Cloud supports Slack/Discord contact points natively, but no alert rules or contact points have been created for this project yet |
 | Hybrid Recommendation Engine | Planned: merge emotion-based and embedding-based results with scored deduplication |
 | Participant Matchmaking / Engagement Analytics | `idealParticipantTraits` and `engagementStats` fields already exist on `Experience` for this, not yet consumed |
 | Extended RMQ domains | Architecture supports adding `FEEDBACK`/`BOOKINGS` domains the same way the existing five were added |

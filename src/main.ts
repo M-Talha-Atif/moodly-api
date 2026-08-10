@@ -13,6 +13,7 @@ import { setupBullBoard } from './infra/bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
+import LokiTransport from 'winston-loki';
 
 /**
  * --------------------------------
@@ -65,6 +66,28 @@ async function bootstrap() {
       ),
     }),
   ];
+
+  // Ships structured logs to Grafana Cloud Loki when configured; skipped entirely
+  // otherwise (local dev, or before Grafana credentials are set) rather than erroring.
+  if (process.env.LOKI_URL) {
+    transports.push(
+      new LokiTransport({
+        host: process.env.LOKI_URL,
+        basicAuth:
+          process.env.LOKI_USER && process.env.LOKI_API_KEY
+            ? `${process.env.LOKI_USER}:${process.env.LOKI_API_KEY}`
+            : undefined,
+        labels: {
+          app: process.env.OTEL_SERVICE_NAME || 'moodly-api',
+          env: process.env.NODE_ENV || 'development',
+        },
+        json: true,
+        format: winston.format.json(),
+        replaceTimestamp: true,
+        onConnectionError: (err) => console.error('Loki connection error', err),
+      }),
+    );
+  }
 
   // -----------------------------
   // Create Nest app with Winston logger

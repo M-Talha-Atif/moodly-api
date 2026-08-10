@@ -1,4 +1,5 @@
 import {
+  HttpException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -41,9 +42,6 @@ export class MoodLogService {
     files?: { photo?: Express.Multer.File; voice?: Express.Multer.File },
   ) {
     try {
-      const inputValidation = this.validationService.validateInputs(dto, files);
-      if (!inputValidation.success) return inputValidation;
-
       // Validate and save files
       if (files?.photo) {
         dto.photoPath = await this.storageService.save(files.photo, 'photo');
@@ -82,6 +80,11 @@ export class MoodLogService {
 
       return ResultDto.ok(saved, 'Mood log created; analysis queued');
     } catch (error) {
+      // ResultDto.fail() throws an HttpException by design (see validateInputs
+      // above), so it must pass through here unchanged rather than being
+      // rewrapped into a generic 500, which would mask the real validation
+      // reason from the caller.
+      if (error instanceof HttpException) throw error;
       this.logger.error('Error creating mood log:', error);
       throw new InternalServerErrorException('Failed to create mood log');
     }
