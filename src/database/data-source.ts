@@ -25,6 +25,10 @@ export const AppDataSource = new DataSource({
     // in dev: src/...ts  in prod: dist/...js
     path.resolve(root, '**', 'migrations', '*.{ts,js}'),
   ],
+  // "each" (rather than the default "all") is required for AddBookingExperienceIndexes's
+  // per-migration `transaction = false` override to be allowed at all: TypeORM rejects any
+  // migration overriding the transaction mode while the global mode is "all".
+  migrationsTransactionMode: 'each',
   ssl:
     process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }

@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as path from 'path';
-import * as fs from 'fs';
 
 @Module({
   imports: [
@@ -28,16 +27,9 @@ import * as fs from 'fs';
           synchronize: config.get('NODE_ENV') !== 'production',
           logging: true,
           logger: 'advanced-console',
-          // ssl: false
-          ssl: isProd
-            ? {
-                ca: fs
-                  .readFileSync(
-                    path.resolve(__dirname, '../../certs/rds-ca.pem'),
-                  )
-                  .toString(),
-              }
-            : false,
+          // Matches src/database/data-source.ts: provider-agnostic SSL rather than a
+          // hardcoded CA, since the Postgres host varies by environment (RDS, Neon, etc.).
+          ssl: isProd ? { rejectUnauthorized: false } : false,
         };
       },
     }),

@@ -1,0 +1,171 @@
+# Local all-in-one stack: Postgres, MongoDB, Redis, RabbitMQ, plus the API and worker
+# processes built from the same image (see Dockerfile). Meant for local dev and for
+# trying out the deploy shape (Fly.io, a VPS, ECS, etc.) before committing to a platform,
+# not a production deployment as-is.
+#
+# Usage:
+#   1. Copy .env.example to .env and fill in the app secrets (JWT_SECRET, GEMINI_API_KEY,
+#      SMTP_*, AWS_*, etc.) if you want those features to work.
+#   2. docker compose up --build
+#
+# api/worker load `.env` via env_file below (for the app-level secrets), then the
+# `environment:` blocks override the 4 infra connection vars (POSTGRES_*, MONGO_URI,
+# REDIS_URL, RABBITMQ_URL) to point at the containers on this network instead of
+# whatever remote hosts are in your .env. NODE_ENV is also forced to development here
+# so TypeORM's `synchronize` flag creates tables automatically against the throwaway
+# local Postgres volume (see src/database, `synchronize: NODE_ENV !== 'production'`).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: moodly
+    ports:
+      - "15432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: unless-stopped
+    environment:
+      # RabbitMQ restricts the default "guest" user to localhost-only connections, which
+      # breaks logins from the api/worker containers (they're "remote" from RabbitMQ's
+      # point of view even on the same compose network), so a real user is set here.
+      RABBITMQ_DEFAULT_USER: moodly
+      RABBITMQ_DEFAULT_PASS: moodly
+    ports:
+      - "5672:5672"
+      - "15672:15672" # management UI: http://localhost:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: ["node", "-r", "./dist/tracing.js", "dist/main.js"]
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      OTEL_SERVICE_NAME: moodly-api
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: moodly
+      MONGO_URI: mongodb://mongo:27017/moodly
+      MONGO_DB: moodly
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://moodly:moodly@rabbitmq:5672
+    ports:
+      - "3002:3002"
+    volumes:
+      - app_logs:/app/logs
+      - app_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3002/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: ["node", "-r", "./dist/tracing.js", "dist/worker/main.js"]
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      OTEL_SERVICE_NAME: moodly-worker
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: moodly
+      MONGO_URI: mongodb://mongo:27017/moodly
+      MONGO_DB: moodly
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://moodly:moodly@rabbitmq:5672
+    volumes:
+      - app_logs:/app/logs
+      - app_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      # No -f: the worker's HTTP listener (port 3001) is a health-check-only stub with
+      # no real routes, so any response (even a 404) proves the process is up.
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:3001/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  postgres_data:
+  mongo_data:
+  redis_data:
+  rabbitmq_data:
+  app_logs:
+  app_uploads:
