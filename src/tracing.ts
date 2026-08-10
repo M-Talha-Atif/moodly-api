@@ -44,7 +44,6 @@ if (otlpEndpoint) {
     sdk.shutdown().finally(() => process.exit(0));
   });
 } else {
-  // eslint-disable-next-line no-console
   console.log(
     'OTEL_EXPORTER_OTLP_ENDPOINT not set, skipping OpenTelemetry setup.',
   );
