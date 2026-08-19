@@ -1,7 +1,10 @@
 // app.module.ts
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { RequestContextMiddleware } from './logger/request-context.middleware';
+import { LoggingInterceptor } from './logger/logging.interceptor';
 
 // Core application modules
 import { DatabaseModule } from './database/database.module';
@@ -93,6 +96,17 @@ import { ProfileModule } from './users/profile/profile.module';
     //   provide: APP_GUARD,
     //   useClass: ThrottlerGuard,
     // },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // Generates/forwards x-request-id and runs the rest of the request inside
+    // AsyncLocalStorage (see src/logger/als.ts) so every Winston log line for this
+    // request, wherever it's written from, carries the same requestId.
+    consumer.apply(RequestContextMiddleware).forRoutes('*');
+  }
+}
