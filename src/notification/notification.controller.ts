@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
 import { Roles } from 'src/common/roles.decorator';
+import { RolesGuard } from 'src/common/roles.guard';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { ResultDto } from 'src/common/dto/result.dto';
@@ -32,7 +33,7 @@ import {
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
-  @UseGuards(JwtCookieGuard)
+  @UseGuards(JwtCookieGuard, RolesGuard)
   @Roles('host')
   @Post()
   @ApiOperation({ summary: 'Create and send a notification (host only)' })

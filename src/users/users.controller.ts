@@ -6,19 +6,29 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
+import { RolesGuard } from 'src/common/roles.guard';
+import { Roles } from 'src/common/roles.decorator';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
+// Admin-only CRUD. Self-service reads/writes for the logged-in user belong on
+// /profile instead (src/users/profile), not here.
 @ApiTags('users') // Groups endpoints in Swagger
+@ApiBearerAuth()
+@UseGuards(JwtCookieGuard, RolesGuard)
+@Roles('admin')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
