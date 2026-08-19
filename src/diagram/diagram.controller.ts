@@ -1,7 +1,12 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { DiagramService } from './diagram.service';
+import { JwtCookieGuard } from 'src/auth/guards/jwt-cookie.guard';
+import { RolesGuard } from 'src/common/roles.guard';
+import { Roles } from 'src/common/roles.decorator';
 
+@UseGuards(JwtCookieGuard, RolesGuard)
+@Roles('admin')
 @Controller('diagram')
 export class DiagramController {
   constructor(private readonly diagramService: DiagramService) {}

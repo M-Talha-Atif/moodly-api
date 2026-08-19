@@ -8,7 +8,6 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { MoodLogService } from 'src/mood-log/services/mood-log.service';
-import { JwtBearerGuard } from 'src/auth/guards/jwt-bearer.guard';
 import { RolesGuard } from 'src/common/roles.guard';
 import { SkipThrottle } from '@nestjs/throttler';
 
@@ -16,7 +15,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 @ApiBearerAuth() // shows JWT auth in Swagger UI
 @SkipThrottle()
 @Controller('recommendations')
-@UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)
+@UseGuards(JwtCookieGuard, RolesGuard)
 export class RecommendationController {
   constructor(
     private readonly recommendationService: RecommendationService,
