@@ -1,5 +1,6 @@
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
+import LokiTransport from 'winston-loki';
 import { getRequestId } from './als';
 
 /**
@@ -26,12 +27,8 @@ const baseJson = winston.format.combine(
   winston.format.json(),
 );
 
-export const buildWinstonOptions = (
-  service = 'api',
-): winston.LoggerOptions => ({
-  level: process.env.LOG_LEVEL || 'info',
-  defaultMeta: { service },
-  transports: [
+export const buildWinstonOptions = (service = 'api'): winston.LoggerOptions => {
+  const transports: winston.transport[] = [
     /**
      * -----------------------------
      * Console Transport
@@ -72,6 +69,7 @@ export const buildWinstonOptions = (
      * File Transport (All logs)
      * -----------------------------
      */
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- winston-daily-rotate-file's default export resolves as `any` under this project's esModuleInterop setup, pre-existing, not something introduced here.
     new DailyRotateFile({
       dirname: process.env.LOG_DIR || 'logs',
       filename: `${service}-%DATE%.log`,
@@ -87,6 +85,7 @@ export const buildWinstonOptions = (
      * File Transport (Errors only)
      * -----------------------------
      */
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- same as above.
     new DailyRotateFile({
       dirname: process.env.LOG_DIR || 'logs',
       filename: `${service}-error-%DATE%.log`,
@@ -97,5 +96,35 @@ export const buildWinstonOptions = (
       maxSize: '50m',
       format: baseJson,
     }),
-  ],
-});
+  ];
+
+  // Ships structured logs to Grafana Cloud Loki when configured, skipped entirely
+  // otherwise (local dev, or before Grafana credentials are set) rather than erroring.
+  // OTEL_SERVICE_NAME takes precedence so the Loki label matches the trace/metric
+  // service name from src/tracing.ts; falls back to this function's own `service` arg.
+  if (process.env.LOKI_URL) {
+    transports.push(
+      new LokiTransport({
+        host: process.env.LOKI_URL,
+        basicAuth:
+          process.env.LOKI_USER && process.env.LOKI_API_KEY
+            ? `${process.env.LOKI_USER}:${process.env.LOKI_API_KEY}`
+            : undefined,
+        labels: {
+          app: process.env.OTEL_SERVICE_NAME || service,
+          env: process.env.NODE_ENV || 'development',
+        },
+        json: true,
+        format: baseJson,
+        replaceTimestamp: true,
+        onConnectionError: (err) => console.error('Loki connection error', err),
+      }),
+    );
+  }
+
+  return {
+    level: process.env.LOG_LEVEL || 'info',
+    defaultMeta: { service },
+    transports,
+  };
+};
