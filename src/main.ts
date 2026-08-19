@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
-import 'winston-daily-rotate-file';
 import morgan from 'morgan';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -13,87 +11,17 @@ import { setupBullBoard } from './infra/bull-board/bull-board';
 import { Queue } from 'bullmq';
 import { DiagramService } from './diagram/diagram.service';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import LokiTransport from 'winston-loki';
-
-/**
- * --------------------------------
- * Safe stringify helper
- * --------------------------------
- */
-function safeToString(value: unknown, fallback = ''): string {
-  if (typeof value === 'string') return value;
-  if (value === null || value === undefined) return fallback;
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return fallback;
-  }
-}
+import { buildWinstonOptions } from './logger/winston.config';
 
 async function bootstrap() {
   // -----------------------------
-  // Setup Winston Transports
-  // -----------------------------
-  const logDir = path.join(__dirname, '..', 'logs');
-  if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
-
-  const transports: winston.transport[] = [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.timestamp(),
-        winston.format.printf((info) => {
-          const timestamp = safeToString(info.timestamp, '');
-          const level = safeToString(info.level, 'info');
-          const context = info.context
-            ? safeToString(info.context, 'App')
-            : 'App';
-          const message = safeToString(info.message, '');
-          return `${timestamp} [${context}] ${level}: ${message}`;
-        }),
-      ),
-    }),
-    new winston.transports.DailyRotateFile({
-      dirname: logDir,
-      filename: 'app-%DATE%.log',
-      datePattern: 'YYYY-MM-DD',
-      zippedArchive: true,
-      maxSize: '20m',
-      maxFiles: '14d',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-      ),
-    }),
-  ];
-
-  // Ships structured logs to Grafana Cloud Loki when configured; skipped entirely
-  // otherwise (local dev, or before Grafana credentials are set) rather than erroring.
-  if (process.env.LOKI_URL) {
-    transports.push(
-      new LokiTransport({
-        host: process.env.LOKI_URL,
-        basicAuth:
-          process.env.LOKI_USER && process.env.LOKI_API_KEY
-            ? `${process.env.LOKI_USER}:${process.env.LOKI_API_KEY}`
-            : undefined,
-        labels: {
-          app: process.env.OTEL_SERVICE_NAME || 'moodly-api',
-          env: process.env.NODE_ENV || 'development',
-        },
-        json: true,
-        format: winston.format.json(),
-        replaceTimestamp: true,
-        onConnectionError: (err) => console.error('Loki connection error', err),
-      }),
-    );
-  }
-
-  // -----------------------------
-  // Create Nest app with Winston logger
+  // Create Nest app with Winston logger. buildWinstonOptions (src/logger/winston.config.ts)
+  // is the single source of transport config (console, rotating files, Loki when
+  // configured), shared with the WinstonModule.forRoot(...) registered in AppModule so the
+  // bootstrap logger and the DI-injected one (used by LoggingInterceptor) behave identically.
   // -----------------------------
   const app = await NestFactory.create(AppModule, {
-    logger: WinstonModule.createLogger({ transports }),
+    logger: WinstonModule.createLogger(buildWinstonOptions('api')),
   });
 
   // -----------------------------
@@ -118,8 +46,10 @@ async function bootstrap() {
   });
 
   // -----------------------------
-  // Morgan HTTP logging
+  // Morgan HTTP logging (raw access log, separate from Winston's own JSON logs)
   // -----------------------------
+  const logDir = process.env.LOG_DIR || 'logs';
+  if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
   const accessLogStream = fs.createWriteStream(
     path.join(logDir, 'access.log'),
     { flags: 'a' },
