@@ -100,6 +100,13 @@ export class AttendanceService {
     if (now > sessionEnd)
       return CheckInResponseDto.error('Session already ended', 400);
 
+    // Explicit no-op on replay: the same QR/join-code token can be scanned more than
+    // once (accidentally or otherwise), and re-processing would silently overwrite
+    // the original checkInTime rather than rejecting or ignoring the repeat.
+    if (attendance.status === 'present') {
+      return CheckInResponseDto.error('Already checked in', 409);
+    }
+
     attendance.status = 'present';
     attendance.checkInTime = now;
     await this.attendanceRepo.save(attendance);
