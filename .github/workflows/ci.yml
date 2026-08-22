@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test-audit:
+    name: Build, test, audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Matches Dockerfile's node:20-bookworm-slim; npm ci (not install) for a
+      # reproducible install straight from package-lock.json.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test
+
+      - name: E2E tests
+        run: npm run test:e2e
+
+      # Non-blocking for now: this repo has untriaged findings from before CI existed
+      # (2 critical, 30 high per the engineering audit's DevOps section), so a hard
+      # failure here would red-X every PR regardless of what it actually changes.
+      # Once those are triaged, drop `continue-on-error` (and consider lowering
+      # --audit-level to `high`) to make this a real gate.
+      - name: Dependency audit
+        run: npm audit --audit-level=critical
+        continue-on-error: true
