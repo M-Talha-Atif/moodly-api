@@ -28,7 +28,10 @@ async function bootstrap() {
   // CORS + Cookie parser
   // -----------------------------
   app.enableCors({
-    origin: 'http://localhost:5173',
+    // Matches the FRONTEND_URL already used for OAuth redirects (auth.controller.ts)
+    // and the Socket.IO gateway (experience.gateway.ts), was hardcoded to localhost
+    // here only, which would reject every request from a real deployed frontend.
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept, Authorization',
     credentials: true,
