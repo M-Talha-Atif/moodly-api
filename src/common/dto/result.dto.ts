@@ -39,7 +39,16 @@ export class ResultDto<T> {
   private static sanitizeData<TData>(data: TData): TData {
     if (!data || typeof data !== 'object') return data;
 
-    const removeKeys = ['passwordHash', 'password', 'secretKey'];
+    // Confirmed leaking in production via GET /v1/host/bookings, which returns the raw
+    // booking.user relation: refreshTokenHash was never in this list. A denylist like
+    // this always trails behind whatever fields get added to an entity later, an
+    // allowlist per DTO would be the more robust fix, but this closes the immediate hole.
+    const removeKeys = [
+      'passwordHash',
+      'password',
+      'secretKey',
+      'refreshTokenHash',
+    ];
     const visited = new WeakSet();
 
     const stripFields = (obj: unknown): unknown => {

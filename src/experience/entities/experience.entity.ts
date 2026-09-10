@@ -28,7 +28,10 @@ export class Experience {
   @Column()
   location: string;
 
-  @Column()
+  // Nullable: an experience can be created before its image is uploaded via the
+  // separate POST /host/experiences/:id/image endpoint, CreateExperienceDto already
+  // treats this as optional.
+  @Column({ nullable: true })
   image: string;
 
   @Column()
