@@ -45,5 +45,5 @@ Requires `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`: `Goo
 ## Guards used elsewhere
 
 - `JwtCookieGuard`: the primary guard used across the app; reads the `jwt` cookie, or `Authorization: Bearer <token>` if no cookie is present.
-- `JwtBearerGuard`: Bearer-header-only. Frequently stacked together with `JwtCookieGuard` on the same route (e.g. `@UseGuards(JwtBearerGuard, JwtCookieGuard, RolesGuard)`), which is redundant since `JwtCookieGuard` alone already accepts a Bearer header.
+- `JwtBearerGuard`: Bearer-header-only. No longer used on any route, it used to be stacked alongside `JwtCookieGuard` on several controllers, which broke cookie-only requests (NestJS guards are AND-composed, so it rejected them before `JwtCookieGuard` ran), since `JwtCookieGuard` alone already accepts a Bearer header. Kept in the codebase in case a route ever needs bearer-only semantics, don't reintroduce the stacking.
 - `RolesGuard` (`src/common/roles.guard.ts`): reads `@Roles('host' | 'user' | 'admin')` metadata and checks `request.user.role`.
