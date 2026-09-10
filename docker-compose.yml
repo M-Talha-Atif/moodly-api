@@ -132,6 +132,10 @@ services:
     environment:
       NODE_ENV: development
       OTEL_SERVICE_NAME: moodly-worker
+      # Without this, the worker would inherit PORT from .env (loaded via env_file
+      # above) instead of falling back to WORKER_HTTP_PORT's own 3001 default, which
+      # would break this service's healthcheck below (checks localhost:3001).
+      PORT: 3001
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_USER: postgres
