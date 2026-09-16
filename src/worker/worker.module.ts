@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module'; // <-- import your shared DB module
-import { MoodDetectionWorker } from './mood-detection.worker';
 import { EmbeddingWorker } from './embedding.worker';
-import { EmotionAnalysisService } from '../mood-log/services/emotion-analysis.service';
-import { ValidationService } from '../mood-log/services/validation.service';
 import { ConfigModule } from '@nestjs/config';
 import { EmbeddingService } from '../embedding/services/embedding.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -15,7 +12,6 @@ import {
   CommunityEmbedding,
   CommunityEmbeddingSchema,
 } from '../embedding/schemas/community-embedding.schema';
-import { MoodLog } from '../mood-log/entities/mood-log.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RmqModule } from 'src/infra/rmq/rmq.module';
 import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
@@ -38,7 +34,7 @@ import { ExperienceWorker } from './experience.worker';
     DatabaseModule,
 
     // If worker needs access to certain entities
-    TypeOrmModule.forFeature([MoodLog, Experience]),
+    TypeOrmModule.forFeature([Experience]),
 
     // Mongo feature models
     MongooseModule.forFeature([
@@ -47,11 +43,6 @@ import { ExperienceWorker } from './experience.worker';
     ]),
 
     // RabbitMQ client, works for consumer
-    RmqModule.register({
-      clientName: RMQ_DOMAINS.MOOD.CLIENT,
-      exchange: RMQ_DOMAINS.MOOD.EXCHANGE,
-      queue: RMQ_DOMAINS.MOOD.QUEUE,
-    }),
     RmqModule.register({
       clientName: RMQ_DOMAINS.COMMUNITY.CLIENT,
       exchange: RMQ_DOMAINS.COMMUNITY.EXCHANGE,
@@ -88,12 +79,11 @@ import { ExperienceWorker } from './experience.worker';
   ],
 
   controllers: [
-    MoodDetectionWorker,
     EmbeddingWorker,
     RecommendationWorker,
     OnboardingWorker,
     ExperienceWorker,
   ],
-  providers: [EmotionAnalysisService, ValidationService, EmbeddingService],
+  providers: [EmbeddingService],
 })
 export class WorkerModule {}
