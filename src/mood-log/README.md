@@ -1,6 +1,6 @@
 # Mood Log Module
 
-`src/mood-log`: multi-modal mood logging (text label + optional photo + optional voice), the entry point into the mood-detection → recommendation event chain. See [root README > Sample Event Flow](../../README.md#sample-event-flow-mood-log-to-recommendation) for the full async trace.
+`src/mood-log`: multi-modal mood logging (text label + optional photo + optional voice). Detection and recommendation both run synchronously inside `POST /v1/mood-log`, the response carries the real detected mood and the matching experiences, no follow-up event or socket push required.
 
 ## Structure
 
@@ -10,7 +10,7 @@ mood-log/
 ├── mood-log.constants.ts        # pagination defaults, daily-summary hour buckets
 ├── mood-log.controller.ts       # @Controller('mood-log')
 ├── services/
-│   ├── mood-log.service.ts       # CRUD + history/streak/heatmap, emits mood.detect
+│   ├── mood-log.service.ts       # CRUD + history/streak/heatmap; create() runs detection + recommendation inline
 │   ├── emotion-analysis.service.ts   # wraps ApiClientService (FastAPI) for photo/voice analysis
 │   ├── storage.service.ts        # saves uploaded media locally or to S3
 │   └── validation.service.ts
@@ -23,9 +23,11 @@ mood-log/
 
 ## How it works
 
-`POST /v1/mood-log` persists the log immediately with `finalMood` provisionally set to the client-supplied `moodLabel`, returns `201`, and emits a `mood.detect` RabbitMQ event containing the mood log id and any uploaded file paths. The **worker process** (`src/worker/mood-detection.worker.ts`, a different module: see [worker README](../worker/README.md)) picks that event up, calls the external FastAPI inference service for photo/voice emotion analysis, and updates the row's `finalMood`, `photoEmotion`, `voiceSentiment`: then chains a `recommendation.generate` event. This module never talks to FastAPI or RabbitMQ consumers directly on the request path; it only produces the initial event.
+`POST /v1/mood-log` saves any uploaded photo/voice file, then calls `EmotionAnalysisService` directly and awaits the result before responding: `analyzeImageEmotion`/`analyzeVoiceEmotion` hit the external FastAPI inference service, and `finalMood` resolves to `photoEmotion ?? voiceSentiment ?? moodLabel ?? 'neutral'`. The row is saved with that real `finalMood`, then `ExperienceRecommendationService.recommendByEmotion` (from the [experience module](../experience/README.md)) runs in the same request to produce matching experiences. The response is `{ moodLog, recommendations }`, both final, no polling or socket connection needed on the client.
 
-`EmotionAnalysisService` (used by the worker, defined here since it shares the mood-log domain) handles both local file paths and S3 URLs: S3 URLs are downloaded to a temp file via `FileDownloadService` before being re-uploaded to FastAPI, then cleaned up.
+This trades request latency (the client waits on the FastAPI call) for immediacy: earlier this flow queued a `mood.detect` RabbitMQ event and returned `201` right away, with the worker process doing this same work off the request path and pushing results back over Socket.IO. That async path (`src/worker/mood-detection.worker.ts`) has been removed since nothing produces `mood.detect` anymore, see [worker README](../worker/README.md).
+
+`EmotionAnalysisService` handles both local file paths and S3 URLs: S3 URLs are downloaded to a temp file via `FileDownloadService` before being re-uploaded to FastAPI, then cleaned up.
 
 ## Endpoints
 
@@ -33,7 +35,7 @@ mood-log/
 
 | Method | Route | Description |
 |---|---|---|
-| POST | `/v1/mood-log` | Create a mood log. Multipart form: `moodLabel`, `note`, optional `photo` file, optional `voice` file |
+| POST | `/v1/mood-log` | Create a mood log. Multipart form: `moodLabel`, `note`, optional `photo` file, optional `voice` file. Runs emotion detection and recommendation matching synchronously; returns `{ moodLog, recommendations }` |
 | GET | `/v1/mood-log/today` | Most recent log created today |
 | GET | `/v1/mood-log/recent` | Most recent log overall |
 | GET | `/v1/mood-log/history` | Paginated history (`limit` default 30, `page` default 1) |

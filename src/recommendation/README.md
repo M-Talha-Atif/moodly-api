@@ -24,7 +24,7 @@ recommendation/
 
 ## Two matching paths
 
-1. **`generateForUserByMood(userId, mood, limit)`**: the active path. Used both by `GET /v1/recommendations` and by `RecommendationWorker` after a mood log finishes analysis. Delegates to `ExperienceRecommendationService.recommendByEmotion` (in [experience module](../experience/README.md)) for direct emotion-tag matching. No LLM call, no caching.
+1. **`generateForUserByMood(userId, mood, limit)`**: the active path. Used by `GET /v1/recommendations`, and `ExperienceRecommendationService.recommendByEmotion` itself (the same underlying matcher) is called directly and synchronously by `POST /v1/mood-log` (see [mood-log README](../mood-log/README.md)), so a fresh mood log's response already carries matching experiences. `RecommendationWorker` still exists for the same matching logic, but nothing currently emits `recommendation.generate`, so it's dormant, see [worker README](../worker/README.md).
 2. **`generateForUser(userId, embedding, context)`**: embedding/ANN-based matching (`recommendByEmbedding`, MongoDB `$vectorSearch`) with optional LLM reranking via `LlmRankingService` (provider chosen by `RANKING_PROVIDER` env var) and Redis caching until midnight. Fully implemented but **not currently called from any controller or worker**: a secondary path available for future use (e.g. the planned Hybrid Recommendation Engine, see root README).
 
 ## Endpoints
@@ -37,4 +37,4 @@ recommendation/
 
 ## Real-time push
 
-Recommendations generated asynchronously (via the `recommendation.generate` RabbitMQ event, see [root README > Event-Driven Architecture](../../README.md#event-driven-architecture-rabbitmq)) are pushed to the client over `RecommendationGateway`, which maps each connected socket to a `userId` from the connection's `?userId=` query param.
+`RecommendationGateway` (Socket.IO, maps each connected socket to a `userId` from the connection's `?userId=` query param) still exists and `RecommendationWorker` still pushes through it on `recommendation.generate`, but nothing in the codebase emits that event anymore: `POST /v1/mood-log` now returns recommendations directly in its HTTP response instead of triggering an async push, see [mood-log README](../mood-log/README.md) and [worker README](../worker/README.md).
