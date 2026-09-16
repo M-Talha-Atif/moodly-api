@@ -1,6 +1,5 @@
 import {
   HttpException,
-  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -13,8 +12,9 @@ import { startOfDay, endOfDay } from 'date-fns';
 import { ValidationService } from './validation.service';
 import { ResultDto } from 'src/common/dto/result.dto';
 import { StorageService } from './storage.service';
-import { ClientProxy } from '@nestjs/microservices';
-import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
+import { EmotionAnalysisService } from './emotion-analysis.service';
+import { ExperienceRecommendationService } from 'src/experience/experience-recommendation.service';
+import { DEFAULT_MOOD_RECOMMENDATION_LIMIT } from 'src/recommendation/recommendation.constants';
 import {
   DEFAULT_MOOD_LOG_HISTORY_LIMIT,
   DEFAULT_MOOD_LOG_HISTORY_PAGE,
@@ -30,10 +30,10 @@ export class MoodLogService {
   constructor(
     @InjectRepository(MoodLog)
     private moodLogRepo: Repository<MoodLog>,
-    @Inject(RMQ_DOMAINS.MOOD.CLIENT)
-    private readonly rmqClient: ClientProxy,
     private readonly validationService: ValidationService,
     private readonly storageService: StorageService,
+    private readonly emotionAnalysisService: EmotionAnalysisService,
+    private readonly experienceRecommendationService: ExperienceRecommendationService,
   ) {}
 
   async createForUser(
@@ -57,28 +57,54 @@ export class MoodLogService {
         dto.voicePath = await this.storageService.save(files.voice, 'voice');
       }
 
+      // Run emotion detection inline so the response carries the real result,
+      // not a provisional client-supplied label, see mood-log README.
+      let photoEmotion: string | undefined;
+      let voiceSentiment: string | undefined;
+
+      if (dto.photoPath) {
+        const res = await this.emotionAnalysisService.analyzeImageEmotion(
+          dto.photoPath,
+        );
+        if (res.success && res.data?.dominant_emotion) {
+          photoEmotion = res.data.dominant_emotion;
+        }
+      }
+
+      if (dto.voicePath) {
+        const res = await this.emotionAnalysisService.analyzeVoiceEmotion(
+          dto.voicePath,
+        );
+        if (res.success && res.data?.dominant_emotion) {
+          voiceSentiment = res.data.dominant_emotion;
+        }
+      }
+
+      const finalMood =
+        photoEmotion ?? voiceSentiment ?? dto.moodLabel ?? 'neutral';
+
       // Create and save mood log
       const mood = this.moodLogRepo.create({
         userId,
         ...dto,
-        photoEmotion: undefined,
-        voiceSentiment: undefined,
-        finalMood: dto.moodLabel ?? null,
+        photoEmotion,
+        voiceSentiment,
+        finalMood,
       });
 
       const saved = await this.moodLogRepo.save(mood);
 
-      // Queue analysis
-      this.rmqClient.emit(RMQ_DOMAINS.MOOD.ROUTING.DETECT, {
-        moodLogId: saved.id,
-        userId,
-        photoPath: dto.photoPath,
-        voicePath: dto.voicePath,
-        moodLabel: dto.moodLabel,
-        note: dto.note,
-      });
+      const recommendations =
+        await this.experienceRecommendationService.recommendByEmotion(
+          finalMood,
+          userId,
+          DEFAULT_MOOD_RECOMMENDATION_LIMIT,
+        );
 
-      return ResultDto.ok(saved, 'Mood log created; analysis queued');
+      return ResultDto.ok(
+        { moodLog: saved, recommendations },
+        'Mood log created and analyzed',
+      );
     } catch (error) {
       // ResultDto.fail() throws an HttpException by design (see validateInputs
       // above), so it must pass through here unchanged rather than being
