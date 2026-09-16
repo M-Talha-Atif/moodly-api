@@ -14,9 +14,8 @@ import {
 } from 'src/embedding/schemas/moodlog-embedding.schema';
 import { MulterModule } from '@nestjs/platform-express';
 import { ValidationService } from './services/validation.service';
-import { RmqModule } from 'src/infra/rmq/rmq.module'; //  Import RMQ module
-import { RMQ_DOMAINS } from 'src/infra/config/rmq.constants';
 import { CommonModule } from 'src/common/common.module';
+import { ExperienceModule } from 'src/experience/experience.module';
 import { memoryStorage } from 'multer';
 @Module({
   imports: [
@@ -26,11 +25,7 @@ import { memoryStorage } from 'multer';
     ]),
     EmbeddingModule,
     CommonModule,
-    RmqModule.register({
-      clientName: RMQ_DOMAINS.MOOD.CLIENT,
-      exchange: RMQ_DOMAINS.MOOD.EXCHANGE,
-      queue: RMQ_DOMAINS.MOOD.QUEUE,
-    }),
+    ExperienceModule,
 
     MulterModule.register({
       storage: memoryStorage(),

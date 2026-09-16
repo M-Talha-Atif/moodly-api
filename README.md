@@ -22,7 +22,7 @@ If you're joining this project, the fastest way to get oriented is: read this pa
 - [Event-Driven Architecture (RabbitMQ)](#event-driven-architecture-rabbitmq)
 - [Background Jobs (BullMQ / Bull)](#background-jobs-bullmq--bull)
 - [Sample Request Flow: Creating a Booking](#sample-request-flow-creating-a-booking)
-- [Sample Event Flow: Mood Log to Recommendation](#sample-event-flow-mood-log-to-recommendation)
+- [Sample Request Flow: Mood Log Detection and Recommendation](#sample-request-flow-mood-log-detection-and-recommendation)
 - [Database](#database)
 - [Scale: Current Capacity and Where Overflow Goes](#scale-current-capacity-and-where-overflow-goes)
 - [Auth](#auth)
@@ -105,7 +105,6 @@ ai-moodler-backend/
 │   │   └── bull-board/              # mounts the Bull Board admin UI at /admin/queues
 │   │
 │   └── worker/                     # SEPARATE process entrypoint (main.ts, port 3001)
-│       ├── mood-detection.worker.ts
 │       ├── embedding.worker.ts
 │       ├── recommendation.worker.ts
 │       ├── onboarding.worker.ts
@@ -210,7 +209,7 @@ Regression-tested in `test/versioning.e2e-spec.ts` (an isolated check against th
 | Feature | Description |
 |---|---|
 | Multi-modal Logging | Text label, photo emotion (DeepFace), and voice sentiment (HuBERT), combined into `finalMood` |
-| Async Analysis | Photo/voice analysis runs off the request path via RabbitMQ (`mood.detect` to worker) |
+| Synchronous Analysis | Photo/voice analysis runs inline in `POST /v1/mood-log`, the response carries the real `finalMood` and matching experiences immediately, no polling or socket wait |
 | Daily Summaries | Mood breakdown grouped into morning, afternoon, night |
 | Streak & Heatmap | Consecutive-day streak calculation and date-to-mood heatmap data |
 | File Storage | Uploaded media saved locally or to S3, downloaded back to a temp file when re-sent to FastAPI |
@@ -277,8 +276,8 @@ The `FOR UPDATE` lock serializes concurrent bookings for the *same experience* a
 
 > Note: `RedisService` also exposes `acquireLock`/`releaseLock` (Lua-script-based `SET NX` plus compare-and-delete), but it is not currently called anywhere in the codebase, booking concurrency is handled entirely at the Postgres layer today.
 
-**2. Decoupling slow AI inference from the request/response cycle.**
-Emotion analysis (HuBERT, DeepFace) and embedding generation take real time and call an external service. Rather than making `POST /v1/mood-log` wait on that, the endpoint persists the raw log and returns `201` immediately, then emits a `mood.detect` event onto RabbitMQ. The separate worker process consumes it, calls FastAPI, writes the result back, and chains a follow-up event to regenerate recommendations, see [Sample Event Flow](#sample-event-flow-mood-log-to-recommendation).
+**2. Choosing immediacy over decoupling for mood detection.**
+Emotion analysis (HuBERT, DeepFace) calls an external FastAPI service and takes real time per request. `POST /v1/mood-log` used to persist the raw log, return `201` immediately, and emit a `mood.detect` event for the worker process to analyze asynchronously, pushing the result back over Socket.IO once ready. That was replaced with a synchronous flow: the endpoint now calls the FastAPI service directly and waits, so the client gets the real `finalMood` and matching experiences in the same response, at the cost of the request taking as long as the slowest of the photo/voice analysis calls. Embedding generation and Gemini-based experience-field generation still run off the request path in the worker process for the same reason the async mood path originally did, see [Event-Driven Architecture](#event-driven-architecture-rabbitmq).
 
 **3. Two data stores for two shapes of data.** Relational, highly-related domain data (users, bookings, experiences, community) lives in PostgreSQL via TypeORM, where foreign keys and transactions matter. Loosely-structured, evolving documents (onboarding answers, embedding vectors) live in MongoDB via Mongoose, where schema flexibility matters more than joins.
 
@@ -306,11 +305,12 @@ The API process and the worker process are two separate Nest applications connec
 
 **Consumers**: `src/worker/main.ts` boots a single Nest application (`WorkerModule`) that opens **five separate RabbitMQ connections**, one per domain, each with `prefetchCount: 1` (process one message at a time per domain before acking the next):
 
-- `mood-detection.worker.ts`, listens for `mood.detect`: calls FastAPI for photo/voice analysis, writes `finalMood` back to the `MoodLog` row, then emits `recommendation.generate`.
 - `embedding.worker.ts`, listens for `mood.analyzed` and `community.embedding.generate`: generates and stores vector embeddings in Mongo.
 - `recommendation.worker.ts`, listens for `recommendation.generate`: runs the recommendation engine and pushes results over Socket.IO.
 - `onboarding.worker.ts`, listens for `onboarding.completed`: flips `user.onboardingCompleted`.
 - `experience.worker.ts`, listens for `experience.generate_ai`: runs Gemini experience-field generation and saves it onto the `Experience` row.
+
+`POST /v1/mood-log` no longer emits `mood.detect`: mood detection and recommendation matching now run synchronously inside the API request (see [Sample Request Flow](#sample-request-flow-mood-log-detection-and-recommendation) below). Nothing publishes to the mood exchange anymore (`mood.detect` lost its only producer, `mood.analyzed` never had one), and `recommendation.generate` lost its only producer along with `mood.detect`, so `embedding.worker.ts`'s mood-analyzed handler and all of `recommendation.worker.ts` are dormant. Both are left in place rather than torn out, see [worker README](src/worker/README.md#connections).
 
 Run the worker as its own process: `npm run start:worker` (separate from `npm run start`, which only runs the API).
 
@@ -326,7 +326,7 @@ Two message-passing systems coexist for two different jobs: RabbitMQ moves event
 |---|---|---|---|---|
 | `notification-queue` | `src/notification/notification.module.ts` | `NotificationService.createAndSend()` | `src/notification/jobs/notification.processor.ts` | Sends email via Nodemailer (`type: 'email'`); `type: 'push'` is stubbed, not implemented |
 | `feedback-request` | `src/feedback/queues/feedback-queue.module.ts` | `src/feedback/jobs/feedback.cron.ts` (`@Cron`, `@nestjs/schedule`) | `src/feedback/queues/feedback-request.processor.ts` | Creates a `PendingFeedback` row per attendee once an experience's session has ended |
-| `mood-queue` | `src/infra/bull-board/bull-board.module.ts` | registered for Bull Board visibility | none | Currently monitoring-only; mood processing itself runs through RabbitMQ, not this queue |
+| `mood-queue` | `src/infra/bull-board/bull-board.module.ts` | registered for Bull Board visibility | none | Currently monitoring-only; mood processing itself is synchronous inside `POST /v1/mood-log`, not queued anywhere |
 
 All three queues are also visible (jobs, retries, failures) in Bull Board at `GET /admin/queues`, see [src/infra/bull-board/README.md](src/infra/bull-board/README.md).
 
@@ -372,40 +372,35 @@ Key points this illustrates:
 
 ---
 
-## Sample Event Flow: Mood Log to Recommendation
+## Sample Request Flow: Mood Log Detection and Recommendation
 
-`POST /v1/mood-log` with a voice/photo upload, through both processes:
+`POST /v1/mood-log` with a voice/photo upload, entirely within the API process, no worker hop:
 
 ```mermaid
 sequenceDiagram
     participant C as Client
-    participant API as NestJS API
-    participant DB as PostgreSQL
-    participant Q as RabbitMQ
-    participant W1 as MoodDetectionWorker
+    participant Ctrl as MoodLogController
+    participant Svc as MoodLogService
     participant FA as FastAPI Service
-    participant W2 as RecommendationWorker
-    participant WS as RecommendationGateway
+    participant DB as PostgreSQL
+    participant Rec as ExperienceRecommendationService
 
-    C->>API: POST /v1/mood-log, multipart photo/voice plus moodLabel
-    API->>DB: Insert MoodLog, finalMood set to moodLabel for now
-    API-->>C: 201 Mood log created, analysis queued
-    API->>Q: Emit mood.detect
-
-    Q->>W1: Consume mood.detect
-    W1->>FA: Analyze image emotion, if photo present
-    W1->>FA: Analyze voice emotion, if voice present
-    FA-->>W1: Dominant emotion per modality
-    W1->>DB: Update MoodLog with finalMood, photoEmotion, voiceSentiment
-    W1->>Q: Emit recommendation.generate
-
-    Q->>W2: Consume recommendation.generate
-    W2->>DB: Match experiences by target emotion
-    W2->>WS: sendRecommendations(userId, list)
-    WS-->>C: Socket.IO push, room keyed by userId
+    C->>Ctrl: POST /v1/mood-log, multipart photo/voice plus moodLabel
+    Ctrl->>Svc: createForUser(userId, dto, files)
+    Svc->>FA: Analyze image emotion, if photo present
+    Svc->>FA: Analyze voice emotion, if voice present
+    FA-->>Svc: Dominant emotion per modality
+    Svc->>Svc: finalMood equals photoEmotion or voiceSentiment or moodLabel or neutral
+    Svc->>DB: Insert MoodLog with real finalMood
+    Svc->>Rec: recommendByEmotion(finalMood, userId, limit)
+    Rec->>DB: Match experiences by target emotion
+    DB-->>Rec: Matching experiences
+    Rec-->>Svc: Recommendations
+    Svc-->>Ctrl: moodLog plus recommendations
+    Ctrl-->>C: 201 with moodLog and recommendations
 ```
 
-The client that uploaded the mood log gets an immediate `201`, then, seconds later and asynchronously, a Socket.IO push with recommendations once both hops through RabbitMQ complete. No HTTP polling is needed on the client side.
+The client waits on the FastAPI call (photo/voice analysis), but gets the real `finalMood` and matching experiences in the same response, no polling, no Socket.IO connection needed. This used to be async, queued onto RabbitMQ for a separate worker process to handle and push back over Socket.IO, see [Engineering Challenges](#engineering-challenges-handled) point 2 for the tradeoff and why it changed.
 
 ---
 
