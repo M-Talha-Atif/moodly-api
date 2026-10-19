@@ -6,8 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node api.js && nest build",
-    "start": "node api.js && node -r ./dist/tracing.js dist/main",
+    "build": "nest build",
+    "start": "node -r ./dist/tracing.js dist/main",
     "start:prod": "node -r ./dist/tracing.js dist/main",
     "start:worker": "node -r ./dist/tracing.js dist/worker/main.js",
     "test": "jest",
