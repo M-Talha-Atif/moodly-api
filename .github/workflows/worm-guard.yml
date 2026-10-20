@@ -1,0 +1,63 @@
+name: worm-guard
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Scan for worm artifacts
+        shell: bash {0}
+        run: |
+          # worm-guard: detects artifacts of the PolinRider / Contagious-Interview worm in a git repo.
+          # usage: worm-guard.sh [--cached]   (--cached checks the staged index instead of the working tree)
+          # exit 1 if anything suspicious is found.
+          
+          CACHED=""
+          [ "$1" = "--cached" ] && CACHED="--cached"
+          fail=0
+          bad() { echo "worm-guard: BLOCKED - $*" >&2; fail=1; }
+          
+          SELF=':(exclude)**/worm-guard.sh'
+          SELF2=':(exclude).github/workflows/worm-guard.yml'
+          
+          # 1. known payload signatures (obfuscated loader / global marker)
+          hits=$(git grep -I -l $CACHED -E "global\[['\"]!['\"]\]|global\[['\"]_V['\"]\]|rmc""ej%otb%|while\(!!\[\]\)\{try\{" -- . "$SELF" "$SELF2" 2>/dev/null)
+          [ -n "$hits" ] && bad "known malware code in: $(echo $hits | tr '\n' ' ')"
+          
+          # 2. disguised payload files and worm helper scripts
+          files=$(git ls-files $CACHED 2>/dev/null)
+          echo "$files" | grep -E '\.lkf$|(^|/)temp_auto_pus[h]\.bat$|(^|/)temp_interactive_pus[h]\.bat$|(^|/)branch_structur[e]\.json$' | while read -r f; do echo "$f"; done > /tmp/wg.$$ 2>/dev/null
+          [ -s /tmp/wg.$$ ] && bad "worm files tracked: $(tr '\n' ' ' < /tmp/wg.$$)"
+          rm -f /tmp/wg.$$
+          
+          # 3. VS Code auto-run tasks and the setting that enables them
+          hits=$(git grep -I -l $CACHED -E 'folderOpe[n]' -- ':(glob)**/.vscode/*.json' 2>/dev/null)
+          [ -n "$hits" ] && bad "VS Code task runs automatically on folder open: $(echo $hits | tr '\n' ' ')"
+          hits=$(git grep -I -l $CACHED -E 'task\.allowAutomaticTask[s]' -- ':(glob)**/.vscode/*.json' 2>/dev/null)
+          [ -n "$hits" ] && bad "VS Code automatic tasks enabled in: $(echo $hits | tr '\n' ' ')"
+          
+          # 4. package.json scripts that run a local api.js first
+          hits=$(git grep -I -l $CACHED -E 'node +[^ &"]*api\.js *&&' -- ':(glob)**/package.json' 2>/dev/null)
+          [ -n "$hits" ] && bad "package.json runs api.js before the real script: $(echo $hits | tr '\n' ' ')"
+          
+          # 5. font files that are not really fonts
+          for f in $(echo "$files" | grep -E '\.woff2?$'); do
+            if [ -n "$CACHED" ]; then magic=$(git show ":$f" 2>/dev/null | head -c4); else magic=$(head -c4 "$f" 2>/dev/null); fi
+            case "$magic" in wOF2|wOFF) ;; *) bad "fake font file (not a real font): $f";; esac
+          done
+          
+          # 6. config files with a gigantic line (payload hidden after padding)
+          hits=$(git grep -I -l $CACHED -E '.{6000,}' -- ':(glob)**/*.config.js' ':(glob)**/*.config.mjs' ':(glob)**/*.config.cjs' ':(glob)**/*.config.ts' 2>/dev/null)
+          [ -n "$hits" ] && bad "config file has a hidden very long line: $(echo $hits | tr '\n' ' ')"
+          
+          [ $fail -eq 0 ] && echo "worm-guard: OK"
+          exit $fail
